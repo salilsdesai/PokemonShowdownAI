@@ -14,7 +14,7 @@ public class Pokemon {
 	 * to get move pp
 	 * 
 	 */
-	public Pokemon(String species, ArrayList<Move> moves) {
+	public Pokemon(String species, ArrayList<Move> moves, int level) {
 		// TODO
 	}
 	
