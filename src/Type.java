@@ -10,7 +10,7 @@ public enum Type {
 	public double effectiveness(Type t) {
 		switch (this) {
 		case NORMAL:
-			if (t == NORMAL) {
+			if (t == ROCK) {
 				return 0.5;
 			}
 			else if (t == GHOST) {
@@ -18,7 +18,7 @@ public enum Type {
 			}
 			
 		case FIGHT:
-			if (t == NORMAL || t == GRASS || t == ICE) {
+			if (t == NORMAL || t == ROCK || t == ICE) {
 				return 2.0;
 			}
 			else if (t == FLYING || t == POISON || t == BUG || t == PSYCHIC) {
@@ -141,8 +141,12 @@ public enum Type {
 		return 1.0;
 	}
 	
+	/**
+	 * Returns true if [this] is a physical type and false otherwise.
+	 */
 	public boolean isPhysical() {
-		return (this == NORMAL || this == FIGHT || this == FLYING || this == GROUND || 
-				this == ROCK || this == BUG || this == GHOST || this == POISON);
+		return (this == NORMAL || this == FIGHT || this == FLYING || 
+				this == GROUND || this == ROCK || this == BUG || 
+				this == GHOST || this == POISON);
 	}
 }
