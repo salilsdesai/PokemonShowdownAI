@@ -1,4 +1,11 @@
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.json.simple.JSONObject; 
+import org.json.simple.parser.*; 
 
 public class Pokemon {
 	public String species;
@@ -25,8 +32,25 @@ public class Pokemon {
 		}
 		this.level = level;
 		
+		
+		
 		// Load Types, Base Stats, 
-		// TODO
+		JSONObject jo;
+		try {
+			jo = (JSONObject)(new JSONParser().parse(new FileReader("pokedex.json")));
+		}
+		catch (IOException | ParseException e) {
+			// Realistically this catch block will never be reached
+			jo = null;
+		}
+		
+		JSONObject poke = (JSONObject)(jo.get(this.species.toLowerCase()));
+		
+		@SuppressWarnings("unchecked")
+		List<String> stringTypes = (List<String>)(poke.get("types"));
+		this.types = new ArrayList<Type>(stringTypes.stream().map(t -> Type.valueOf(t.toUpperCase())).collect(Collectors.toList()));
+	
+		// TODO: Compute stats based on base stats
 		
 	}
 }
