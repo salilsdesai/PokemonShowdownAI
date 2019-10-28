@@ -1,8 +1,8 @@
+import java.util.ArrayList;
 
 public enum Type {
 	NORMAL, FIGHT, FLYING, POISON, GROUND, ROCK, BUG, GHOST, 
 	FIRE, WATER, GRASS, ELECTRIC, PSYCHIC, ICE, DRAGON, NONE;
-	
 	
 	/** 
 	 * Returns damage modifier of current type attacking type [t]. 
@@ -149,5 +149,20 @@ public enum Type {
 		return (this == NORMAL || this == FIGHT || this == FLYING || 
 				this == GROUND || this == ROCK || this == BUG || 
 				this == GHOST || this == POISON);
+	}
+	
+	/**
+	 * Returns the list of types which are effective against a pokemon with types [t1] 
+	 * and [t2]. If the pokemon is single-typed, then [t2] must be [None].
+	 */
+	public static ArrayList<Type> weaknesses(Type t1, Type t2) {
+		ArrayList<Type> ret = new ArrayList<>();
+		for (Type t: Type.values()) {
+			if (t.effectiveness(t1) * t.effectiveness(t2) > 1.0) {
+				ret.add(t);
+			}
+		}
+		
+		return ret;
 	}
 }
