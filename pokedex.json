@@ -1,606 +1,1099 @@
 {	
 	"bulbasaur": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 45, "atk": 49, "def": 49, "spa": 65, "spd": 65, "spe": 45}
+		"baseStats": {"hp": 45, "atk": 49, "def": 49, "spa": 65, "spd": 65, "spe": 45},
+		"randomBattleMoves": ["sleeppowder", "bodyslam"],
+		"essentialMove": "razorleaf",
+		"exclusiveMoves": ["megadrain", "swordsdance", "swordsdance"],
+		"tier": "LC"
 	},
 	"ivysaur": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 60, "atk": 62, "def": 63, "spa": 80, "spd": 80, "spe": 60}
+		"baseStats": {"hp": 60, "atk": 62, "def": 63, "spa": 80, "spd": 80, "spe": 60},
+		"randomBattleMoves": ["sleeppowder", "swordsdance", "bodyslam"],
+		"essentialMove": "razorleaf",
+		"tier": "NFE"
 	},
 	"venusaur": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 80, "atk": 82, "def": 83, "spa": 100, "spd": 100, "spe": 80}
+		"baseStats": {"hp": 80, "atk": 82, "def": 83, "spa": 100, "spd": 100, "spe": 80},
+		"randomBattleMoves": ["sleeppowder", "swordsdance", "bodyslam", "hyperbeam"],
+		"essentialMove": "razorleaf",
+		"tier": "UU"
 	},
 	"charmander": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 39, "atk": 52, "def": 43, "spa": 50, "spd": 50, "spe": 65}
+		"baseStats": {"hp": 39, "atk": 52, "def": 43, "spa": 50, "spd": 50, "spe": 65},
+		"randomBattleMoves": ["bodyslam", "slash"],
+		"essentialMove": "fireblast",
+		"exclusiveMoves": ["counter", "seismictoss"],
+		"comboMoves": ["swordsdance", "bodyslam", "submission", "fireblast"],
+		"tier": "LC"
 	},
 	"charmeleon": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 58, "atk": 64, "def": 58, "spa": 65, "spd": 65, "spe": 80}
+		"baseStats": {"hp": 58, "atk": 64, "def": 58, "spa": 65, "spd": 65, "spe": 80},
+		"randomBattleMoves": ["bodyslam", "slash"],
+		"essentialMove": "fireblast",
+		"exclusiveMoves": ["counter", "swordsdance"],
+		"comboMoves": ["swordsdance", "bodyslam", "submission", "fireblast"],
+		"tier": "NFE"
 	},
 	"charizard": {
 		"types": ["Fire", "Flying"],
-		"baseStats": {"hp": 78, "atk": 84, "def": 78, "spa": 85, "spd": 85, "spe": 100}
+		"baseStats": {"hp": 78, "atk": 84, "def": 78, "spa": 85, "spd": 85, "spe": 100},
+		"randomBattleMoves": ["earthquake", "bodyslam", "slash"],
+		"essentialMove": "fireblast",
+		"comboMoves": ["swordsdance", "hyperbeam"],
+		"tier": "UU"
 	},
 	"squirtle": {
 		"types": ["Water"],
-		"baseStats": {"hp": 44, "atk": 48, "def": 65, "spa": 50, "spd": 50, "spe": 43}
+		"baseStats": {"hp": 44, "atk": 48, "def": 65, "spa": 50, "spd": 50, "spe": 43},
+		"randomBattleMoves": ["blizzard", "seismictoss", "surf", "hydropump"],
+		"exclusiveMoves": ["counter", "bodyslam"],
+		"tier": "LC"
 	},
 	"wartortle": {
 		"types": ["Water"],
-		"baseStats": {"hp": 59, "atk": 63, "def": 80, "spa": 65, "spd": 65, "spe": 58}
+		"baseStats": {"hp": 59, "atk": 63, "def": 80, "spa": 65, "spd": 65, "spe": 58},
+		"randomBattleMoves": ["surf", "blizzard", "bodyslam", "hydropump"],
+		"exclusiveMoves": ["counter", "rest", "seismictoss"],
+		"tier": "NFE"
 	},
 	"blastoise": {
 		"types": ["Water"],
-		"baseStats": {"hp": 79, "atk": 83, "def": 100, "spa": 85, "spd": 85, "spe": 78}
+		"baseStats": {"hp": 79, "atk": 83, "def": 100, "spa": 85, "spd": 85, "spe": 78},
+		"randomBattleMoves": ["surf", "blizzard", "bodyslam", "hydropump"],
+		"exclusiveMoves": ["earthquake", "rest"],
+		"tier": "UU"
 	},
 	"caterpie": {
 		"types": ["Bug"],
-		"baseStats": {"hp": 45, "atk": 30, "def": 35, "spa": 20, "spd": 20, "spe": 45}
+		"baseStats": {"hp": 45, "atk": 30, "def": 35, "spa": 20, "spd": 20, "spe": 45},
+		"randomBattleMoves": ["stringshot", "tackle"],
+		"tier": "LC"
 	},
 	"metapod": {
 		"types": ["Bug"],
-		"baseStats": {"hp": 50, "atk": 20, "def": 55, "spa": 25, "spd": 25, "spe": 30}
+		"baseStats": {"hp": 50, "atk": 20, "def": 55, "spa": 25, "spd": 25, "spe": 30},
+		"randomBattleMoves": ["stringshot", "tackle", "harden"],
+		"tier": "NFE"
 	},
 	"butterfree": {
 		"types": ["Bug", "Flying"],
-		"baseStats": {"hp": 60, "atk": 45, "def": 50, "spa": 80, "spd": 80, "spe": 70}
+		"baseStats": {"hp": 60, "atk": 45, "def": 50, "spa": 80, "spd": 80, "spe": 70},
+		"randomBattleMoves": ["psychic", "sleeppowder", "stunspore"],
+		"exclusiveMoves": ["megadrain", "psywave"],
+		"tier": "UU"
 	},
 	"weedle": {
 		"types": ["Bug", "Poison"],
-		"baseStats": {"hp": 40, "atk": 35, "def": 30, "spa": 20, "spd": 20, "spe": 50}
+		"baseStats": {"hp": 40, "atk": 35, "def": 30, "spa": 20, "spd": 20, "spe": 50},
+		"randomBattleMoves": ["poisonsting", "stringshot"],
+		"tier": "LC"
 	},
 	"kakuna": {
 		"types": ["Bug", "Poison"],
-		"baseStats": {"hp": 45, "atk": 25, "def": 50, "spa": 25, "spd": 25, "spe": 35}
+		"baseStats": {"hp": 45, "atk": 25, "def": 50, "spa": 25, "spd": 25, "spe": 35},
+		"randomBattleMoves": ["poisonsting", "stringshot", "harden"],
+		"tier": "NFE"
 	},
 	"beedrill": {
 		"types": ["Bug", "Poison"],
-		"baseStats": {"hp": 65, "atk": 80, "def": 40, "spa": 45, "spd": 45, "spe": 75}
+		"baseStats": {"hp": 65, "atk": 80, "def": 40, "spa": 45, "spd": 45, "spe": 75},
+		"randomBattleMoves": ["twineedle", "megadrain", "swordsdance"],
+		"exclusiveMoves": ["doubleedge", "doubleedge", "hyperbeam"],
+		"comboMoves": ["twineedle", "hyperbeam", "swordsdance", "agility"],
+		"tier": "UU"
 	},
 	"pidgey": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 40, "atk": 45, "def": 40, "spa": 35, "spd": 35, "spe": 56}
+		"baseStats": {"hp": 40, "atk": 45, "def": 40, "spa": 35, "spd": 35, "spe": 56},
+		"randomBattleMoves": ["agility", "skyattack", "doubleedge"],
+		"exclusiveMoves": ["reflect", "sandattack", "mirrormove", "mimic", "toxic", "substitute"],
+		"tier": "LC"
 	},
 	"pidgeotto": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 63, "atk": 60, "def": 55, "spa": 50, "spd": 50, "spe": 71}
+		"baseStats": {"hp": 63, "atk": 60, "def": 55, "spa": 50, "spd": 50, "spe": 71},
+		"randomBattleMoves": ["agility", "skyattack", "doubleedge"],
+		"exclusiveMoves": ["reflect", "sandattack", "mirrormove", "mimic", "toxic", "substitute"],
+		"tier": "NFE"
 	},
 	"pidgeot": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 83, "atk": 80, "def": 75, "spa": 70, "spd": 70, "spe": 91}
+		"baseStats": {"hp": 83, "atk": 80, "def": 75, "spa": 70, "spd": 70, "spe": 91},
+		"randomBattleMoves": ["agility", "hyperbeam", "doubleedge"],
+		"exclusiveMoves": ["reflect", "sandattack", "mirrormove", "mimic", "toxic", "skyattack", "skyattack", "substitute"],
+		"tier": "UU"
 	},
 	"rattata": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 30, "atk": 56, "def": 35, "spa": 25, "spd": 25, "spe": 72}
+		"baseStats": {"hp": 30, "atk": 56, "def": 35, "spa": 25, "spd": 25, "spe": 72},
+		"randomBattleMoves": ["bodyslam", "blizzard", "thunderbolt"],
+		"essentialMove": "superfang",
+		"tier": "LC"
 	},
 	"raticate": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 55, "atk": 81, "def": 60, "spa": 50, "spd": 50, "spe": 97}
+		"baseStats": {"hp": 55, "atk": 81, "def": 60, "spa": 50, "spd": 50, "spe": 97},
+		"randomBattleMoves": ["bodyslam", "hyperbeam", "blizzard"],
+		"essentialMove": "superfang",
+		"tier": "UU"
 	},
 	"spearow": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 40, "atk": 60, "def": 30, "spa": 31, "spd": 31, "spe": 70}
+		"baseStats": {"hp": 40, "atk": 60, "def": 30, "spa": 31, "spd": 31, "spe": 70},
+		"randomBattleMoves": ["drillpeck", "doubleedge", "agility"],
+		"exclusiveMoves": ["leer", "toxic", "mirrormove", "mimic", "substitute"],
+		"tier": "LC"
 	},
 	"fearow": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 65, "atk": 90, "def": 65, "spa": 61, "spd": 61, "spe": 100}
+		"baseStats": {"hp": 65, "atk": 90, "def": 65, "spa": 61, "spd": 61, "spe": 100},
+		"randomBattleMoves": ["drillpeck", "doubleedge", "hyperbeam", "agility"],
+		"eventPokemon": [
+			{"generation": 1, "level": 20, "moves": ["growl", "leer", "furyattack", "payday"]}
+		],
+		"tier": "UU"
 	},
 	"ekans": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 35, "atk": 60, "def": 44, "spa": 40, "spd": 40, "spe": 55}
+		"baseStats": {"hp": 35, "atk": 60, "def": 44, "spa": 40, "spd": 40, "spe": 55},
+		"randomBattleMoves": ["glare", "earthquake", "bodyslam", "rockslide"],
+		"tier": "LC"
 	},
 	"arbok": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 60, "atk": 85, "def": 69, "spa": 65, "spd": 65, "spe": 80}
+		"baseStats": {"hp": 60, "atk": 85, "def": 69, "spa": 65, "spd": 65, "spe": 80},
+		"randomBattleMoves": ["earthquake", "glare", "hyperbeam"],
+		"exclusiveMoves": ["bodyslam", "rockslide"],
+		"tier": "UU"
 	},
 	"pikachu": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 35, "atk": 55, "def": 30, "spa": 50, "spd": 50, "spe": 90}
+		"baseStats": {"hp": 35, "atk": 55, "def": 30, "spa": 50, "spd": 50, "spe": 90},
+		"randomBattleMoves": ["thunderwave", "surf"],
+		"essentialMove": "thunderbolt",
+		"exclusiveMoves": ["bodyslam", "thunder", "agility", "seismictoss"],
+		"eventPokemon": [
+			{"generation": 1, "level": 5, "moves": ["surf"]},
+			{"generation": 1, "level": 5, "moves": ["fly"]},
+			{"generation": 1, "level": 5, "moves": ["thundershock", "growl", "surf"]}
+		],
+		"tier": "LC"
 	},
 	"raichu": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 60, "atk": 90, "def": 55, "spa": 90, "spd": 90, "spe": 100}
+		"baseStats": {"hp": 60, "atk": 90, "def": 55, "spa": 90, "spd": 90, "spe": 100},
+		"randomBattleMoves": ["thunderwave", "surf"],
+		"essentialMove": "thunderbolt",
+		"exclusiveMoves": ["bodyslam", "thunder", "agility", "seismictoss", "hyperbeam"],
+		"tier": "UU"
 	},
 	"sandshrew": {
 		"types": ["Ground"],
-		"baseStats": {"hp": 50, "atk": 75, "def": 85, "spa": 30, "spd": 30, "spe": 40}
+		"baseStats": {"hp": 50, "atk": 75, "def": 85, "spa": 30, "spd": 30, "spe": 40},
+		"randomBattleMoves": ["swordsdance", "bodyslam", "rockslide"],
+		"essentialMove": "earthquake",
+		"tier": "LC"
 	},
 	"sandslash": {
 		"types": ["Ground"],
-		"baseStats": {"hp": 75, "atk": 100, "def": 110, "spa": 55, "spd": 55, "spe": 65}
+		"baseStats": {"hp": 75, "atk": 100, "def": 110, "spa": 55, "spd": 55, "spe": 65},
+		"randomBattleMoves": ["swordsdance", "bodyslam", "rockslide"],
+		"essentialMove": "earthquake",
+		"tier": "UU"
 	},
 	"nidoranf": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 55, "atk": 47, "def": 52, "spa": 40, "spd": 40, "spe": 41}
+		"baseStats": {"hp": 55, "atk": 47, "def": 52, "spa": 40, "spd": 40, "spe": 41},
+		"randomBattleMoves": ["bodyslam", "blizzard", "thunderbolt"],
+		"exclusiveMoves": ["doubleedge", "doublekick"],
+		"tier": "LC"
 	},
 	"nidorina": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 70, "atk": 62, "def": 67, "spa": 55, "spd": 55, "spe": 56}
+		"baseStats": {"hp": 70, "atk": 62, "def": 67, "spa": 55, "spd": 55, "spe": 56},
+		"randomBattleMoves": ["bodyslam", "blizzard", "thunderbolt"],
+		"exclusiveMoves": ["bubblebeam", "doublekick", "doubleedge"],
+		"tier": "NFE"
 	},
 	"nidoqueen": {
 		"types": ["Poison", "Ground"],
-		"baseStats": {"hp": 90, "atk": 82, "def": 87, "spa": 75, "spd": 75, "spe": 76}
+		"baseStats": {"hp": 90, "atk": 82, "def": 87, "spa": 75, "spd": 75, "spe": 76},
+		"randomBattleMoves": ["blizzard", "thunderbolt", "bodyslam"],
+		"essentialMove": "earthquake",
+		"tier": "UU"
 	},
 	"nidoranm": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 46, "atk": 57, "def": 40, "spa": 40, "spd": 40, "spe": 50}
+		"baseStats": {"hp": 46, "atk": 57, "def": 40, "spa": 40, "spd": 40, "spe": 50},
+		"randomBattleMoves": ["bodyslam", "blizzard", "thunderbolt"],
+		"exclusiveMoves": ["doubleedge", "doublekick"],
+		"tier": "LC"
 	},
 	"nidorino": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 61, "atk": 72, "def": 57, "spa": 55, "spd": 55, "spe": 65}
+		"baseStats": {"hp": 61, "atk": 72, "def": 57, "spa": 55, "spd": 55, "spe": 65},
+		"randomBattleMoves": ["bodyslam", "blizzard", "thunderbolt"],
+		"exclusiveMoves": ["bubblebeam", "doublekick", "doubleedge"],
+		"tier": "NFE"
 	},
 	"nidoking": {
 		"types": ["Poison", "Ground"],
-		"baseStats": {"hp": 81, "atk": 92, "def": 77, "spa": 75, "spd": 75, "spe": 85}
+		"baseStats": {"hp": 81, "atk": 92, "def": 77, "spa": 75, "spd": 75, "spe": 85},
+		"randomBattleMoves": ["blizzard", "bodyslam"],
+		"essentialMove": "earthquake",
+		"exclusiveMoves": ["thunder", "thunderbolt", "rockslide"],
+		"tier": "UU"
 	},
 	"clefairy": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 70, "atk": 45, "def": 48, "spa": 60, "spd": 60, "spe": 35}
+		"baseStats": {"hp": 70, "atk": 45, "def": 48, "spa": 60, "spd": 60, "spe": 35},
+		"randomBattleMoves": ["bodyslam", "thunderwave", "thunderbolt"],
+		"essentialMove": "blizzard",
+		"exclusiveMoves": ["counter", "sing", "sing", "psychic", "seismictoss"],
+		"tier": "LC"
 	},
 	"clefable": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 95, "atk": 70, "def": 73, "spa": 85, "spd": 85, "spe": 60}
+		"baseStats": {"hp": 95, "atk": 70, "def": 73, "spa": 85, "spd": 85, "spe": 60},
+		"randomBattleMoves": ["bodyslam", "thunderwave", "thunderbolt"],
+		"essentialMove": "blizzard",
+		"exclusiveMoves": ["counter", "sing", "sing", "psychic", "hyperbeam"],
+		"tier": "UU"
 	},
 	"vulpix": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 38, "atk": 41, "def": 40, "spa": 65, "spd": 65, "spe": 65}
+		"baseStats": {"hp": 38, "atk": 41, "def": 40, "spa": 65, "spd": 65, "spe": 65},
+		"randomBattleMoves": ["bodyslam", "confuseray", "fireblast"],
+		"exclusiveMoves": ["flamethrower", "reflect", "substitute"],
+		"tier": "LC"
 	},
 	"ninetales": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 73, "atk": 76, "def": 75, "spa": 100, "spd": 100, "spe": 100}
+		"baseStats": {"hp": 73, "atk": 76, "def": 75, "spa": 100, "spd": 100, "spe": 100},
+		"randomBattleMoves": ["bodyslam", "confuseray", "fireblast"],
+		"exclusiveMoves": ["flamethrower", "reflect", "hyperbeam", "substitute"],
+		"tier": "UU"
 	},
 	"jigglypuff": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 115, "atk": 45, "def": 20, "spa": 25, "spd": 25, "spe": 20}
+		"baseStats": {"hp": 115, "atk": 45, "def": 20, "spa": 25, "spd": 25, "spe": 20},
+		"randomBattleMoves": ["thunderwave", "bodyslam", "seismictoss", "blizzard"],
+		"exclusiveMoves": ["counter", "sing"],
+		"tier": "LC"
 	},
 	"wigglytuff": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 140, "atk": 70, "def": 45, "spa": 50, "spd": 50, "spe": 45}
+		"baseStats": {"hp": 140, "atk": 70, "def": 45, "spa": 50, "spd": 50, "spe": 45},
+		"randomBattleMoves": ["thunderwave", "bodyslam", "blizzard"],
+		"exclusiveMoves": ["counter", "sing", "hyperbeam"],
+		"tier": "UU"
 	},
 	"zubat": {
 		"types": ["Poison", "Flying"],
-		"baseStats": {"hp": 40, "atk": 45, "def": 35, "spa": 40, "spd": 40, "spe": 55}
+		"baseStats": {"hp": 40, "atk": 45, "def": 35, "spa": 40, "spd": 40, "spe": 55},
+		"randomBattleMoves": ["toxic", "confuseray", "doubleedge", "megadrain"],
+		"tier": "LC"
 	},
 	"golbat": {
 		"types": ["Poison", "Flying"],
-		"baseStats": {"hp": 75, "atk": 80, "def": 70, "spa": 75, "spd": 75, "spe": 90}
+		"baseStats": {"hp": 75, "atk": 80, "def": 70, "spa": 75, "spd": 75, "spe": 90},
+		"randomBattleMoves": ["confuseray", "doubleedge", "hyperbeam", "megadrain"],
+		"tier": "UU"
 	},
 	"oddish": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 45, "atk": 50, "def": 55, "spa": 75, "spd": 75, "spe": 30}
+		"baseStats": {"hp": 45, "atk": 50, "def": 55, "spa": 75, "spd": 75, "spe": 30},
+		"randomBattleMoves": ["sleeppowder", "doubleedge"],
+		"essentialMove": "megadrain",
+		"exclusiveMoves": ["swordsdance", "stunspore", "stunspore"],
+		"tier": "LC"
 	},
 	"gloom": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 60, "atk": 65, "def": 70, "spa": 85, "spd": 85, "spe": 40}
+		"baseStats": {"hp": 60, "atk": 65, "def": 70, "spa": 85, "spd": 85, "spe": 40},
+		"randomBattleMoves": ["sleeppowder", "doubleedge"],
+		"essentialMove": "megadrain",
+		"exclusiveMoves": ["swordsdance", "stunspore", "stunspore"],
+		"tier": "NFE"
 	},
 	"vileplume": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 75, "atk": 80, "def": 85, "spa": 100, "spd": 100, "spe": 50}
+		"baseStats": {"hp": 75, "atk": 80, "def": 85, "spa": 100, "spd": 100, "spe": 50},
+		"randomBattleMoves": ["sleeppowder", "bodyslam", "stunspore", "swordsdance"],
+		"essentialMove": "megadrain",
+		"tier": "UU"
 	},
 	"paras": {
 		"types": ["Bug", "Grass"],
-		"baseStats": {"hp": 35, "atk": 70, "def": 55, "spa": 55, "spd": 55, "spe": 25}
+		"baseStats": {"hp": 35, "atk": 70, "def": 55, "spa": 55, "spd": 55, "spe": 25},
+		"randomBattleMoves": ["bodyslam", "megadrain"],
+		"essentialMove": "spore",
+		"exclusiveMoves": ["stunspore", "stunspore", "swordsdance", "growth", "slash"],
+		"tier": "LC"
 	},
 	"parasect": {
 		"types": ["Bug", "Grass"],
-		"baseStats": {"hp": 60, "atk": 95, "def": 80, "spa": 80, "spd": 80, "spe": 30}
+		"baseStats": {"hp": 60, "atk": 95, "def": 80, "spa": 80, "spd": 80, "spe": 30},
+		"randomBattleMoves": ["bodyslam", "megadrain"],
+		"essentialMove": "spore",
+		"exclusiveMoves": ["stunspore", "stunspore", "swordsdance", "growth", "slash", "hyperbeam"],
+		"tier": "UU"
 	},
 	"venonat": {
 		"types": ["Bug", "Poison"],
-		"baseStats": {"hp": 60, "atk": 55, "def": 50, "spa": 40, "spd": 40, "spe": 45}
+		"baseStats": {"hp": 60, "atk": 55, "def": 50, "spa": 40, "spd": 40, "spe": 45},
+		"randomBattleMoves": ["psychic", "sleeppowder", "stunspore"],
+		"exclusiveMoves": ["megadrain", "psywave", "doubleedge"],
+		"tier": "LC"
 	},
 	"venomoth": {
 		"types": ["Bug", "Poison"],
-		"baseStats": {"hp": 70, "atk": 65, "def": 60, "spa": 90, "spd": 90, "spe": 90}
+		"baseStats": {"hp": 70, "atk": 65, "def": 60, "spa": 90, "spd": 90, "spe": 90},
+		"randomBattleMoves": ["psychic", "sleeppowder", "stunspore"],
+		"exclusiveMoves": ["megadrain", "megadrain", "doubleedge"],
+		"tier": "UU"
 	},
 	"diglett": {
 		"types": ["Ground"],
-		"baseStats": {"hp": 10, "atk": 55, "def": 25, "spa": 45, "spd": 45, "spe": 95}
+		"baseStats": {"hp": 10, "atk": 55, "def": 25, "spa": 45, "spd": 45, "spe": 95},
+		"randomBattleMoves": ["slash", "rockslide", "bodyslam"],
+		"essentialMove": "earthquake",
+		"tier": "LC"
 	},
 	"dugtrio": {
 		"types": ["Ground"],
-		"baseStats": {"hp": 35, "atk": 80, "def": 50, "spa": 70, "spd": 70, "spe": 120}
+		"baseStats": {"hp": 35, "atk": 80, "def": 50, "spa": 70, "spd": 70, "spe": 120},
+		"randomBattleMoves": ["slash", "rockslide", "bodyslam"],
+		"essentialMove": "earthquake",
+		"tier": "UU"
 	},
 	"meowth": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 40, "atk": 45, "def": 35, "spa": 40, "spd": 40, "spe": 90}
+		"baseStats": {"hp": 40, "atk": 45, "def": 35, "spa": 40, "spd": 40, "spe": 90},
+		"randomBattleMoves": ["bubblebeam", "bodyslam"],
+		"essentialMove": "slash",
+		"exclusiveMoves": ["thunder", "thunderbolt"],
+		"tier": "LC"
 	},
 	"persian": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 65, "atk": 70, "def": 60, "spa": 65, "spd": 65, "spe": 115}
+		"baseStats": {"hp": 65, "atk": 70, "def": 60, "spa": 65, "spd": 65, "spe": 115},
+		"randomBattleMoves": ["bubblebeam", "bodyslam"],
+		"essentialMove": "slash",
+		"exclusiveMoves": ["thunderbolt", "thunder", "hyperbeam", "hyperbeam"],
+		"tier": "UU"
 	},
 	"psyduck": {
 		"types": ["Water"],
-		"baseStats": {"hp": 50, "atk": 52, "def": 48, "spa": 50, "spd": 50, "spe": 55}
+		"baseStats": {"hp": 50, "atk": 52, "def": 48, "spa": 50, "spd": 50, "spe": 55},
+		"randomBattleMoves": ["blizzard", "amnesia"],
+		"essentialMove": "surf",
+		"exclusiveMoves": ["bodyslam", "seismictoss", "rest", "hydropump"],
+		"eventPokemon": [
+			{"generation": 1, "level": 15, "moves": ["scratch", "amnesia"]}
+		],
+		"tier": "LC"
 	},
 	"golduck": {
 		"types": ["Water"],
-		"baseStats": {"hp": 80, "atk": 82, "def": 78, "spa": 80, "spd": 80, "spe": 85}
+		"baseStats": {"hp": 80, "atk": 82, "def": 78, "spa": 80, "spd": 80, "spe": 85},
+		"randomBattleMoves": ["blizzard", "amnesia"],
+		"essentialMove": "surf",
+		"exclusiveMoves": ["bodyslam", "seismictoss", "rest", "hydropump"],
+		"tier": "UU"
 	},
 	"mankey": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 40, "atk": 80, "def": 35, "spa": 35, "spd": 35, "spe": 70}
+		"baseStats": {"hp": 40, "atk": 80, "def": 35, "spa": 35, "spd": 35, "spe": 70},
+		"randomBattleMoves": ["submission", "rockslide", "bodyslam"],
+		"exclusiveMoves": ["counter", "megakick"],
+		"tier": "LC"
 	},
 	"primeape": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 65, "atk": 105, "def": 60, "spa": 60, "spd": 60, "spe": 95}
+		"baseStats": {"hp": 65, "atk": 105, "def": 60, "spa": 60, "spd": 60, "spe": 95},
+		"randomBattleMoves": ["submission", "rockslide", "bodyslam"],
+		"exclusiveMoves": ["counter", "hyperbeam", "hyperbeam"],
+		"tier": "UU"
 	},
 	"growlithe": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 55, "atk": 70, "def": 45, "spa": 50, "spd": 50, "spe": 60}
+		"baseStats": {"hp": 55, "atk": 70, "def": 45, "spa": 50, "spd": 50, "spe": 60},
+		"randomBattleMoves": ["fireblast", "bodyslam", "flamethrower", "reflect"],
+		"tier": "LC"
 	},
 	"arcanine": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 90, "atk": 110, "def": 80, "spa": 80, "spd": 80, "spe": 95}
+		"baseStats": {"hp": 90, "atk": 110, "def": 80, "spa": 80, "spd": 80, "spe": 95},
+		"randomBattleMoves": ["fireblast", "bodyslam", "hyperbeam"],
+		"exclusiveMoves": ["flamethrower", "reflect"],
+		"tier": "UU"
 	},
 	"poliwag": {
 		"types": ["Water"],
-		"baseStats": {"hp": 40, "atk": 50, "def": 40, "spa": 40, "spd": 40, "spe": 90}
+		"baseStats": {"hp": 40, "atk": 50, "def": 40, "spa": 40, "spd": 40, "spe": 90},
+		"randomBattleMoves": ["blizzard", "surf"],
+		"essentialMove": "amnesia",
+		"exclusiveMoves": ["psychic", "hypnosis", "hypnosis"],
+		"tier": "LC"
 	},
 	"poliwhirl": {
 		"types": ["Water"],
-		"baseStats": {"hp": 65, "atk": 65, "def": 65, "spa": 50, "spd": 50, "spe": 90}
+		"baseStats": {"hp": 65, "atk": 65, "def": 65, "spa": 50, "spd": 50, "spe": 90},
+		"randomBattleMoves": ["blizzard", "surf"],
+		"essentialMove": "amnesia",
+		"exclusiveMoves": ["psychic", "hypnosis", "hypnosis", "counter"],
+		"tier": "NFE"
 	},
 	"poliwrath": {
 		"types": ["Water", "Fighting"],
-		"baseStats": {"hp": 90, "atk": 85, "def": 95, "spa": 70, "spd": 70, "spe": 70}
+		"baseStats": {"hp": 90, "atk": 85, "def": 95, "spa": 70, "spd": 70, "spe": 70},
+		"randomBattleMoves": ["bodyslam", "earthquake", "submission", "blizzard"],
+		"essentialMove": "surf",
+		"exclusiveMoves": ["psychic", "hypnosis", "hypnosis"],
+		"comboMoves": ["amnesia", "blizzard"],
+		"tier": "UU"
 	},
 	"abra": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 25, "atk": 20, "def": 15, "spa": 105, "spd": 105, "spe": 90}
+		"baseStats": {"hp": 25, "atk": 20, "def": 15, "spa": 105, "spd": 105, "spe": 90},
+		"randomBattleMoves": ["psychic", "thunderwave", "seismictoss"],
+		"exclusiveMoves": ["reflect", "counter"],
+		"tier": "LC"
 	},
 	"kadabra": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 40, "atk": 35, "def": 30, "spa": 120, "spd": 120, "spe": 105}
+		"baseStats": {"hp": 40, "atk": 35, "def": 30, "spa": 120, "spd": 120, "spe": 105},
+		"randomBattleMoves": ["psychic", "thunderwave", "recover"],
+		"exclusiveMoves": ["reflect", "reflect", "counter", "seismictoss", "seismictoss"],
+		"tier": "UU"
 	},
 	"alakazam": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 55, "atk": 50, "def": 45, "spa": 135, "spd": 135, "spe": 120}
+		"baseStats": {"hp": 55, "atk": 50, "def": 45, "spa": 135, "spd": 135, "spe": 120},
+		"randomBattleMoves": ["psychic", "thunderwave", "recover"],
+		"exclusiveMoves": ["reflect", "reflect", "counter", "seismictoss", "seismictoss"],
+		"tier": "OU"
 	},
 	"machop": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 70, "atk": 80, "def": 50, "spa": 35, "spd": 35, "spe": 35}
+		"baseStats": {"hp": 70, "atk": 80, "def": 50, "spa": 35, "spd": 35, "spe": 35},
+		"randomBattleMoves": ["bodyslam", "earthquake", "submission"],
+		"exclusiveMoves": ["counter", "rockslide", "rockslide"],
+		"tier": "LC"
 	},
 	"machoke": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 80, "atk": 100, "def": 70, "spa": 50, "spd": 50, "spe": 45}
+		"baseStats": {"hp": 80, "atk": 100, "def": 70, "spa": 50, "spd": 50, "spe": 45},
+		"randomBattleMoves": ["bodyslam", "earthquake", "submission"],
+		"exclusiveMoves": ["counter", "rockslide", "rockslide"],
+		"tier": "NFE"
 	},
 	"machamp": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 90, "atk": 130, "def": 80, "spa": 65, "spd": 65, "spe": 55}
+		"baseStats": {"hp": 90, "atk": 130, "def": 80, "spa": 65, "spd": 65, "spe": 55},
+		"randomBattleMoves": ["bodyslam", "earthquake", "submission"],
+		"exclusiveMoves": ["counter", "rockslide", "rockslide", "hyperbeam"],
+		"tier": "UU"
 	},
 	"bellsprout": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 50, "atk": 75, "def": 35, "spa": 70, "spd": 70, "spe": 40}
+		"baseStats": {"hp": 50, "atk": 75, "def": 35, "spa": 70, "spd": 70, "spe": 40},
+		"randomBattleMoves": ["sleeppowder", "swordsdance", "doubleedge", "stunspore"],
+		"essentialMove": "razorleaf",
+		"tier": "LC"
 	},
 	"weepinbell": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 65, "atk": 90, "def": 50, "spa": 85, "spd": 85, "spe": 55}
+		"baseStats": {"hp": 65, "atk": 90, "def": 50, "spa": 85, "spd": 85, "spe": 55},
+		"randomBattleMoves": ["sleeppowder", "swordsdance", "doubleedge", "stunspore"],
+		"essentialMove": "razorleaf",
+		"tier": "NFE"
 	},
 	"victreebel": {
 		"types": ["Grass", "Poison"],
-		"baseStats": {"hp": 80, "atk": 105, "def": 65, "spa": 100, "spd": 100, "spe": 70}
+		"baseStats": {"hp": 80, "atk": 105, "def": 65, "spa": 100, "spd": 100, "spe": 70},
+		"randomBattleMoves": ["sleeppowder", "bodyslam", "stunspore"],
+		"essentialMove": "razorleaf",
+		"comboMoves": ["swordsdance", "hyperbeam"],
+		"tier": "OU"
 	},
 	"tentacool": {
 		"types": ["Water", "Poison"],
-		"baseStats": {"hp": 40, "atk": 40, "def": 35, "spa": 100, "spd": 100, "spe": 70}
+		"baseStats": {"hp": 40, "atk": 40, "def": 35, "spa": 100, "spd": 100, "spe": 70},
+		"randomBattleMoves": ["barrier", "hydropump", "surf"],
+		"essentialMove": "blizzard",
+		"exclusiveMoves": ["megadrain", "megadrain"],
+		"comboMoves": ["surf", "hydropump"],
+		"tier": "LC"
 	},
 	"tentacruel": {
 		"types": ["Water", "Poison"],
-		"baseStats": {"hp": 80, "atk": 70, "def": 65, "spa": 120, "spd": 120, "spe": 100}
+		"baseStats": {"hp": 80, "atk": 70, "def": 65, "spa": 120, "spd": 120, "spe": 100},
+		"randomBattleMoves": ["blizzard", "hydropump", "surf", "hyperbeam"],
+		"essentialMove": "swordsdance",
+		"tier": "UU"
 	},
 	"geodude": {
 		"types": ["Rock", "Ground"],
-		"baseStats": {"hp": 40, "atk": 80, "def": 100, "spa": 30, "spd": 30, "spe": 20}
+		"baseStats": {"hp": 40, "atk": 80, "def": 100, "spa": 30, "spd": 30, "spe": 20},
+		"randomBattleMoves": ["bodyslam", "earthquake", "rockslide", "explosion"],
+		"tier": "LC"
 	},
 	"graveler": {
 		"types": ["Rock", "Ground"],
-		"baseStats": {"hp": 55, "atk": 95, "def": 115, "spa": 45, "spd": 45, "spe": 35}
+		"baseStats": {"hp": 55, "atk": 95, "def": 115, "spa": 45, "spd": 45, "spe": 35},
+		"randomBattleMoves": ["bodyslam", "earthquake", "rockslide", "explosion"],
+		"tier": "UU"
 	},
 	"golem": {
 		"types": ["Rock", "Ground"],
-		"baseStats": {"hp": 80, "atk": 110, "def": 130, "spa": 55, "spd": 55, "spe": 45}
+		"baseStats": {"hp": 80, "atk": 110, "def": 130, "spa": 55, "spd": 55, "spe": 45},
+		"randomBattleMoves": ["explosion", "bodyslam", "earthquake", "rockslide"],
+		"tier": "UU"
 	},
 	"ponyta": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 50, "atk": 85, "def": 55, "spa": 65, "spd": 65, "spe": 90}
+		"baseStats": {"hp": 50, "atk": 85, "def": 55, "spa": 65, "spd": 65, "spe": 90},
+		"randomBattleMoves": ["fireblast", "agility", "bodyslam", "reflect"],
+		"tier": "LC"
 	},
 	"rapidash": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 65, "atk": 100, "def": 70, "spa": 80, "spd": 80, "spe": 105}
+		"baseStats": {"hp": 65, "atk": 100, "def": 70, "spa": 80, "spd": 80, "spe": 105},
+		"randomBattleMoves": ["fireblast", "agility", "bodyslam", "hyperbeam"],
+		"eventPokemon": [
+			{"generation": 1, "level": 40, "moves": ["ember", "firespin", "stomp", "payday"]}
+		],
+		"tier": "UU"
 	},
 	"slowpoke": {
 		"types": ["Water", "Psychic"],
-		"baseStats": {"hp": 90, "atk": 65, "def": 65, "spa": 40, "spd": 40, "spe": 15}
+		"baseStats": {"hp": 90, "atk": 65, "def": 65, "spa": 40, "spd": 40, "spe": 15},
+		"randomBattleMoves": ["earthquake", "surf"],
+		"essentialMove": "thunderwave",
+		"exclusiveMoves": ["blizzard", "psychic", "rest"],
+		"comboMoves": ["amnesia", "surf"],
+		"tier": "LC"
 	},
 	"slowbro": {
 		"types": ["Water", "Psychic"],
-		"baseStats": {"hp": 95, "atk": 75, "def": 110, "spa": 80, "spd": 80, "spe": 30}
+		"baseStats": {"hp": 95, "atk": 75, "def": 110, "spa": 80, "spd": 80, "spe": 30},
+		"randomBattleMoves": ["amnesia", "surf", "thunderwave"],
+		"exclusiveMoves": ["rest", "rest", "psychic", "blizzard"],
+		"tier": "OU"
 	},
 	"magnemite": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 25, "atk": 35, "def": 70, "spa": 95, "spd": 95, "spe": 45}
+		"baseStats": {"hp": 25, "atk": 35, "def": 70, "spa": 95, "spd": 95, "spe": 45},
+		"randomBattleMoves": ["thunderwave", "thunder", "thunderbolt"],
+		"exclusiveMoves": ["mimic", "doubleedge", "toxic", "substitute"],
+		"tier": "LC"
 	},
 	"magneton": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 50, "atk": 60, "def": 95, "spa": 120, "spd": 120, "spe": 70}
+		"baseStats": {"hp": 50, "atk": 60, "def": 95, "spa": 120, "spd": 120, "spe": 70},
+		"randomBattleMoves": ["thunderwave", "thunder", "thunderbolt"],
+		"exclusiveMoves": ["mimic", "doubleedge", "toxic", "hyperbeam", "hyperbeam", "substitute"],
+		"tier": "UU"
 	},
 	"farfetchd": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 52, "atk": 65, "def": 55, "spa": 58, "spd": 58, "spe": 60}
+		"baseStats": {"hp": 52, "atk": 65, "def": 55, "spa": 58, "spd": 58, "spe": 60},
+		"randomBattleMoves": ["agility", "swordsdance", "bodyslam"],
+		"essentialMove": "slash",
+		"tier": "UU"
 	},
 	"doduo": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 35, "atk": 85, "def": 45, "spa": 35, "spd": 35, "spe": 75}
+		"baseStats": {"hp": 35, "atk": 85, "def": 45, "spa": 35, "spd": 35, "spe": 75},
+		"randomBattleMoves": ["drillpeck", "bodyslam", "agility", "doubleedge"],
+		"tier": "LC"
 	},
 	"dodrio": {
 		"types": ["Normal", "Flying"],
-		"baseStats": {"hp": 60, "atk": 110, "def": 70, "spa": 60, "spd": 60, "spe": 100}
+		"baseStats": {"hp": 60, "atk": 110, "def": 70, "spa": 60, "spd": 60, "spe": 100},
+		"randomBattleMoves": ["drillpeck", "bodyslam", "agility", "hyperbeam"],
+		"tier": "UU"
 	},
 	"seel": {
 		"types": ["Water"],
-		"baseStats": {"hp": 65, "atk": 45, "def": 55, "spa": 70, "spd": 70, "spe": 45}
+		"baseStats": {"hp": 65, "atk": 45, "def": 55, "spa": 70, "spd": 70, "spe": 45},
+		"randomBattleMoves": ["surf", "blizzard", "bodyslam"],
+		"exclusiveMoves": ["rest", "mimic"],
+		"tier": "LC"
 	},
 	"dewgong": {
 		"types": ["Water", "Ice"],
-		"baseStats": {"hp": 90, "atk": 70, "def": 80, "spa": 95, "spd": 95, "spe": 70}
+		"baseStats": {"hp": 90, "atk": 70, "def": 80, "spa": 95, "spd": 95, "spe": 70},
+		"randomBattleMoves": ["surf", "blizzard", "bodyslam"],
+		"exclusiveMoves": ["rest", "rest", "mimic", "hyperbeam"],
+		"tier": "UU"
 	},
 	"grimer": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 80, "atk": 80, "def": 50, "spa": 40, "spd": 40, "spe": 25}
+		"baseStats": {"hp": 80, "atk": 80, "def": 50, "spa": 40, "spd": 40, "spe": 25},
+		"randomBattleMoves": ["sludge", "bodyslam"],
+		"essentialMove": "explosion",
+		"exclusiveMoves": ["megadrain", "megadrain", "fireblast", "screech"],
+		"tier": "LC"
 	},
 	"muk": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 105, "atk": 105, "def": 75, "spa": 65, "spd": 65, "spe": 50}
+		"baseStats": {"hp": 105, "atk": 105, "def": 75, "spa": 65, "spd": 65, "spe": 50},
+		"randomBattleMoves": ["sludge", "bodyslam"],
+		"essentialMove": "explosion",
+		"exclusiveMoves": ["megadrain", "megadrain", "fireblast", "hyperbeam"],
+		"tier": "UU"
 	},
 	"shellder": {
 		"types": ["Water"],
-		"baseStats": {"hp": 30, "atk": 65, "def": 100, "spa": 45, "spd": 45, "spe": 40}
+		"baseStats": {"hp": 30, "atk": 65, "def": 100, "spa": 45, "spd": 45, "spe": 40},
+		"randomBattleMoves": ["surf", "blizzard", "doubleedge", "explosion"],
+		"tier": "LC"
 	},
 	"cloyster": {
 		"types": ["Water", "Ice"],
-		"baseStats": {"hp": 50, "atk": 95, "def": 180, "spa": 85, "spd": 85, "spe": 70}
+		"baseStats": {"hp": 50, "atk": 95, "def": 180, "spa": 85, "spd": 85, "spe": 70},
+		"randomBattleMoves": ["surf", "blizzard", "explosion"],
+		"exclusiveMoves": ["hyperbeam", "hyperbeam", "doubleedge"],
+		"tier": "OU"
 	},
 	"gastly": {
 		"types": ["Ghost", "Poison"],
-		"baseStats": {"hp": 30, "atk": 35, "def": 30, "spa": 100, "spd": 100, "spe": 80}
+		"baseStats": {"hp": 30, "atk": 35, "def": 30, "spa": 100, "spd": 100, "spe": 80},
+		"randomBattleMoves": ["explosion", "megadrain", "nightshade", "psychic"],
+		"essentialMove": "thunderbolt",
+		"exclusiveMoves": ["hypnosis", "hypnosis", "confuseray"],
+		"tier": "LC"
 	},
 	"haunter": {
 		"types": ["Ghost", "Poison"],
-		"baseStats": {"hp": 45, "atk": 50, "def": 45, "spa": 115, "spd": 115, "spe": 95}
+		"baseStats": {"hp": 45, "atk": 50, "def": 45, "spa": 115, "spd": 115, "spe": 95},
+		"randomBattleMoves": ["explosion", "megadrain", "nightshade", "psychic"],
+		"essentialMove": "thunderbolt",
+		"exclusiveMoves": ["hypnosis", "hypnosis", "confuseray"],
+		"tier": "UU"
 	},
 	"gengar": {
 		"types": ["Ghost", "Poison"],
-		"baseStats": {"hp": 60, "atk": 65, "def": 60, "spa": 130, "spd": 130, "spe": 110}
+		"baseStats": {"hp": 60, "atk": 65, "def": 60, "spa": 130, "spd": 130, "spe": 110},
+		"randomBattleMoves": ["explosion", "megadrain", "nightshade", "psychic"],
+		"essentialMove": "thunderbolt",
+		"exclusiveMoves": ["hypnosis", "hypnosis", "confuseray"],
+		"tier": "OU"
 	},
 	"onix": {
 		"types": ["Rock", "Ground"],
-		"baseStats": {"hp": 35, "atk": 45, "def": 160, "spa": 30, "spd": 30, "spe": 70}
+		"baseStats": {"hp": 35, "atk": 45, "def": 160, "spa": 30, "spd": 30, "spe": 70},
+		"randomBattleMoves": ["earthquake", "explosion", "rockslide", "bodyslam"],
+		"tier": "UU"
 	},
 	"drowzee": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 60, "atk": 48, "def": 45, "spa": 90, "spd": 90, "spe": 42}
+		"baseStats": {"hp": 60, "atk": 48, "def": 45, "spa": 90, "spd": 90, "spe": 42},
+		"randomBattleMoves": ["hypnosis", "psychic", "thunderwave"],
+		"exclusiveMoves": ["seismictoss", "seismictoss", "counter", "reflect", "rest"],
+		"tier": "LC"
 	},
 	"hypno": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 85, "atk": 73, "def": 70, "spa": 115, "spd": 115, "spe": 67}
+		"baseStats": {"hp": 85, "atk": 73, "def": 70, "spa": 115, "spd": 115, "spe": 67},
+		"randomBattleMoves": ["hypnosis", "psychic", "thunderwave"],
+		"exclusiveMoves": ["seismictoss", "seismictoss", "counter", "rest", "rest", "reflect"],
+		"tier": "UU"
 	},
 	"krabby": {
 		"types": ["Water"],
-		"baseStats": {"hp": 30, "atk": 105, "def": 90, "spa": 25, "spd": 25, "spe": 50}
+		"baseStats": {"hp": 30, "atk": 105, "def": 90, "spa": 25, "spd": 25, "spe": 50},
+		"randomBattleMoves": ["bodyslam", "crabhammer", "swordsdance", "blizzard"],
+		"tier": "LC"
 	},
 	"kingler": {
 		"types": ["Water"],
-		"baseStats": {"hp": 55, "atk": 130, "def": 115, "spa": 50, "spd": 50, "spe": 75}
+		"baseStats": {"hp": 55, "atk": 130, "def": 115, "spa": 50, "spd": 50, "spe": 75},
+		"randomBattleMoves": ["bodyslam", "hyperbeam", "swordsdance", "crabhammer"],
+		"tier": "UU"
 	},
 	"voltorb": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 40, "atk": 30, "def": 50, "spa": 55, "spd": 55, "spe": 100}
+		"baseStats": {"hp": 40, "atk": 30, "def": 50, "spa": 55, "spd": 55, "spe": 100},
+		"randomBattleMoves": ["thunderbolt", "thunderwave", "explosion"],
+		"exclusiveMoves": ["thunder", "screech", "toxic"],
+		"tier": "LC"
 	},
 	"electrode": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 60, "atk": 50, "def": 70, "spa": 80, "spd": 80, "spe": 140}
+		"baseStats": {"hp": 60, "atk": 50, "def": 70, "spa": 80, "spd": 80, "spe": 140},
+		"randomBattleMoves": ["thunderbolt", "thunderwave", "explosion"],
+		"exclusiveMoves": ["thunder", "screech", "toxic", "hyperbeam"],
+		"tier": "UU"
 	},
 	"exeggcute": {
 		"types": ["Grass", "Psychic"],
-		"baseStats": {"hp": 60, "atk": 40, "def": 80, "spa": 60, "spd": 60, "spe": 40}
+		"baseStats": {"hp": 60, "atk": 40, "def": 80, "spa": 60, "spd": 60, "spe": 40},
+		"randomBattleMoves": ["sleeppowder", "stunspore"],
+		"essentialMove": "psychic",
+		"exclusiveMoves": ["explosion", "explosion", "doubleedge"],
+		"tier": "LC"
 	},
 	"exeggutor": {
 		"types": ["Grass", "Psychic"],
-		"baseStats": {"hp": 95, "atk": 95, "def": 85, "spa": 125, "spd": 125, "spe": 55}
+		"baseStats": {"hp": 95, "atk": 95, "def": 85, "spa": 125, "spd": 125, "spe": 55},
+		"randomBattleMoves": ["psychic", "explosion", "sleeppowder"],
+		"exclusiveMoves": ["stunspore", "stunspore", "stunspore", "megadrain", "megadrain", "eggbomb", "doubleedge", "hyperbeam"],
+		"tier": "OU"
 	},
 	"cubone": {
 		"types": ["Ground"],
-		"baseStats": {"hp": 50, "atk": 50, "def": 95, "spa": 40, "spd": 40, "spe": 35}
+		"baseStats": {"hp": 50, "atk": 50, "def": 95, "spa": 40, "spd": 40, "spe": 35},
+		"randomBattleMoves": ["earthquake", "blizzard", "bodyslam", "seismictoss"],
+		"tier": "LC"
 	},
 	"marowak": {
 		"types": ["Ground"],
-		"baseStats": {"hp": 60, "atk": 80, "def": 110, "spa": 50, "spd": 50, "spe": 45}
+		"baseStats": {"hp": 60, "atk": 80, "def": 110, "spa": 50, "spd": 50, "spe": 45},
+		"randomBattleMoves": ["earthquake", "blizzard", "bodyslam", "seismictoss"],
+		"tier": "UU"
 	},
 	"hitmonlee": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 50, "atk": 120, "def": 53, "spa": 35, "spd": 35, "spe": 87}
+		"baseStats": {"hp": 50, "atk": 120, "def": 53, "spa": 35, "spd": 35, "spe": 87},
+		"randomBattleMoves": ["bodyslam", "highjumpkick", "seismictoss"],
+		"exclusiveMoves": ["counter", "counter", "meditate"],
+		"tier": "UU"
 	},
 	"hitmonchan": {
 		"types": ["Fighting"],
-		"baseStats": {"hp": 50, "atk": 105, "def": 79, "spa": 35, "spd": 35, "spe": 76}
+		"baseStats": {"hp": 50, "atk": 105, "def": 79, "spa": 35, "spd": 35, "spe": 76},
+		"randomBattleMoves": ["bodyslam", "submission", "seismictoss"],
+		"exclusiveMoves": ["counter", "counter", "agility"],
+		"tier": "UU"
 	},
 	"lickitung": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 90, "atk": 55, "def": 75, "spa": 60, "spd": 60, "spe": 30}
+		"baseStats": {"hp": 90, "atk": 55, "def": 75, "spa": 60, "spd": 60, "spe": 30},
+		"randomBattleMoves": ["swordsdance", "hyperbeam"],
+		"essentialMove": "bodyslam",
+		"exclusiveMoves": ["earthquake", "earthquake", "earthquake", "blizzard"],
+		"tier": "UU"
 	},
 	"koffing": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 40, "atk": 65, "def": 95, "spa": 60, "spd": 60, "spe": 35}
+		"baseStats": {"hp": 40, "atk": 65, "def": 95, "spa": 60, "spd": 60, "spe": 35},
+		"randomBattleMoves": ["sludge", "explosion", "thunderbolt", "fireblast"],
+		"tier": "LC"
 	},
 	"weezing": {
 		"types": ["Poison"],
-		"baseStats": {"hp": 65, "atk": 90, "def": 120, "spa": 85, "spd": 85, "spe": 60}
+		"baseStats": {"hp": 65, "atk": 90, "def": 120, "spa": 85, "spd": 85, "spe": 60},
+		"randomBattleMoves": ["sludge", "explosion", "thunderbolt", "fireblast"],
+		"tier": "UU"
 	},
 	"rhyhorn": {
 		"types": ["Ground", "Rock"],
-		"baseStats": {"hp": 80, "atk": 85, "def": 95, "spa": 30, "spd": 30, "spe": 25}
+		"baseStats": {"hp": 80, "atk": 85, "def": 95, "spa": 30, "spd": 30, "spe": 25},
+		"randomBattleMoves": ["earthquake", "rockslide", "substitute", "bodyslam"],
+		"tier": "LC"
 	},
 	"rhydon": {
 		"types": ["Ground", "Rock"],
-		"baseStats": {"hp": 105, "atk": 130, "def": 120, "spa": 45, "spd": 45, "spe": 40}
+		"baseStats": {"hp": 105, "atk": 130, "def": 120, "spa": 45, "spd": 45, "spe": 40},
+		"randomBattleMoves": ["earthquake", "rockslide", "bodyslam"],
+		"exclusiveMoves": ["substitute", "substitute", "hyperbeam"],
+		"tier": "OU"
 	},
 	"chansey": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 250, "atk": 5, "def": 5, "spa": 105, "spd": 105, "spe": 50}
+		"baseStats": {"hp": 250, "atk": 5, "def": 5, "spa": 105, "spd": 105, "spe": 50},
+		"randomBattleMoves": ["icebeam", "thunderwave"],
+		"essentialMove": "softboiled",
+		"exclusiveMoves": ["counter", "sing", "reflect", "thunderbolt", "thunderbolt", "thunderbolt", "seismictoss"],
+		"tier": "OU"
 	},
 	"tangela": {
 		"types": ["Grass"],
-		"baseStats": {"hp": 65, "atk": 55, "def": 115, "spa": 100, "spd": 100, "spe": 60}
+		"baseStats": {"hp": 65, "atk": 55, "def": 115, "spa": 100, "spd": 100, "spe": 60},
+		"randomBattleMoves": ["sleeppowder", "bodyslam", "swordsdance"],
+		"essentialMove": "megadrain",
+		"comboMoves": ["growth", "stunspore"],
+		"tier": "UU"
 	},
 	"kangaskhan": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 105, "atk": 95, "def": 80, "spa": 40, "spd": 40, "spe": 90}
+		"baseStats": {"hp": 105, "atk": 95, "def": 80, "spa": 40, "spd": 40, "spe": 90},
+		"randomBattleMoves": ["bodyslam", "hyperbeam", "earthquake"],
+		"exclusiveMoves": ["surf", "rockslide", "rockslide", "counter"],
+		"tier": "UU"
 	},
 	"horsea": {
 		"types": ["Water"],
-		"baseStats": {"hp": 30, "atk": 40, "def": 70, "spa": 70, "spd": 70, "spe": 60}
+		"baseStats": {"hp": 30, "atk": 40, "def": 70, "spa": 70, "spd": 70, "spe": 60},
+		"randomBattleMoves": ["agility", "blizzard"],
+		"essentialMove": "surf",
+		"exclusiveMoves": ["doubleedge", "smokescreen", "hydropump"],
+		"tier": "LC"
 	},
 	"seadra": {
 		"types": ["Water"],
-		"baseStats": {"hp": 55, "atk": 65, "def": 95, "spa": 95, "spd": 95, "spe": 85}
+		"baseStats": {"hp": 55, "atk": 65, "def": 95, "spa": 95, "spd": 95, "spe": 85},
+		"randomBattleMoves": ["agility", "blizzard"],
+		"essentialMove": "surf",
+		"exclusiveMoves": ["doubleedge", "smokescreen", "hyperbeam", "hydropump"],
+		"tier": "UU"
 	},
 	"goldeen": {
 		"types": ["Water"],
-		"baseStats": {"hp": 45, "atk": 67, "def": 60, "spa": 50, "spd": 50, "spe": 63}
+		"baseStats": {"hp": 45, "atk": 67, "def": 60, "spa": 50, "spd": 50, "spe": 63},
+		"randomBattleMoves": ["surf", "blizzard", "agility", "doubleedge"],
+		"tier": "LC"
 	},
 	"seaking": {
 		"types": ["Water"],
-		"baseStats": {"hp": 80, "atk": 92, "def": 65, "spa": 80, "spd": 80, "spe": 68}
+		"baseStats": {"hp": 80, "atk": 92, "def": 65, "spa": 80, "spd": 80, "spe": 68},
+		"randomBattleMoves": ["surf", "blizzard", "doubleedge"],
+		"exclusiveMoves": ["hyperbeam", "agility", "agility"],
+		"tier": "UU"
 	},
 	"staryu": {
 		"types": ["Water"],
-		"baseStats": {"hp": 30, "atk": 45, "def": 55, "spa": 70, "spd": 70, "spe": 85}
+		"baseStats": {"hp": 30, "atk": 45, "def": 55, "spa": 70, "spd": 70, "spe": 85},
+		"randomBattleMoves": ["blizzard", "thunderbolt", "thunderwave"],
+		"essentialMove": "recover",
+		"exclusiveMoves": ["surf", "surf", "hydropump"],
+		"tier": "LC"
 	},
 	"starmie": {
 		"types": ["Water", "Psychic"],
-		"baseStats": {"hp": 60, "atk": 75, "def": 85, "spa": 100, "spd": 100, "spe": 115}
+		"baseStats": {"hp": 60, "atk": 75, "def": 85, "spa": 100, "spd": 100, "spe": 115},
+		"randomBattleMoves": ["blizzard", "thunderbolt", "thunderwave"],
+		"essentialMove": "recover",
+		"exclusiveMoves": ["surf", "hydropump", "psychic", "surf"],
+		"tier": "OU"
 	},
 	"mrmime": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 40, "atk": 45, "def": 65, "spa": 100, "spd": 100, "spe": 90}
+		"baseStats": {"hp": 40, "atk": 45, "def": 65, "spa": 100, "spd": 100, "spe": 90},
+		"randomBattleMoves": ["psychic", "thunderwave", "thunderbolt", "seismictoss"],
+		"tier": "UU"
 	},
 	"scyther": {
 		"types": ["Bug", "Flying"],
-		"baseStats": {"hp": 70, "atk": 110, "def": 80, "spa": 55, "spd": 55, "spe": 105}
+		"baseStats": {"hp": 70, "atk": 110, "def": 80, "spa": 55, "spd": 55, "spe": 105},
+		"randomBattleMoves": ["slash", "swordsdance", "agility", "hyperbeam"],
+		"tier": "UU"
 	},
 	"jynx": {
 		"types": ["Ice", "Psychic"],
-		"baseStats": {"hp": 65, "atk": 50, "def": 35, "spa": 95, "spd": 95, "spe": 95}
+		"baseStats": {"hp": 65, "atk": 50, "def": 35, "spa": 95, "spd": 95, "spe": 95},
+		"randomBattleMoves": ["lovelykiss", "blizzard", "psychic"],
+		"exclusiveMoves": ["mimic", "bodyslam", "seismictoss", "counter", "counter"],
+		"tier": "OU"
 	},
 	"electabuzz": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 65, "atk": 83, "def": 57, "spa": 85, "spd": 85, "spe": 105}
+		"baseStats": {"hp": 65, "atk": 83, "def": 57, "spa": 85, "spd": 85, "spe": 105},
+		"randomBattleMoves": ["thunderbolt", "thunderwave", "psychic", "seismictoss"],
+		"tier": "UU"
 	},
 	"magmar": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 65, "atk": 95, "def": 57, "spa": 85, "spd": 85, "spe": 93}
+		"baseStats": {"hp": 65, "atk": 95, "def": 57, "spa": 85, "spd": 85, "spe": 93},
+		"randomBattleMoves": ["confuseray", "fireblast", "bodyslam"],
+		"exclusiveMoves": ["psychic", "hyperbeam"],
+		"tier": "UU"
 	},
 	"pinsir": {
 		"types": ["Bug"],
-		"baseStats": {"hp": 65, "atk": 125, "def": 100, "spa": 55, "spd": 55, "spe": 85}
+		"baseStats": {"hp": 65, "atk": 125, "def": 100, "spa": 55, "spd": 55, "spe": 85},
+		"randomBattleMoves": ["swordsdance", "hyperbeam", "bodyslam"],
+		"exclusiveMoves": ["submission", "submission", "seismictoss"],
+		"tier": "UU"
 	},
 	"tauros": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 75, "atk": 100, "def": 95, "spa": 70, "spd": 70, "spe": 110}
+		"baseStats": {"hp": 75, "atk": 100, "def": 95, "spa": 70, "spd": 70, "spe": 110},
+		"randomBattleMoves": ["bodyslam", "hyperbeam", "earthquake"],
+		"exclusiveMoves": ["blizzard", "blizzard", "blizzard", "thunderbolt"],
+		"tier": "OU"
 	},
 	"magikarp": {
 		"types": ["Water"],
-		"baseStats": {"hp": 20, "atk": 10, "def": 55, "spa": 20, "spd": 20, "spe": 80}
+		"baseStats": {"hp": 20, "atk": 10, "def": 55, "spa": 20, "spd": 20, "spe": 80},
+		"randomBattleMoves": ["tackle", "dragonrage"],
+		"eventPokemon": [
+			{"generation": 1, "level": 5, "moves": ["dragonrage"]}
+		],
+		"tier": "LC"
 	},
 	"gyarados": {
 		"types": ["Water", "Flying"],
-		"baseStats": {"hp": 95, "atk": 125, "def": 79, "spa": 100, "spd": 100, "spe": 81}
+		"baseStats": {"hp": 95, "atk": 125, "def": 79, "spa": 100, "spd": 100, "spe": 81},
+		"randomBattleMoves": ["blizzard", "thunderbolt", "bodyslam", "hyperbeam"],
+		"exclusiveMoves": ["surf", "hydropump"],
+		"tier": "UU"
 	},
 	"lapras": {
 		"types": ["Water", "Ice"],
-		"baseStats": {"hp": 130, "atk": 85, "def": 80, "spa": 95, "spd": 95, "spe": 60}
+		"baseStats": {"hp": 130, "atk": 85, "def": 80, "spa": 95, "spd": 95, "spe": 60},
+		"randomBattleMoves": ["surf", "bodyslam", "sing", "rest", "confuseray"],
+		"essentialMove": "blizzard",
+		"exclusiveMoves": ["thunderbolt", "thunderbolt"],
+		"tier": "OU"
 	},
 	"ditto": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 48, "atk": 48, "def": 48, "spa": 48, "spd": 48, "spe": 48}
+		"baseStats": {"hp": 48, "atk": 48, "def": 48, "spa": 48, "spd": 48, "spe": 48},
+		"randomBattleMoves": ["transform"],
+		"tier": "UU"
 	},
 	"eevee": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 55, "atk": 55, "def": 50, "spa": 65, "spd": 65, "spe": 55}
+		"baseStats": {"hp": 55, "atk": 55, "def": 50, "spa": 65, "spd": 65, "spe": 55},
+		"randomBattleMoves": ["doubleedge", "reflect", "quickattack"],
+		"essentialMove": "bodyslam",
+		"exclusiveMoves": ["mimic", "sandattack", "tailwhip", "bide"],
+		"tier": "LC"
 	},
 	"vaporeon": {
 		"types": ["Water"],
-		"baseStats": {"hp": 130, "atk": 65, "def": 60, "spa": 110, "spd": 110, "spe": 65}
+		"baseStats": {"hp": 130, "atk": 65, "def": 60, "spa": 110, "spd": 110, "spe": 65},
+		"randomBattleMoves": ["rest", "blizzard"],
+		"essentialMove": "surf",
+		"exclusiveMoves": ["bodyslam", "mimic", "hydropump"],
+		"tier": "UU"
 	},
 	"jolteon": {
 		"types": ["Electric"],
-		"baseStats": {"hp": 65, "atk": 65, "def": 60, "spa": 110, "spd": 110, "spe": 130}
+		"baseStats": {"hp": 65, "atk": 65, "def": 60, "spa": 110, "spd": 110, "spe": 130},
+		"randomBattleMoves": ["thunderwave", "bodyslam", "thunderbolt"],
+		"exclusiveMoves": ["pinmissile", "pinmissile", "doublekick", "agility", "agility"],
+		"tier": "OU"
 	},
 	"flareon": {
 		"types": ["Fire"],
-		"baseStats": {"hp": 65, "atk": 130, "def": 60, "spa": 110, "spd": 110, "spe": 65}
+		"baseStats": {"hp": 65, "atk": 130, "def": 60, "spa": 110, "spd": 110, "spe": 65},
+		"randomBattleMoves": ["fireblast", "bodyslam", "hyperbeam", "quickattack"],
+		"tier": "UU"
 	},
 	"porygon": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 65, "atk": 60, "def": 70, "spa": 75, "spd": 75, "spe": 40}
+		"baseStats": {"hp": 65, "atk": 60, "def": 70, "spa": 75, "spd": 75, "spe": 40},
+		"randomBattleMoves": ["thunderwave", "blizzard"],
+		"essentialMove": "recover",
+		"exclusiveMoves": ["psychic", "thunderbolt", "triattack", "doubleedge"],
+		"tier": "UU"
 	},
 	"omanyte": {
 		"types": ["Rock", "Water"],
-		"baseStats": {"hp": 35, "atk": 40, "def": 100, "spa": 90, "spd": 90, "spe": 35}
+		"baseStats": {"hp": 35, "atk": 40, "def": 100, "spa": 90, "spd": 90, "spe": 35},
+		"randomBattleMoves": ["hydropump", "surf", "bodyslam", "rest"],
+		"essentialMove": "blizzard",
+		"comboMoves": ["surf", "hydropump"],
+		"tier": "LC"
 	},
 	"omastar": {
 		"types": ["Rock", "Water"],
-		"baseStats": {"hp": 70, "atk": 60, "def": 125, "spa": 115, "spd": 115, "spe": 55}
+		"baseStats": {"hp": 70, "atk": 60, "def": 125, "spa": 115, "spd": 115, "spe": 55},
+		"randomBattleMoves": ["hydropump", "surf", "seismictoss", "blizzard"],
+		"exclusiveMoves": ["bodyslam", "rest"],
+		"tier": "UU"
 	},
 	"kabuto": {
 		"types": ["Rock", "Water"],
-		"baseStats": {"hp": 30, "atk": 80, "def": 90, "spa": 45, "spd": 45, "spe": 55}
+		"baseStats": {"hp": 30, "atk": 80, "def": 90, "spa": 45, "spd": 45, "spe": 55},
+		"randomBattleMoves": ["blizzard", "bodyslam", "surf", "slash"],
+		"tier": "LC"
 	},
 	"kabutops": {
 		"types": ["Rock", "Water"],
-		"baseStats": {"hp": 60, "atk": 115, "def": 105, "spa": 70, "spd": 70, "spe": 80}
+		"baseStats": {"hp": 60, "atk": 115, "def": 105, "spa": 70, "spd": 70, "spe": 80},
+		"randomBattleMoves": ["swordsdance", "surf", "hyperbeam"],
+		"exclusiveMoves": ["bodyslam", "slash"],
+		"tier": "UU"
 	},
 	"aerodactyl": {
 		"types": ["Rock", "Flying"],
-		"baseStats": {"hp": 80, "atk": 105, "def": 65, "spa": 60, "spd": 60, "spe": 130}
+		"baseStats": {"hp": 80, "atk": 105, "def": 65, "spa": 60, "spd": 60, "spe": 130},
+		"randomBattleMoves": ["skyattack", "fireblast", "doubleedge", "hyperbeam"],
+		"tier": "UU"
 	},
 	"snorlax": {
 		"types": ["Normal"],
-		"baseStats": {"hp": 160, "atk": 110, "def": 65, "spa": 65, "spd": 65, "spe": 30}
+		"baseStats": {"hp": 160, "atk": 110, "def": 65, "spa": 65, "spd": 65, "spe": 30},
+		"randomBattleMoves": ["rest", "thunderbolt", "bodyslam", "selfdestruct"],
+		"essentialMove": "amnesia",
+		"exclusiveMoves": ["blizzard", "blizzard"],
+		"comboMoves": ["earthquake", "hyperbeam", "bodyslam", "selfdestruct"],
+		"tier": "OU"
 	},
 	"articuno": {
 		"types": ["Ice", "Flying"],
-		"baseStats": {"hp": 90, "atk": 85, "def": 100, "spa": 125, "spd": 125, "spe": 85}
+		"baseStats": {"hp": 90, "atk": 85, "def": 100, "spa": 125, "spd": 125, "spe": 85},
+		"randomBattleMoves": ["hyperbeam", "agility", "mimic", "reflect", "icebeam"],
+		"essentialMove": "blizzard",
+		"comboMoves": ["icebeam", "rest", "reflect"],
+		"tier": "UU"
 	},
 	"zapdos": {
 		"types": ["Electric", "Flying"],
-		"baseStats": {"hp": 90, "atk": 90, "def": 85, "spa": 125, "spd": 125, "spe": 100}
+		"baseStats": {"hp": 90, "atk": 90, "def": 85, "spa": 125, "spd": 125, "spe": 100},
+		"randomBattleMoves": ["thunderbolt", "drillpeck", "thunderwave", "agility"],
+		"tier": "OU"
 	},
 	"moltres": {
 		"types": ["Fire", "Flying"],
-		"baseStats": {"hp": 90, "atk": 100, "def": 90, "spa": 125, "spd": 125, "spe": 90}
+		"baseStats": {"hp": 90, "atk": 100, "def": 90, "spa": 125, "spd": 125, "spe": 90},
+		"randomBattleMoves": ["agility", "hyperbeam", "fireblast"],
+		"exclusiveMoves": ["doubleedge", "reflect", "skyattack"],
+		"tier": "UU"
 	},
 	"dratini": {
 		"types": ["Dragon"],
-		"baseStats": {"hp": 41, "atk": 64, "def": 45, "spa": 50, "spd": 50, "spe": 50}
+		"baseStats": {"hp": 41, "atk": 64, "def": 45, "spa": 50, "spd": 50, "spe": 50},
+		"randomBattleMoves": ["hyperbeam", "thunderbolt", "bodyslam", "thunderwave"],
+		"essentialMove": "blizzard",
+		"tier": "LC"
 	},
 	"dragonair": {
 		"types": ["Dragon"],
-		"baseStats": {"hp": 61, "atk": 84, "def": 65, "spa": 70, "spd": 70, "spe": 70}
+		"baseStats": {"hp": 61, "atk": 84, "def": 65, "spa": 70, "spd": 70, "spe": 70},
+		"randomBattleMoves": ["hyperbeam", "thunderbolt", "bodyslam", "thunderwave"],
+		"essentialMove": "blizzard",
+		"tier": "NFE"
 	},
 	"dragonite": {
 		"types": ["Dragon", "Flying"],
-		"baseStats": {"hp": 91, "atk": 134, "def": 95, "spa": 100, "spd": 100, "spe": 80}
+		"baseStats": {"hp": 91, "atk": 134, "def": 95, "spa": 100, "spd": 100, "spe": 80},
+		"randomBattleMoves": ["hyperbeam", "thunderbolt", "bodyslam", "thunderwave"],
+		"essentialMove": "blizzard",
+		"tier": "UU"
 	},
 	"mewtwo": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 106, "atk": 110, "def": 90, "spa": 154, "spd": 154, "spe": 130}
+		"baseStats": {"hp": 106, "atk": 110, "def": 90, "spa": 154, "spd": 154, "spe": 130},
+		"randomBattleMoves": ["thunderbolt", "blizzard", "recover"],
+		"essentialMove": "amnesia",
+		"exclusiveMoves": ["psychic", "psychic"],
+		"comboMoves": ["rest", "barrier"],
+		"tier": "Uber"
 	},
 	"mew": {
 		"types": ["Psychic"],
-		"baseStats": {"hp": 100, "atk": 100, "def": 100, "spa": 100, "spd": 100, "spe": 100}
+		"baseStats": {"hp": 100, "atk": 100, "def": 100, "spa": 100, "spd": 100, "spe": 100},
+		"randomBattleMoves": ["thunderwave", "thunderbolt", "blizzard", "earthquake"],
+		"essentialMove": "psychic",
+		"exclusiveMoves": ["softboiled", "softboiled", "explosion"],
+		"comboMoves": ["swordsdance", "earthquake", "hyperbeam"],
+		"eventPokemon": [
+			{"generation": 1, "level": 5, "moves": ["pound"]}
+		],
+		"eventOnly": true,
+		"tier": "Uber"
 	}
 }
