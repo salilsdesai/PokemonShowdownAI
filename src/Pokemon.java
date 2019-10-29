@@ -26,7 +26,7 @@ public class Pokemon {
 		public int[] statMod;
 		/* Statistics which vary a pokemon's ability to move. All values are
 		 * initialized to false. */
-		public boolean bide, freeze, paralyze, confuse, burn, recharge, charge;
+		public boolean bide, freeze, paralyze, confuse, burn, recharge, charge, poison;
 		/* Statistics which can vary in effect. [badly_poisoned] stores the
 		 * number of turns since being inflicted as damage increases for each 
 		 * successive turn. [sleep] will store the number of remaining turns
