@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class Move {
+public class Move {
 	public static class MoveDamage {
 		public Pokemon user;
 		public Pokemon target;
@@ -180,6 +180,39 @@ public abstract class Move {
 		 
 		*/
 		
+		Move m = new Move();
+		m.name = "twineedle";
+		m.power = 50;
+		m.maxPP = 32;
+		m.accuracy = 100;
+		m.type = Type.BUG;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (md.target.types[0] != Type.POISON && md.target.types[1] != Type.POISON) {
+					if (Math.random() < 0.2) {
+						md.target.status.poison = true;
+					}
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "triattack";
+		m.power = 80;
+		m.maxPP = 16;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
 		
 	}
 	
