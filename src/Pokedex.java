@@ -89,10 +89,10 @@ public class Pokedex {
 		}
 	}
 	
-	public static PokedexEntry getEntry(String pokemonName) {
+	public static Map<String, PokedexEntry> getDex() {
 		if(dex == null) {
 			loadPokedex();
 		}
-		return dex.get(pokemonName);
+		return dex;
 	}
 }
