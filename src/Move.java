@@ -12,7 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class Move {
+public class Move {
 	public static class MoveDamage {
 		public Pokemon user;
 		public Pokemon target;
@@ -175,12 +175,36 @@ public abstract class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			System.out.println(md.user);
 		}};
-		
 		moves.put(name, m);
 		 
 		*/
 		
+		Move m;
 		
+		
+		// Agility
+		m = new Move();
+		m.name = "agility";
+		m.maxPP = 30;
+		m.power = 0;
+		m.accuracy = -1;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
+			md.user.status.statMod[4] = Math.max(md.user.status.statMod[4] + 2, 6);
+		}};
+		moves.put(m.name, m);
+		
+		
+//		public String name;
+//		public int maxPP, 
+//		public int power;
+//		public int accuracy; /** Base accuracy of a move, or -1 if it doesn't check for accuracy */
+//		public Type type;
+//		public boolean highCritRatio;
+//		public int priority;
+//		public Consumer<MoveDamage> secondaryEffect;
 	}
 	
 }

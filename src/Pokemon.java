@@ -41,10 +41,8 @@ public class Pokemon {
 		 * is unknown or never used, value will be [null]. */
 		public Pokemon transformed;
 		
-		public Status(Move m, Pokemon p) {
+		public Status() {
 			statMod = new int[5];
-			move = m;
-			transformed = p;
 		}
 	}
 	
@@ -95,7 +93,7 @@ public class Pokemon {
 		this.spe = computeStat.apply(entry.baseStats[4]);
 		
 		this.level = level;
-		status = new Status(null, null);
+		status = new Status();
 	}
 	
 	/**
