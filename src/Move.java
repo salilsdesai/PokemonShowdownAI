@@ -37,6 +37,8 @@ public class Move {
 		
 		int damage = damageDealt(user, target);
 		
+		System.out.println(damage);
+		
 		target.currHp = Math.max(0, target.currHp - damage);
 		
 		// TODO: Check for secondary effects
@@ -68,7 +70,7 @@ public class Move {
 		int baseDamage = (((((((2 * level)/5) + 2) * power * attackingStat)/(defendingStat))/50) + 2);
 		
 		// Random damage range
-		double modifier = ((int)(Math.random() * 39) + 217)/(255);
+		double modifier = ((Math.random() * 39) + 217)/(255);
 		// STAB
 		for(Type t : user.types)
 			if(t == this.type)
