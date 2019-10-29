@@ -15,7 +15,7 @@ import org.json.simple.parser.ParseException;
 public class Pokedex {
 	public static class PokedexEntry {
 		public String species;
-		public List<Type> types;
+		public Type[] types;
 		public int[] baseStats; // [hp, atk, def, spc, spe]
 		public String essentialMove;
 		public String[] randomBattleMoves;
@@ -26,7 +26,7 @@ public class Pokedex {
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			sb.append(species);
-			sb.append("\n\t" + Arrays.toString(types.toArray()));
+			sb.append("\n\t" + Arrays.toString(types));
 			sb.append("\n\t" + Arrays.toString(baseStats));
 			sb.append("\n\t" + essentialMove);
 			sb.append("\n\t" + Arrays.toString(randomBattleMoves));
@@ -73,8 +73,9 @@ public class Pokedex {
 			entry.comboMoves = cm != null ? cm.toArray(new String[cm.size()]) : new String[0];
 			
 			List<String> stringTypes = (List<String>)(p.get("types"));
-			entry.types = new ArrayList<Type>(stringTypes.stream().map(t -> Type.valueOf(t.toUpperCase())).collect(Collectors.toList()));
-
+			entry.types = new Type[2];
+			entry.types[0] = Type.valueOf(stringTypes.get(0).toUpperCase());
+			entry.types[1] = stringTypes.size() > 1 ? Type.valueOf(stringTypes.get(1).toUpperCase()) : Type.NONE;
 			
 			JSONObject stats = (JSONObject)(p.get("baseStats"));
 			entry.baseStats = new int[5];

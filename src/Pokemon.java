@@ -9,9 +9,9 @@ import org.json.simple.parser.*;
 
 public class Pokemon {
 	public String species;
-	public ArrayList<Type> types;
-	public ArrayList<Move> moves;
-	public ArrayList<Integer> pp; /** pp[i] is the current pp of moves[i] **/
+	public Type[] types; // Always length 2, types[1] is NONE if single typed
+	public Move[] moves;
+	public int[] pp; /** pp[i] is the current pp of moves[i] **/
 	public int level, maxHp, atk, def, spc, spe, currHp;
 	
 	//TODO: status effects ex. sleep, substitute
@@ -24,17 +24,6 @@ public class Pokemon {
 	 * 
 	 */
 	public Pokemon(String species, ArrayList<Move> moves, int level) {
-		this.species = species;
-		this.moves = moves;
-		this.pp = new ArrayList<Integer>();
-		for(Move m : this.moves) {
-			pp.add(m.maxPP);
-		}
-		this.level = level;
-		
-		// TODO: Load stats, moves, types from Pokedex.
-		
-
-		
+		// TODO: EVERYTHING
 	}
 }
