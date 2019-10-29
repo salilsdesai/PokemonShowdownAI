@@ -9,10 +9,13 @@ public class TeamGenerator {
 	 * Return a list of 6 pokemon to be used on a team for battle.
 	 * Selection will maintain that teams are relatively balanced,
 	 * and are not susceptible to a single weakness.
+	 * 
+	 * The selection algorithm is based on the selection algorithm
+	 * used in PokemonShowdown to emulate the most similar results.
 	 */
 	public static ArrayList<Pokemon> randomTeam() {
 		/* List/set of pokemon with limited ability and boolean status
-		 * of whetherany are on the potential team. Algorithm will
+		 * of whether any are on the potential team. Algorithm will
 		 * prevent two of such Pokemon from being teamed together
 		 * as such a team would result in an unfair match (in favor of
 		 * the opponent). */
@@ -53,8 +56,8 @@ public class TeamGenerator {
 		
 		/* List of potential pokemon that are considered for the
 		 * team and the counter used to select them. The list is
-		 *  shuffled randomly such that incrementing the counter
-		 *  results in a random pokemon. */
+		 * shuffled randomly such that incrementing the counter
+		 * results in a random pokemon. */
 		ArrayList<Pokemon> pool = getPokemonPool();
 		int counter = 0;
 		
@@ -63,9 +66,9 @@ public class TeamGenerator {
 		
 		
 		while (counter < pool.size() && team.size() < 6) {
-			/* Select a random pokemon in the pool and make
+			/* Select a random pokemon in the pool and makes
 			 * sure the team is not handicapped by two pokemon.
-			 * Unfortunately, if the pool consists only of
+			 * Unfortunately, if the pool consists only of only
 			 * handicaps, the team must select them. Such a
 			 * situation is unlikely. */
 			Pokemon p = pool.get(counter);
@@ -81,10 +84,10 @@ public class TeamGenerator {
 			/* Check the tier of the selected pokemon to construct
 			 * balanced team. If the tier of the selected pokemon
 			 * is not compatible with current team, select the next
-			 * random pokemon.*/
+			 * random pokemon. */
 			String tier = getTier(p.species);
 			if (tier.equals("LC") || tier.contentEquals("NFE")) {
-				if (nuCount >3 || (handicapped && nuCount >2) || Math.random() * 3 < 1.0) {
+				if (nuCount > 3 || (handicapped && nuCount > 2) || Math.random() * 3 < 1.0) {
 					counter++;
 					continue;
 				}
@@ -120,7 +123,7 @@ public class TeamGenerator {
 			 * which can sweep. If the team is too susceptible,
 			 * reject the current pokemon. */
 			for (Type t : threats) {
-				if (t.effectiveness(p.types.get(0)) * t.effectiveness(p.types.get(1)) < 1.0) {
+				if (t.effectiveness(p.types[0]) * t.effectiveness(p.types[1]) < 1.0) {
 					continue;
 				}
 				if (weaknessCount.get(t) != null && weaknessCount.get(t) >= 2) {
@@ -143,7 +146,7 @@ public class TeamGenerator {
 				typeCount.put(t, tCount == null ? 1 : tCount + 1);
 			}
 			/* Reflect the number of weaknesses in the new team. */
-			for (Type t : Type.weaknesses(p.types.get(0), p.types.get(1))) {
+			for (Type t : Type.weaknesses(p.types[0], p.types[1])) {
 				Integer wCount = weaknessCount.get(t);
 				weaknessCount.put(t, wCount == null ? 1 : wCount + 1);
 			}
@@ -179,11 +182,20 @@ public class TeamGenerator {
 		}
 	}
 	
+	/**
+	 * Returns the list of all generation one pokemon as pokemon
+	 * objects (regardless of tier, type, etc).
+	 */
 	private static ArrayList<Pokemon> getPokemonPool() {
 		//TODO: function which gets all generation 1 pokemon
 		return new ArrayList<> ();
 	}
 	
+	/**
+	 * Returns the tier of a pokemon species [species] with 
+	 * respect to multiplayer battles. Example: Mewtwo is
+	 * "uber" tier because it is very strong.
+	 */
 	private static String getTier(String species) {
 		// TODO: function which returns the tier of [species] in string form
 		return "";
