@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import org.json.simple.*;
 import org.json.simple.parser.*;
@@ -11,7 +12,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Move {
+public abstract class Move {
+	public static class MoveDamage {
+		public Pokemon user;
+		public Pokemon target;
+		public int damage;
+		public MoveDamage(Pokemon u, Pokemon t, int d) {
+			user = u;
+			target = t;
+			damage = d;
+		}
+	}
+	
 	private static Map<String, Move> moves;
 
 	public String name;
@@ -20,8 +32,7 @@ public class Move {
 	public Type type;
 	public boolean highCritRatio;
 	public int priority;
-	
-  public BiFunction<ArrayList<Pokemon>, Integer, Void> secondaryEffect;
+	public Consumer<MoveDamage> secondaryEffect;
 
 	public String toString() {
 		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});
@@ -150,24 +161,26 @@ public class Move {
 		return moves.get(moveName);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static void loadMoves() {
 		
 		moves = new HashMap<String, Move>();
 		
-		JSONArray jA;
-		try {
-			jA = (JSONArray)(new JSONParser().parse(new FileReader("moves.json")));
-		}
-		catch (IOException | ParseException e) {
-			// Realistically this catch block will never be reached
-			return;
-		}
+		/*
+		 
+		TODO: Add all moves to map in this format:
+		 
+		Move m = new Move();
+		m.power = ...
+		m.... = ...
+		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
+			System.out.println(md.user);
+		}};
 		
-		List<JSONObject> jMoves = jA;
-		for(JSONObject m : jMoves) {
-			// TODO: Parse the move, add it to the map
-		}
+		moves.put(name, m);
+		 
+		*/
+		
+		
 	}
 	
 }

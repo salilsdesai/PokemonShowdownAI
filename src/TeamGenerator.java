@@ -353,7 +353,7 @@ public class TeamGenerator {
 	}
 	
 	public static void main(String[] args) {
-		String[] moveset = moveset("slowbro");
+		String[] moveset = moveset("kabutops");
 		for (String s : moveset) {
 			System.out.println(s);
 		}
