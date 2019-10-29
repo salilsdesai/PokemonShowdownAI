@@ -80,11 +80,11 @@ public class Move {
 		for(Type t : target.types) {
 			modifier *= this.type.effectiveness(t);
 		}
+	
+		//TODO: status + stat modifications
 		
 		return (int)(baseDamage * modifier);
 	}
-	
-	//TODO: status + stat modifications
 	
 	/** 
 	 * Not implemented yet, returns a move with the properties of Cut
