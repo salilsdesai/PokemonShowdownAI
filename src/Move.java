@@ -5,6 +5,7 @@ public class Move {
 	public int maxPP, power;
 	public int accuracy; /** Base accuracy of a move, or -1 if it doesn't check for accuracy */
 	public Type type;
+	public boolean highCritRatio;
 	
 	public String toString() {
 		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});
@@ -52,7 +53,7 @@ public class Move {
 	 * Uses the following formula: https://bulbapedia.bulbagarden.net/wiki/Damage#Damage_calculation
 	 */
 	public int damageDealt(Pokemon user, Pokemon target) {
-		boolean critical = (Math.random() < 0.5);
+		boolean critical = (Math.random() < Pokedex.getDex().get(user.species).baseStats[4]/(!highCritRatio ? 512.0 : 64.0));
 		
 		int level = user.level * (critical ? 2 : 1);
 		int power = this.power;
@@ -92,11 +93,12 @@ public class Move {
 		// TODO
 		// returns Cut for now
 		Move m = new Move();
-		m.name = "TODO";
+		m.name = moveName;
 		m.maxPP = 30;
 		m.power = 50;
 		m.accuracy = 95;
 		m.type = Type.valueOf("NORMAL");
+		m.highCritRatio = false;
 		return m;
 	}
 	
