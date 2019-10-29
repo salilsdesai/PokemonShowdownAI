@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -38,11 +37,13 @@ public class Pokedex {
 	}
 	
 	private static Map<String, PokedexEntry> dex;
+	private static ArrayList<String> allSpecies;
 	
 	@SuppressWarnings("unchecked")
 	private static void loadPokedex() {
 		
 		dex = new HashMap<String, PokedexEntry>();
+		allSpecies = new ArrayList<String>();
 		
 		JSONArray jA;
 		try {
@@ -86,6 +87,7 @@ public class Pokedex {
 			entry.baseStats[4] = (int)(long)(stats.get("spe"));
 			
 			dex.put(entry.species, entry);
+			allSpecies.add(entry.species);
 		}
 	}
 	
@@ -94,5 +96,12 @@ public class Pokedex {
 			loadPokedex();
 		}
 		return dex;
+	}
+	
+	public static ArrayList<String> getAllSpecies() {
+		if(dex == null) {
+			loadPokedex();
+		}
+		return allSpecies;
 	}
 }

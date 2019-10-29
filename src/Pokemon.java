@@ -23,7 +23,19 @@ public class Pokemon {
 	 * to get move pp
 	 * 
 	 */
-	public Pokemon(String species, ArrayList<Move> moves, int level) {
-		// TODO: EVERYTHING
+	public Pokemon(String species, Move[] moves, int level) {
+		this.species = species;
+		this.level = level;
+		this.moves = moves;
+		
+		Pokedex.PokedexEntry entry = Pokedex.getDex().get(species);
+		this.types = entry.types;
+		
+		this.pp = new int[moves.length];
+		for(int i = 0; i < moves.length; i++) {
+			pp[i] = moves[i].maxPP;
+		}
+		
+		// TODO: BASE STATS
 	}
 }
