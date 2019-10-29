@@ -2,6 +2,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject; 
@@ -36,6 +38,15 @@ public class Pokemon {
 			pp[i] = moves[i].maxPP;
 		}
 		
-		// TODO: BASE STATS
+		this.maxHp = ((((entry.baseStats[0] + 30) * 2 + (int)(Math.ceil(Math.sqrt(255))/4)) * level)/100) + level + 10;
+		this.currHp = this.maxHp;
+		
+		Function<Integer, Integer> computeStat = (stat -> ((((entry.baseStats[0] + 30) * 2 + (int)(Math.ceil(Math.sqrt(255))/4)) * level)/100) + 5);
+		this.atk = computeStat.apply(entry.baseStats[1]);
+		this.def = computeStat.apply(entry.baseStats[2]);
+		this.spc = computeStat.apply(entry.baseStats[3]);
+		this.spe = computeStat.apply(entry.baseStats[4]);
+		
+		this.level = level;
 	}
 }
