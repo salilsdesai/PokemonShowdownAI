@@ -52,7 +52,7 @@ public class Pokemon {
 		
 		this.pp = new int[this.moves.length];
 		for(int i = 0; i < this.moves.length; i++) {
-			pp[i] = this.moves[i].maxPP;
+			pp[i] = this.moves[i] != null ? this.moves[i].maxPP : 0;
 		}
 		
 		this.maxHp = (((2 * entry.baseStats[0] + 30 + (255/4))*level)/100) + level + 10;
@@ -65,6 +65,10 @@ public class Pokemon {
 		this.spe = computeStat.apply(entry.baseStats[4]);
 		
 		this.level = level;
+	}
+	
+	public boolean isAlive() {
+		return (this.currHp > 0); 
 	}
 	
 }
