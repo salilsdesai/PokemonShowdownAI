@@ -6,6 +6,7 @@ public class Move {
 	public int accuracy; /** Base accuracy of a move, or -1 if it doesn't check for accuracy */
 	public Type type;
 	public boolean highCritRatio;
+	public int priority;
 	
 	public String toString() {
 		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});

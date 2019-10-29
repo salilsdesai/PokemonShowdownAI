@@ -65,22 +65,77 @@ public class Simulator {
 		}
 	}
 	
+	/**
+	 * Executes a single turn of battle given that player 1 selects action [a1]
+	 * and player 2 selects action [a2]. As standard in pokemon battle, 'switch'
+	 * moves are processed first. If both players select to attack, then the
+	 * battle pokemon with the higher speed stat will attack first. If the speed
+	 * stats are equal, then there is a one-half chance of either attacking first.
+	 * 
+	 * Certain moves like 'quickattack' will have different speed priorities.
+	 * Example: 'quickattack' has priority +1, so it will go before any move with
+	 * priority less than +1.
+	 */
+	public void executeTurn(Action a1, Action a2, Team t1, Team t2) {
+		// If any actions are switch actions, execute them first.
+		if (a1.getType() == ActionType.SWITCH) {
+			SwitchAction s1 = (SwitchAction)a1;
+			t1.activePokemon.resetUponSwitch();
+			t1.activePokemon = s1.switchTo;
+			
+		}
+		if (a2.getType() == ActionType.SWITCH) {
+			SwitchAction s2 = (SwitchAction)a2;
+			t2.activePokemon.resetUponSwitch();
+			t2.activePokemon = s2.switchTo;
+		}
+		
+		/* If both moves are attacking moves, compare speeds/priorities to
+		 * see who goes first. */
+		if(a1.getType() == ActionType.ATTACK && a2.getType() == ActionType.ATTACK) {
+			AttackAction aa1 = (AttackAction)a1;
+			AttackAction aa2 = (AttackAction)a2;
+			
+			// Relevant statistics needed for analyzing turn-order.
+			int p1 = aa1.move.priority;
+			int p2 = aa2.move.priority;
+			int spd1 = Pokedex.getDex().get(aa1.user.species).baseStats[4];
+			int spd2 = Pokedex.getDex().get(aa2.user.species).baseStats[4];
+			
+			/* Player 1's pokemon can attack first if and only if:
+			 * 1) It's move is higher priority, or
+			 * 2) It's move is not lower priority and it wins out on speed. */
+			if (p1 > p2 || (p1 == p2 && ((spd1 > spd2) || (spd1 == spd2 && Math.random() < 0.5)))) {
+				aa1.move.use(aa1.user, t2.activePokemon);
+				if (t2.activePokemon.isAlive()) {
+					aa2.move.use(aa2.user, t1.activePokemon);
+				}
+			}
+			/* If none of the conditions above are satisifed, then player 2
+			 * must attack first. */
+			else {
+				aa2.move.use(aa2.user, t1.activePokemon);
+				if (t1.activePokemon.isAlive()) {
+					aa1.move.use(aa1.user, t2.activePokemon);
+				}
+			}
+		}
+		/* If both actions aren't attack type, then one or less were. Check the
+		 * two different actions and if either is attack, the other must have been
+		 * switched, so attack immediately. */
+		else {
+			if (a1.getType() == ActionType.ATTACK) {
+				AttackAction aa1 = (AttackAction)a1;
+				aa1.move.use(aa1.user, t2.activePokemon);
+			}
+			else if (a2.getType() == ActionType.ATTACK){
+				AttackAction aa2 = (AttackAction)a2;
+				aa2.move.use(aa2.user, t1.activePokemon);
+			}
+		}
+	}
 	
 	public static void main(String[] args) {
-		Team p1 = new Team(TeamGenerator.randomTeam());
-		Team p2 = new Team(TeamGenerator.randomTeam());
-		
-		System.out.println(p1.getActions());
-		
-//		System.out.println(p1);
-		
-		// TODO
-		
-		
-		
-		
-		
-		
-		
+		// TODO: Finish main function.		
 	}
 }

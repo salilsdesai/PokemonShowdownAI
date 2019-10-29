@@ -24,10 +24,9 @@ public class Pokemon {
 	//TODO: stat modifications ex. atk down, def up
 	
 	/**
-	 * Construct a new pokemon with the specified species and moves
+	 * Construct a new pokemon with the specified species and moves.
 	 * Uses Pokedex JSON to get base stats and types, and uses the Move objects
-	 * to get move pp
-	 * 
+	 * to get move pp.
 	 */
 	public Pokemon(String species, String[] moves, int level) {
 		this.species = species;
@@ -58,8 +57,21 @@ public class Pokemon {
 		this.level = level;
 	}
 	
+	/**
+	 * Returns true if the current pokemon has positive [hp] and false otherwise.
+	 */
 	public boolean isAlive() {
 		return (this.currHp > 0); 
+	}
+	
+	/**
+	 * Resets the statistics and certain statuses of a pokemon. Intended to be used
+	 * only after a pokemon is switched out (when this happens, it is intended for
+	 * stat modifications and statuses including mimic/transform/confusion/substitute
+	 * to be cleared).
+	 */
+	public void resetUponSwitch() {
+		//TODO: reset the base stats of a pokemon and certain stat effects like confused
 	}
 	
 }
