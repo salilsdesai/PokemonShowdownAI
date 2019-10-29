@@ -27,7 +27,7 @@ public class Pokemon {
 		 * for which the current pokemon will be asleep for, and [substitute]
 		 * will hold the remaining [hp] of a dummy substitute used to tank 
 		 * the opponents attacks. All values are initialized to 0. */
-		public int badly_poisoned, sleep, substitute;
+		public int badly_poisoned_counter, sleep_turns_left, substitute_hp, bide_damage;
 		/* [move] will store an opponent's move learned through [mimic]. If
 		 * [mimic] is unknown or never used, value will be [null]. */
 		public Move move;
