@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public enum Type {
-	NORMAL, FIGHT, FLYING, POISON, GROUND, ROCK, BUG, GHOST, 
+	NORMAL, FIGHTING, FLYING, POISON, GROUND, ROCK, BUG, GHOST, 
 	FIRE, WATER, GRASS, ELECTRIC, PSYCHIC, ICE, DRAGON, NONE;
 	
 	/** 
@@ -17,7 +17,7 @@ public enum Type {
 				return 0.0;
 			}
 			break;
-		case FIGHT:
+		case FIGHTING:
 			if (t == NORMAL || t == ROCK || t == ICE) {
 				return 2.0;
 			}
@@ -29,7 +29,7 @@ public enum Type {
 			}
 			break;
 		case FLYING:
-			if (t == FIGHT || t == BUG || t == GRASS) {
+			if (t == FIGHTING || t == BUG || t == GRASS) {
 				return 2.0;
 			}
 			else if (t == ROCK || t == ELECTRIC) {
@@ -59,7 +59,7 @@ public enum Type {
 			if (t == FLYING || t == FIRE || t == BUG || t == ICE) {
 				return 2.0;
 			}
-			else if (t == FIGHT || t == GROUND) {
+			else if (t == FIGHTING || t == GROUND) {
 				return 0.5;
 			}
 			break;
@@ -67,7 +67,7 @@ public enum Type {
 			if (t == POISON || t == GRASS || t == PSYCHIC) {
 				return 2.0;
 			}
-			else if (t == FIGHT || t == FLYING || t == GHOST || t == FIRE) {
+			else if (t == FIGHTING || t == FLYING || t == GHOST || t == FIRE) {
 				return 0.5;
 			}
 			break;
@@ -116,7 +116,7 @@ public enum Type {
 			}
 			break;
 		case PSYCHIC:
-			if (t == FIGHT || t == POISON) {
+			if (t == FIGHTING || t == POISON) {
 				return 2.0;
 			}
 			else if (t == PSYCHIC) {
@@ -146,7 +146,7 @@ public enum Type {
 	 * Returns true if [this] is a physical type and false otherwise.
 	 */
 	public boolean isPhysical() {
-		return (this == NORMAL || this == FIGHT || this == FLYING || 
+		return (this == NORMAL || this == FIGHTING || this == FLYING || 
 				this == GROUND || this == ROCK || this == BUG || 
 				this == GHOST || this == POISON);
 	}
