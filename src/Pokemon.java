@@ -7,6 +7,40 @@ public class Pokemon {
 	public Move[] moves;
 	public int[] pp; /** pp[i] is the current pp of moves[i] **/
 	public int level, maxHp, atk, def, spc, spe, currHp;
+	public Status status;
+	
+	/* Class which reprsents all of a pokemon's possible status effects. */
+	private static class Status {
+		/* An array of length 5 containing the counter storing how many times
+		 * a particular statistic has been modified. The indices 0-4 represent
+		 * [hp, atk, def, spc, spe] respectively. A positive value [y] indicates a
+		 * modified statistic of [x(1 + 0.5y)] where [x] is the original stat
+		 * and a negative value [y] indicates a modified statistic [x/(1 + 0.5y)]. 
+		 * All values are initialized to 0. */
+		public int[] statMod;
+		/* Statistics which vary a pokemon's ability to move. All values are
+		 * initialized to false. */
+		public boolean bide, freeze, paralyze, confuse, burn, recharge, charge;
+		/* Statistics which can vary in effect. [badly_poisoned] stores the
+		 * number of turns since being inflicted as damage increases for each 
+		 * successive turn. [sleep] will store the number of remaining turns
+		 * for which the current pokemon will be asleep for, and [substitute]
+		 * will hold the remaining [hp] of a dummy substitute used to tank 
+		 * the opponents attacks. All values are initialized to 0. */
+		public int badly_poisoned, sleep, substitute;
+		/* [move] will store an opponent's move learned through [mimic]. If
+		 * [mimic] is unknown or never used, value will be [null]. */
+		public Move move;
+		/* [transform] will store the active transformed pokemon. If [transform]
+		 * is unknown or never used, value will be [null]. */
+		public Pokemon transformed;
+		
+		public Status(Move m, Pokemon p) {
+			statMod = new int[5];
+			move = m;
+			transformed = p;
+		}
+	}
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -55,6 +89,7 @@ public class Pokemon {
 		this.spe = computeStat.apply(entry.baseStats[4]);
 		
 		this.level = level;
+		status = new Status(null, null);
 	}
 	
 	/**
@@ -68,7 +103,7 @@ public class Pokemon {
 	 * Resets the statistics and certain statuses of a pokemon. Intended to be used
 	 * only after a pokemon is switched out (when this happens, it is intended for
 	 * stat modifications and statuses including mimic/transform/confusion/substitute
-	 * to be cleared).
+	 * and badly-poisoned counter to be cleared).
 	 */
 	public void resetUponSwitch() {
 		//TODO: reset the base stats of a pokemon and certain stat effects like confused
