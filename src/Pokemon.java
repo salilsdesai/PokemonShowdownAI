@@ -9,8 +9,14 @@ public class Pokemon {
 	public int level, maxHp, atk, def, spc, spe, currHp;
 	public Status status;
 	
+	/* [lastAttacker] is the pokemon who attacked this pokemon last, and 
+	 * [lastMoveUsed] is the last move used by this pokemon. Used for
+	 * damage calculation of [mirrormove]. */
+	public Pokemon lastAttacker;
+	public Move lastMoveUsed;
+	
 	/* Class which reprsents all of a pokemon's possible status effects. */
-	private static class Status {
+	public static class Status {
 		/* An array of length 5 containing the counter storing how many times
 		 * a particular statistic has been modified. The indices 0-4 represent
 		 * [hp, atk, def, spc, spe] respectively. A positive value [y] indicates a
@@ -106,6 +112,9 @@ public class Pokemon {
 	 * and badly-poisoned counter to be cleared).
 	 */
 	public void resetUponSwitch() {
+		// Reset the status of [mirrormove] helpers.
+		lastMoveUsed = null;
+		lastAttacker = null;
 		//TODO: reset the base stats of a pokemon and certain stat effects like confused
 	}
 	

@@ -39,9 +39,50 @@ public class Move {
 		
 		int damage = damageDealt(user, target);
 		
-		System.out.println(damage);
+		// special case where damage depends on the user's level
+		if (name.equals("dragonrage")) {
+			damage = 40;
+		}
+		else if (name.equals("nightshade") || name.equals("seismictoss")) {
+			damage = user.level;
+		}
+		else if (name.equals("psywave")) {
+			damage = (int)(Math.random() * 1.5 * user.level) + 1;
+		}
+		// special case where number of hits is random (so damage is not constant)
+		else if (name.equals("pinmissle")) {
+			double rand = Math.random();
+			if (rand < 0.375) {
+				damage *= 2;
+			}
+			else if (rand >= 0.375 && rand < 0.75) {
+				damage *= 3;
+			}
+			else if (rand >= 0.75 && rand < 0.875) {
+				damage *= 4;
+			}
+			else {
+				damage *= 5;
+			}
+		}
+		// special case where move requires charging
+		else if (name.equals("skyattack") && !user.status.charge) {
+			user.status.charge = true;
+			return;
+		}
+		// special case where move depends on opponent's moveset
+		else if (name.equals("mirrormove") && target.lastMoveUsed != null) {
+			if (user.lastAttacker == target && !target.lastMoveUsed.name.equals("mirrormove")) {
+				target.lastMoveUsed.use(user, target);
+			}
+		}
 		
+		// apply the damage onto the target
 		target.currHp = Math.max(0, target.currHp - damage);
+		
+		// Set the [lastMoveUsed] and [lastAttacker]
+		user.lastMoveUsed = this;
+		target.lastAttacker = user;
 		
 		// TODO: Check for secondary effects
 		
