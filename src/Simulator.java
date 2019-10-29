@@ -46,6 +46,9 @@ public class Simulator {
 		public SwitchAction(Pokemon switchTo) {
 			this.switchTo = switchTo;
 		}
+		public String toString() {
+			return "Switch to: " + switchTo.species;
+		}
 	}
 	public static class AttackAction implements Action {
 		public ActionType getType() {
@@ -57,6 +60,9 @@ public class Simulator {
 			this.user = user;
 			this.move = move;
 		}
+		public String toString() {
+			return "Attack: " + Arrays.toString(new String[] {user.species, move.name});
+		}
 	}
 	
 	
@@ -64,7 +70,9 @@ public class Simulator {
 		Team p1 = new Team(TeamGenerator.randomTeam());
 		Team p2 = new Team(TeamGenerator.randomTeam());
 		
-		System.out.println(p1);
+		System.out.println(p1.getActions());
+		
+//		System.out.println(p1);
 		
 		// TODO
 		
