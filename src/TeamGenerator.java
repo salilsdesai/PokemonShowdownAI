@@ -314,7 +314,7 @@ public class TeamGenerator {
 	
 	/**
 	 * Returns the level of the pokemon [name] which is designated by PokemonShowdown. 
-	 * Higher tier pokemon will receive lower levels while lower tier ones wil receive
+	 * Higher tier pokemon will receive lower levels while lower tier ones will receive
 	 * higher ones in order to 'balance' the match.
 	 */
 	private static int level(String p_name, String tier, HashSet<String> handicap) {
