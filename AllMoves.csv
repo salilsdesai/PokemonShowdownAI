@@ -1,0 +1,73 @@
+Agility,PSYCHIC,,—,—,30,Sharply raises user's Speed.
+Amnesia,PSYCHIC,,—,—,20,Sharply raises user's Special Defense.
+Barrier,PSYCHIC,,—,—,20,Sharply raises user's Defense.
+Bide,NORMAL,,—,—,10,User takes damage for two turns then strikes back double.
+Blizzard,ICE,,110,70,5,May freeze opponent.
+Body Slam,NORMAL,,85,100,15,May paralyze opponent.
+Bubble Beam,WATER,,65,100,20,May lower opponent's Speed.
+Confuse Ray,GHOST,,—,100,10,Confuses opponent.
+Counter,FIGHTING,,—,100,20,"When hit by a Physical Attack, user strikes back with 2x power."
+Crabhammer,WATER,,100,90,10,High critical hit ratio.
+Double Kick,FIGHTING,,30,100,30,Hits twice in one turn.
+Double-Edge,NORMAL,,120,100,15,User receives recoil damage.
+Dragon Rage,DRAGON,,—,100,10,Always inflicts 40 HP.
+Drill Peck,FLYING,,80,100,20,
+Earthquake,GROUND,,100,100,10,Power is doubled if opponent is underground from using Dig.
+Egg Bomb,NORMAL,,100,75,10,
+Explosion,NORMAL,,250,100,5,User faints.
+Fire Blast,FIRE,,110,85,5,May burn opponent.
+Flamethrower,FIRE,,90,100,15,May burn opponent.
+Glare,NORMAL,,—,100,30,Paralyzes opponent.
+Growth,NORMAL,,—,—,40,Raises user's Attack and Special Attack.
+Harden,NORMAL,,—,—,30,Raises user's Defense.
+High Jump Kick,FIGHTING,,130,90,10,"If it misses, the user loses half their HP."
+Hydro Pump,WATER,,110,80,5,
+Hyper Beam,NORMAL,,150,90,5,User must recharge next turn.
+Hypnosis,PSYCHIC,,—,60,20,Puts opponent to sleep.
+Ice Beam,ICE,,90,100,10,May freeze opponent.
+Leer,NORMAL,,—,100,30,Lowers opponent's Defense.
+Lovely Kiss,NORMAL,,—,75,10,Puts opponent to sleep.
+Meditate,PSYCHIC,,—,—,40,Raises user's Attack.
+Mega Drain,GRASS,,40,100,15,User recovers half the HP inflicted on opponent.
+Mega Kick,NORMAL,,120,75,5,
+Mimic,NORMAL,,—,—,10,Copies the opponent's last move.
+Mirror Move,FLYING,,—,—,20,User performs the opponent's last move.
+Night Shade,GHOST,,—,100,15,Inflicts damage equal to user's level.
+Pin Missile,BUG,,25,95,20,Hits 2-5 times in one turn.
+Poison Sting,POISON,,15,100,35,May poison the opponent.
+Psychic,PSYCHIC,,90,100,10,May lower opponent's Special Defense.
+Psywave,PSYCHIC,,—,80,15,Inflicts damage 50-150% of user's level.
+Quick Attack,NORMAL,,40,100,30,User attacks first.
+Razor Leaf,GRASS,,55,95,25,High critical hit ratio.
+Recover,NORMAL,,—,—,10,User recovers half its max HP.
+Reflect,PSYCHIC,,—,—,20,Halves damage from Physical attacks for 5 turns.
+Rest,PSYCHIC,,—,—,10,"User sleeps for 2 turns, but user is fully healed."
+Rock Slide,ROCK,,75,90,10,May cause flinching.
+Sand Attack,GROUND,,—,100,15,Lowers opponent's Accuracy.
+Screech,NORMAL,,—,85,40,Sharply lowers opponent's Defense.
+Seismic Toss,FIGHTING,,—,100,20,Inflicts damage equal to user's level.
+Self-Destruct,NORMAL,,200,100,5,User faints.
+Sing,NORMAL,,—,55,15,Puts opponent to sleep.
+Sky Attack,FLYING,,140,90,5,"Charges on first turn, attacks on second. May cause flinching."
+Slash,NORMAL,,70,100,20,High critical hit ratio.
+Sleep Powder,GRASS,,—,75,15,Puts opponent to sleep.
+Sludge,POISON,,65,100,20,May poison opponent.
+Smokescreen,NORMAL,,—,100,20,Lowers opponent's Accuracy.
+Soft-Boiled,NORMAL,,—,—,10,User recovers half its max HP.
+Spore,GRASS,,—,100,15,Puts opponent to sleep.
+String Shot,BUG,,—,95,40,Sharply lowers opponent's Speed.
+Stun Spore,GRASS,,—,75,30,Paralyzes opponent.
+Submission,FIGHTING,,80,80,20,User receives recoil damage.
+Substitute,NORMAL,,—,—,10,Uses HP to creates a decoy that takes hits.
+Super Fang,NORMAL,,—,90,10,Always takes off half of the opponent's HP.
+Surf,WATER,,90,100,15,Hits all adjacent Pokémon.
+Swords Dance,NORMAL,,—,—,20,Sharply raises user's Attack.
+Tackle,NORMAL,,40,100,35,
+Tail Whip,NORMAL,,—,100,30,Lowers opponent's Defense.
+Thunder,ELECTRIC,,110,70,10,May paralyze opponent.
+Thunder Wave,ELECTRIC,,—,90,20,Paralyzes opponent.
+Thunderbolt,ELECTRIC,,90,100,15,May paralyze opponent.
+Toxic,POISON,,—,90,10,Badly poisons opponent.
+Transform,NORMAL,,—,—,10,User takes on the form and attacks of the opponent.
+Tri Attack,NORMAL,,80,100,10,"May paralyze, burn or freeze opponent."
+Twineedle,BUG,,25,100,20,Hits twice in one turn. May poison opponent.

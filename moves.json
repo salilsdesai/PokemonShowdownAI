@@ -1,0 +1,46 @@
+[
+  {
+    "name": "agility",
+    "type": "psychic",
+    "pp": 30,
+    "secondary_effect": {
+      "type": "stat_modifier",
+      "apply_to": "self",
+      "stats_modified": {"atk": 0, "def": 0, "spc": 0, "spe": 2},
+      "probability": 100
+    }
+  },
+  {
+    "name": "amnesia",
+    "type": "psychic",
+    "pp": 20,
+    "secondary_effect": {
+      "type": "stat_modifier",
+      "apply_to": "self",
+      "stats_modified": {"atk": 0, "def": 0, "spc": 2, "spe": 0},
+      "probability": 100
+    }
+  },
+  {
+    "name": "barrier",
+    "type": "psychic",
+    "pp": 20,
+    "secondary_effect": {
+      "type": "stat_modifier",
+      "apply_to": "self",
+      "stats_modified": {"atk": 0, "def": 2, "spc": 0, "spe": 0},
+      "probability": 100
+    }
+  },
+  {
+    "name": "bide",
+    "type": "normal",
+    "pp": 20,
+    "secondary_effect": {
+      "type": "stat_modifier",
+      "apply_to": "self",
+      "stats_modified": {"atk": 0, "def": 2, "spc": 0, "spe": 0},
+      "probability": 100
+    }
+  },
+]

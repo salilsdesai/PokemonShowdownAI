@@ -1,6 +1,19 @@
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Move {
+	private static Map<String, Move> moves;
+
 	public String name;
 	public int maxPP, power;
 	public int accuracy; /** Base accuracy of a move, or -1 if it doesn't check for accuracy */
@@ -8,6 +21,8 @@ public class Move {
 	public boolean highCritRatio;
 	public int priority;
 	
+  public BiFunction<ArrayList<Pokemon>, Integer, Void> secondaryEffect;
+
 	public String toString() {
 		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});
 	}
@@ -128,20 +143,31 @@ public class Move {
 		return (int)(baseDamage * modifier);
 	}
 	
-	/** 
-	 * Not implemented yet, returns a move with the properties of Cut
-	 */
 	public static Move getMove(String moveName) {
-		// TODO
-		// returns Cut for now
-		Move m = new Move();
-		m.name = moveName;
-		m.maxPP = 30;
-		m.power = 50;
-		m.accuracy = 95;
-		m.type = Type.valueOf("NORMAL");
-		m.highCritRatio = false;
-		return m;
+		if(moves == null) {
+			loadMoves();
+		}
+		return moves.get(moveName);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void loadMoves() {
+		
+		moves = new HashMap<String, Move>();
+		
+		JSONArray jA;
+		try {
+			jA = (JSONArray)(new JSONParser().parse(new FileReader("moves.json")));
+		}
+		catch (IOException | ParseException e) {
+			// Realistically this catch block will never be reached
+			return;
+		}
+		
+		List<JSONObject> jMoves = jA;
+		for(JSONObject m : jMoves) {
+			// TODO: Parse the move, add it to the map
+		}
 	}
 	
 }
