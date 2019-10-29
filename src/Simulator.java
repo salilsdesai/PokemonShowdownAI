@@ -135,6 +135,14 @@ public class Simulator {
 		}
 	}
 	
+	/**
+	 * Perform all necessary processes at the end of turns
+	 * eg. Poison/Burn damage, reset mirror move, etc.
+	 */
+	public void endOfTurn(Team t1, Team t2) {
+		// TODO
+	}
+	
 	public static void main(String[] args) {
 		// TODO: Finish main function.		
 	}
