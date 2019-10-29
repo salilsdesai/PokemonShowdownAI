@@ -77,4 +77,20 @@ public class Move {
 	}
 	
 	//TODO: status + stat modifications
+	
+	/** 
+	 * Not implemented yet, returns a move with the properties of Cut
+	 */
+	public static Move getMove(String moveName) {
+		// TODO
+		// returns Cut for now
+		Move m = new Move();
+		m.name = "TODO";
+		m.maxPP = 30;
+		m.power = 50;
+		m.accuracy = 95;
+		m.type = Type.valueOf("NORMAL");
+		return m;
+	}
+	
 }

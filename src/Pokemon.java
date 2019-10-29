@@ -1,6 +1,7 @@
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -16,6 +17,18 @@ public class Pokemon {
 	public int[] pp; /** pp[i] is the current pp of moves[i] **/
 	public int level, maxHp, atk, def, spc, spe, currHp;
 	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(species);
+		sb.append("\n\t" + Arrays.toString(types));
+		sb.append("\n\t" + Arrays.toString(moves));
+		sb.append("\n\t" + Arrays.toString(pp));
+		sb.append("\n\t" + level);
+		sb.append("\n\t" + currHp);
+		sb.append("\n\t" + Arrays.toString(new int[] {maxHp, atk, def, spc, spe}));
+		return new String(sb);
+	}
+	
 	//TODO: status effects ex. sleep, substitute
 	//TODO: stat modifications ex. atk down, def up
 	
@@ -25,17 +38,21 @@ public class Pokemon {
 	 * to get move pp
 	 * 
 	 */
-	public Pokemon(String species, Move[] moves, int level) {
+	public Pokemon(String species, String[] moves, int level) {
 		this.species = species;
 		this.level = level;
-		this.moves = moves;
+		
+		this.moves = new Move[moves.length];
+		for(int i = 0; i < moves.length; i++) {
+			this.moves[i] = Move.getMove(moves[i]);
+		}
 		
 		Pokedex.PokedexEntry entry = Pokedex.getDex().get(species);
 		this.types = entry.types;
 		
-		this.pp = new int[moves.length];
-		for(int i = 0; i < moves.length; i++) {
-			pp[i] = moves[i].maxPP;
+		this.pp = new int[this.moves.length];
+		for(int i = 0; i < this.moves.length; i++) {
+			pp[i] = this.moves[i].maxPP;
 		}
 		
 		this.maxHp = ((((entry.baseStats[0] + 30) * 2 + (int)(Math.ceil(Math.sqrt(255))/4)) * level)/100) + level + 10;
