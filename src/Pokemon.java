@@ -58,7 +58,7 @@ public class Pokemon {
 		this.maxHp = ((((entry.baseStats[0] + 30) * 2 + (int)(Math.ceil(Math.sqrt(255))/4)) * level)/100) + level + 10;
 		this.currHp = this.maxHp;
 		
-		Function<Integer, Integer> computeStat = (stat -> ((((entry.baseStats[0] + 30) * 2 + (int)(Math.ceil(Math.sqrt(255))/4)) * level)/100) + 5);
+		Function<Integer, Integer> computeStat = (stat -> ((((stat + 30) * 2 + (int)(Math.ceil(Math.sqrt(255))/4)) * level)/100) + 5);
 		this.atk = computeStat.apply(entry.baseStats[1]);
 		this.def = computeStat.apply(entry.baseStats[2]);
 		this.spc = computeStat.apply(entry.baseStats[3]);

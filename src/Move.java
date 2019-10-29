@@ -1,9 +1,14 @@
+import java.util.Arrays;
 
 public class Move {
 	public String name;
 	public int maxPP, power;
 	public int accuracy; /** Base accuracy of a move, or -1 if it doesn't check for accuracy */
 	public Type type;
+	
+	public String toString() {
+		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});
+	}
 	
 	// TODO: Add status/stat modification/secondary effect
 	
