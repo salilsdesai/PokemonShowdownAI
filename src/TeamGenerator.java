@@ -74,7 +74,7 @@ public class TeamGenerator {
 			 * situation is unlikely. */
 			String p_name = pool.get(counter);
 			if (pool.size() - counter == 6 - team.size()) {
-				team.add(new Pokemon(p_name, moveset(p_name), level(p_name, handicaps)));
+				team.add(new Pokemon(p_name, moveset(p_name), level(p_name, Pokedex.getDex().get(p_name).tier, handicaps)));
 				counter++;
 				continue;
 			}
@@ -144,7 +144,7 @@ public class TeamGenerator {
 			}
 			
 			/* Update the team. */
-			team.add(new Pokemon(p_name, moveset(p_name), level(p_name, handicaps)));
+			team.add(new Pokemon(p_name, moveset(p_name), level(p_name, tier, handicaps)));
 			/* Reflect the number of types in the new team. */
 			for (Type t : types) {
 				Integer tCount = typeCount.get(t);
@@ -198,7 +198,7 @@ public class TeamGenerator {
 			ret.addAll(Arrays.asList(p.comboMoves));
 		}
 		/* Add exactly one exclusive move into the set if not full. */
-		if (ret.size() < 4) {
+		if (ret.size() < 4 && p.exclusiveMoves.length > 0) {
 			int index = (int)(Math.random() * p.exclusiveMoves.length);
 			ret.add(p.exclusiveMoves[index]);
 		}
@@ -317,7 +317,7 @@ public class TeamGenerator {
 	 * Higher tier pokemon will receive lower levels while lower tier ones wil receive
 	 * higher ones in order to 'balance' the match.
 	 */
-	private static int level(String p_name, HashSet<String> handicap) {
+	private static int level(String p_name, String tier, HashSet<String> handicap) {
 		if (p_name.equals("mewtwo")) {
 			return 62;
 		}
@@ -327,19 +327,19 @@ public class TeamGenerator {
 		else if (handicap.contains(p_name)) {
 			return 99;
 		}
-		else if (p_name.equals("lc")) {
+		else if (tier.equals("lc")) {
 			return 88;
 		}
-		else if (p_name.equals("nfe")) {
+		else if (tier.equals("nfe")) {
 			return 80;
 		}
-		else if (p_name.equals("uu")) {
+		else if (tier.equals("uu")) {
 			return 74;
 		}
-		else if (p_name.equals("ou")) {
+		else if (tier.equals("ou")) {
 			return 68;
 		}
-		else if (p_name.equals("uber")) {
+		else if (tier.equals("uber")) {
 			return 65;
 		}
 		else {

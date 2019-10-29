@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Simulator {
 	public static class Team {
@@ -26,6 +27,9 @@ public class Simulator {
 			}
 			
 			return actions;
+		}
+		public String toString() {
+			return "Active: " + activePokemon + "\n" + "Full Team: " + Arrays.toString(pokemonList.toArray());
 		}
 	}
 	public enum ActionType {
@@ -59,6 +63,8 @@ public class Simulator {
 	public static void main(String[] args) {
 		Team p1 = new Team(TeamGenerator.randomTeam());
 		Team p2 = new Team(TeamGenerator.randomTeam());
+		
+		System.out.println(p1);
 		
 		// TODO
 		
