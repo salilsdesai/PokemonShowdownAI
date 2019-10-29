@@ -199,7 +199,7 @@ public class TeamGenerator {
 		}
 		/* Add exactly one exclusive move into the set if not full. */
 		if (ret.size() < 4) {
-			int index = (int)Math.random() * p.exclusiveMoves.length;
+			int index = (int)(Math.random() * p.exclusiveMoves.length);
 			ret.add(p.exclusiveMoves[index]);
 		}
 		/* Add the essential move if set is not full. */
@@ -353,7 +353,7 @@ public class TeamGenerator {
 	}
 	
 	public static void main(String[] args) {
-		String[] moveset = moveset("snorlax");
+		String[] moveset = moveset("slowbro");
 		for (String s : moveset) {
 			System.out.println(s);
 		}
