@@ -131,14 +131,19 @@ public class Move {
 			damage = power;
 		}
 		
-		// apply the damage onto the target
-		target.currHp = Math.max(0, target.currHp - damage);
+		if(target.status.substitute_hp > 0) {
+			damage = Math.min(damage, target.status.substitute_hp);
+			target.status.substitute_hp -= damage;
+		}
+		else {
+			target.currHp = Math.max(0, target.currHp - damage);
+		}
 		
 		// If this was a physical move, store Counter's power as twice the damage done
 		if(this.type.isPhysical())
 			getMove("counter").power = 2*damage;
 		
-		// Set the [lastMoveUsed] and [lastAttacker].
+		// Set the [lastMoveUsed] and [lastAttacker] for mirror move
 		user.lastMoveUsed = this;
 		target.lastAttacker = user;
 		
@@ -716,7 +721,7 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				if (md.user.currHp > md.user.maxHp/4) {
+				if (md.user.currHp > md.user.maxHp/4 && md.user.status.substitute_hp <= 0) {
 					md.user.status.substitute_hp = md.user.maxHp/4;
 					md.user.currHp -= md.user.maxHp/4;
 				}
