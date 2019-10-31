@@ -65,6 +65,7 @@ public class Move {
 		
 		int damage = damageDealt(user, target);
 		
+		// TODO: consider "superfang"
 		// special case where damage depends on the user's level
 		if (name.equals("dragonrage")) {
 			damage = 40;
@@ -203,10 +204,8 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				if (md.target.types[0] != Type.POISON && md.target.types[1] != Type.POISON) {
-					if (Math.random() < 0.2) {
-						md.target.status.poison = true;
-					}
+				if (Math.random() < 0.2) {
+					md.target.setStatusCondition(Pokemon.StatusCondition.POISON, 0);
 				}
 			}
 		};
@@ -252,7 +251,7 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.target.status.badly_poisoned_counter = 1;
+				md.target.setStatusCondition(Pokemon.StatusCondition.BADLY_POISON, 0);
 			}
 		};
 		moves.put(m.name, m);
@@ -268,7 +267,7 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
 				if (Math.random() < 0.1) {
-					md.target.status.paralyze = true;
+					md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
 				}
 			}
 		};
@@ -284,7 +283,7 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.target.status.paralyze = true;
+				md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
 			}
 		};
 		moves.put(m.name, m);
@@ -299,7 +298,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.target.status.paralyze = true;
+				if (Math.random() < 0.1) {
+					md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
+				}
 			}
 		};
 		moves.put(m.name, m);
@@ -318,6 +319,669 @@ public class Move {
 				if (md.target.status.statMod[2] != -3) {
 					md.target.status.statMod[2]--;
 				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "tackle";
+		m.power = 0;
+		m.maxPP = 56;
+		m.accuracy = 95;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "swordsdance";
+		m.power = 0;
+		m.maxPP = 48;
+		m.accuracy = -1;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.status.statMod[2] = Integer.min(3, md.target.status.statMod[2] + 2); 
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "surf";
+		m.power = 95;
+		m.maxPP = 24;
+		m.accuracy = 100;
+		m.type = Type.WATER;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return; 
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "superfang";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = 90;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return; 
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "substitute";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = -1;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (md.user.currHp > md.user.maxHp/4) {
+					md.user.status.substitute_hp = md.user.maxHp/4;
+					md.user.currHp -= md.user.maxHp/4;
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "submission";
+		m.power = 80;
+		m.maxPP = 40;
+		m.accuracy = 80;
+		m.type = Type.FIGHTING;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.currHp -= md.damage/4;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "stunspore";
+		m.power = 0;
+		m.maxPP = 48;
+		m.accuracy = 75;
+		m.type = Type.GRASS;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "stringshot";
+		m.power = 0;
+		m.maxPP = 64;
+		m.accuracy = 95;
+		m.type = Type.BUG;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.statMod(Pokemon.Stat.SPE, -1);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "spore";
+		m.power = 0;
+		m.maxPP = 21;
+		m.accuracy = 100;
+		m.type = Type.GRASS;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));// TODO: check sleep distribution
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "softboiled";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = -1;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.currHp = Integer.min(md.user.maxHp, md.user.currHp + md.user.maxHp/2);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "smokescreen";
+		m.power = 0;
+		m.maxPP = 32;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.statMod(Pokemon.Stat.ACC, -1);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "sludge";
+		m.power = 65;
+		m.maxPP = 32;
+		m.accuracy = 100;
+		m.type = Type.POISON;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (Math.random() < 0.4) {
+					md.target.setStatusCondition(Pokemon.StatusCondition.POISON, 0);
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "sleeppowder";
+		m.power = 0;
+		m.maxPP = 21;
+		m.accuracy = 75;
+		m.type = Type.GRASS;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "slash";
+		m.power = 70;
+		m.maxPP = 32;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = true;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); // TODO: make sure don't need to include charge in secondary
+		m.name = "skyattack";
+		m.power = 140;
+		m.maxPP = 8;
+		m.accuracy = 90;
+		m.type = Type.FLYING;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "skyattack";
+		m.power = 140;
+		m.maxPP = 8;
+		m.accuracy = 90;
+		m.type = Type.FLYING;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "sing";
+		m.power = 0;
+		m.maxPP = 21;
+		m.accuracy = 55;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); // TODO: user's defense is halved during damage calculation 
+		m.name = "selfdestruct";
+		m.power = 130;
+		m.maxPP = 8;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.currHp = 0;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "seismictoss";
+		m.power = 0;
+		m.maxPP = 32;
+		m.accuracy = 100;
+		m.type = Type.FIGHTING;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.currHp = 0;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "screech";
+		m.power = 0;
+		m.maxPP = 64;
+		m.accuracy = 85;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.statMod(Pokemon.Stat.DEF, -2);
+			}
+		};
+		moves.put(m.name, m);
+		
+		
+		m = new Move(); 
+		m.name = "sandattack";
+		m.power = 0;
+		m.maxPP = 21;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.statMod(Pokemon.Stat.ACC, -1);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "rockslide";
+		m.power = 75;
+		m.maxPP = 16;
+		m.accuracy = 90;
+		m.type = Type.ROCK;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "rest";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = -1;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				// TODO: function to reset major status conditions
+				md.user.currHp = md.user.maxHp;
+				md.user.setStatusCondition(Pokemon.StatusCondition.SLEEP, 2);
+			}
+		};
+		moves.put(m.name, m);
+		
+		// TODO: check what reflect actually does (base defense or stat mod)
+		m = new Move(); 
+		m.name = "reflect";
+		m.power = 0;
+		m.maxPP = 20;
+		m.accuracy = -1;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.statMod(Pokemon.Stat.DEF, 2);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "recover";
+		m.power = 0;
+		m.maxPP = 32;
+		m.accuracy = -1;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.currHp = Integer.min(md.user.maxHp, md.user.currHp + md.user.maxHp/2);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "razorleaf";
+		m.power = 55;
+		m.maxPP = 40;
+		m.accuracy = 95;
+		m.type = Type.GRASS;
+		m.highCritRatio = true;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "quickattack";
+		m.power = 40;
+		m.maxPP = 48;
+		m.accuracy = 95;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 1;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "psywave";
+		m.power = 0;
+		m.maxPP = 21;
+		m.accuracy = 80;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "psychic";
+		m.power = 90;
+		m.maxPP = 16;
+		m.accuracy = 100;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (3.0 * Math.random() < 1) {
+					md.target.statMod(Pokemon.Stat.SPC, -1);
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "poisonsting";
+		m.power = 15;
+		m.maxPP = 56;
+		m.accuracy = 100;
+		m.type = Type.POISON;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (Math.random() < 0.2) {
+					md.target.setStatusCondition(Pokemon.StatusCondition.POISON, 0);
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "pinmissile";
+		m.power = 14;
+		m.maxPP = 32;
+		m.accuracy = 85;
+		m.type = Type.BUG;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "nightshade";
+		m.power = 0;
+		m.maxPP = 21;
+		m.accuracy = 100;
+		m.type = Type.GHOST;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "mirrormove";
+		m.power = 0;
+		m.maxPP = 32;
+		m.accuracy = -1;
+		m.type = Type.FLYING;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "mimic";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = -1;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.status.move = md.target.moves[(int)(Math.random() * 4)];
+			}
+		};
+		moves.put(m.name, m);
+		
+		
+		m = new Move(); 
+		m.name = "megakick";
+		m.power = 120;
+		m.maxPP = 8;
+		m.accuracy = 75;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "megadrain";
+		m.power = 40;
+		m.maxPP = 16;
+		m.accuracy = 100;
+		m.type = Type.GRASS;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.currHp = Integer.min(md.user.maxHp, md.user.currHp + md.damage/2);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "meditate";
+		m.power = 0;
+		m.maxPP = 64;
+		m.accuracy = -1;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.statMod(Pokemon.Stat.ATK, 1);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "lovelykiss";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = 75;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "leer";
+		m.power = 0;
+		m.maxPP = 48;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.statMod(Pokemon.Stat.DEF, -1);
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "icebeam";
+		m.power = 95;
+		m.maxPP = 16;
+		m.accuracy = 100;
+		m.type = Type.ICE;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (Math.random() < 0.1 ) {
+					md.target.setStatusCondition(Pokemon.StatusCondition.FREEZE, 0);
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "hypnosis";
+		m.power = 0;
+		m.maxPP = 32;
+		m.accuracy = 60;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "hyperbeam";
+		m.power = 150;
+		m.maxPP = 8;
+		m.accuracy = 90;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (md.target.currHp > 0) {
+					md.user.status.recharge = true;
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move(); 
+		m.name = "hydropump";
+		m.power = 120;
+		m.maxPP = 8;
+		m.accuracy = 90;
+		m.type = Type.WATER;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
 			}
 		};
 		moves.put(m.name, m);
