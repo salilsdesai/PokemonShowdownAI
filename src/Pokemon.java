@@ -26,14 +26,14 @@ public class Pokemon {
 		public int[] statMod;
 		/* Statistics which vary a pokemon's ability to move. All values are
 		 * initialized to false. */
-		public boolean bide, freeze, paralyze, confuse, burn, recharge, charge, poison;
+		public boolean bide, freeze, paralyze, burn, recharge, charge, poison, flinch;
 		/* Statistics which can vary in effect. [badly_poisoned] stores the
 		 * number of turns since being inflicted as damage increases for each 
 		 * successive turn. [sleep] will store the number of remaining turns
 		 * for which the current pokemon will be asleep for, and [substitute]
 		 * will hold the remaining [hp] of a dummy substitute used to tank 
 		 * the opponents attacks. All values are initialized to 0. */
-		public int badly_poisoned_counter, sleep_turns_left, substitute_hp, bide_damage;
+		public int badly_poisoned_counter, sleep_turns_left, confuse_turns_left, substitute_hp, bide_damage;
 		/* [move] will store an opponent's move learned through [mimic]. If
 		 * [mimic] is unknown or never used, value will be [null]. */
 		public Move move;
@@ -102,6 +102,72 @@ public class Pokemon {
 	public boolean isAlive() {
 		return (this.currHp > 0); 
 	}
+	
+	public enum StatusCondition {
+		FREEZE, PARALYZE, CONFUSE, BURN, POISON, BADLY_POISON, SLEEP, FLINCH
+	}
+	
+	
+	/**
+	 * Returns whether or not this pokemon has a major status, meaning a new
+	 * major status cannot be assigned
+	 */
+	private boolean hasMajorStatus() {
+		return (this.status.freeze || this.status.paralyze || this.status.burn || this.status.poison || 
+				(this.status.badly_poisoned_counter > 0) || (this.status.sleep_turns_left > 0));
+	}
+	
+	/**
+	 * Set a pokemon to have a particular status condition if possible, otherwise do nothing
+	 * n is parameter used by some status conditions, and ignored by all others
+	 * - Sleep: n = number of turns sleep should last
+	 * - Confuse: n = number of turns confusion should last 
+	 */
+	public void setStatusCondition(StatusCondition s, int n) {
+		switch (s) {
+			case FREEZE:
+				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
+					this.status.freeze = true;
+				}	
+			break;
+			case PARALYZE:
+				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
+					this.status.paralyze = true;
+				}	
+			break;
+			case CONFUSE:
+				if(this.status.confuse_turns_left == 0 && this.status.substitute_hp == 0) {
+					this.status.confuse_turns_left = n;
+				}	
+			break;
+			case BURN:
+				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
+					this.status.burn = true;
+				}	
+			break;
+			case POISON:
+				if(!this.hasMajorStatus() && this.status.substitute_hp == 0 && this.types[0] != Type.POISON && this.types[1] != Type.POISON) {
+					this.status.poison = true;
+				}	
+			break;
+			case BADLY_POISON: 
+				if(!this.hasMajorStatus() && this.status.substitute_hp == 0 && this.types[0] != Type.POISON && this.types[1] != Type.POISON) {
+					this.status.badly_poisoned_counter = 1;
+				}	
+			break;
+			case SLEEP:
+				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
+					this.status.sleep_turns_left = n;
+				}	
+			break;
+			case FLINCH:
+				if(this.status.substitute_hp == 0) {
+					this.status.flinch = true;
+				}	
+			break;
+		}
+	}
+	
 	
 	/**
 	 * Resets the statistics and certain statuses of a pokemon. Intended to be used

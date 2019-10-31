@@ -180,6 +180,20 @@ public class Move {
 		*/
 		
 		Move m = new Move();
+		// Agility
+		m = new Move();
+		m.name = "agility";
+		m.maxPP = 30;
+		m.power = 0;
+		m.accuracy = -1;
+		m.type = Type.PSYCHIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
+			md.user.status.statMod[4] = Math.max(md.user.status.statMod[4] + 2, 6);
+		}};
+		moves.put(m.name, m);
+		
 		m.name = "twineedle";
 		m.power = 50;
 		m.maxPP = 32;
@@ -212,32 +226,101 @@ public class Move {
 			}
 		};
 		moves.put(m.name, m);
-		Move m;
 		
-		
-		// Agility
 		m = new Move();
-		m.name = "agility";
-		m.maxPP = 30;
+		m.name = "transform";
 		m.power = 0;
+		m.maxPP = 16;
 		m.accuracy = -1;
-		m.type = Type.PSYCHIC;
+		m.type = Type.NORMAL;
 		m.highCritRatio = false;
 		m.priority = 0;
-		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
-			md.user.status.statMod[4] = Math.max(md.user.status.statMod[4] + 2, 6);
-		}};
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.user.status.transformed = md.target;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "toxic";
+		m.power = 0;
+		m.maxPP = 16;
+		m.accuracy = 90;
+		m.type = Type.POISON;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.status.badly_poisoned_counter = 1;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "thunderbolt";
+		m.power = 95;
+		m.maxPP = 24;
+		m.accuracy = 100;
+		m.type = Type.ELECTRIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (Math.random() < 0.1) {
+					md.target.status.paralyze = true;
+				}
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "thunderwave";
+		m.power = 0;
+		m.maxPP = 32;
+		m.accuracy = 100;
+		m.type = Type.ELECTRIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.status.paralyze = true;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "thunder";
+		m.power = 110;
+		m.maxPP = 16;
+		m.accuracy = 70;
+		m.type = Type.ELECTRIC;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				md.target.status.paralyze = true;
+			}
+		};
 		moves.put(m.name, m);
 		
 		
-//		public String name;
-//		public int maxPP, 
-//		public int power;
-//		public int accuracy; /** Base accuracy of a move, or -1 if it doesn't check for accuracy */
-//		public Type type;
-//		public boolean highCritRatio;
-//		public int priority;
-//		public Consumer<MoveDamage> secondaryEffect;
+		m = new Move();
+		m.name = "tailwhip";
+		m.power = 0;
+		m.maxPP = 48;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				if (md.target.status.statMod[2] != -3) {
+					md.target.status.statMod[2]--;
+				}
+			}
+		};
+		moves.put(m.name, m);
 	}
 	
 }
