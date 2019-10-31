@@ -201,6 +201,15 @@ public class Pokemon {
 	}
 	
 	
+	/**
+	 * Returns the value of the specified stat for this pokemon
+	 * after applying stat modifications
+	 */
+	public int modifiedStat(Stat s) {
+		return 0;
+		// TODO
+	}
+	
 	public void transformTo(Pokemon p) {
 		String[] m = new String[p.moves.length];
 		for(int i = 0; i < p.moves.length; i++)
