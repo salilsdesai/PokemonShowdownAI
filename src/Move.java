@@ -51,6 +51,7 @@ public class Move {
 		}
 		if (user.status.sleep_turns_left > 0) {
 			user.status.sleep_turns_left--;
+			return;
 		}
 		// If the pokemon hurt itself in its confusion, apply damage and return.
 		if (user.status.confuse_turns_left > 0) {
@@ -124,9 +125,18 @@ public class Move {
 				damage = getMove(target.lastMoveUsed.name).damageDealt(user, target);
 			}
 		}
+		else if(name.equals("counter")) {
+			// For counter, power is stored to be the amount of physical damage
+			// dealt in this turn
+			damage = power;
+		}
 		
 		// apply the damage onto the target
 		target.currHp = Math.max(0, target.currHp - damage);
+		
+		// If this was a physical move, store Counter's power as twice the damage done
+		if(this.type.isPhysical())
+			getMove("counter").power = 2*damage;
 		
 		// Set the [lastMoveUsed] and [lastAttacker].
 		user.lastMoveUsed = this;
@@ -356,7 +366,6 @@ public class Move {
 		m.highCritRatio = false;
 		m.priority = -1;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
-			// TODO: Handle counter properly
 		}};
 		moves.put(m.name, m);
 		

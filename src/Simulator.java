@@ -137,7 +137,9 @@ public class Simulator {
 	
 	/**
 	 * Perform all necessary processes at the end of turns
-	 * eg. Poison/Burn damage, reset mirror move, etc.
+	 * - Poison/Burn damage
+	 * - reset mirror move
+	 * - reset counter damage
 	 */
 	public void endOfTurn(Team t1, Team t2) {
 		// TODO
