@@ -168,6 +168,32 @@ public class Pokemon {
 		}
 	}
 	
+	public enum Stat {
+		HP, ATK, DEF, SPC, SPE
+	}
+	
+	public void statMod(Stat s, int level) {
+		int i = 0;
+		switch (s) {
+			case HP:
+				i = 0;
+			break;
+			case ATK:
+				i = 1;
+			break;
+			case DEF:
+				i = 2;
+			break;
+			case SPC:
+				i = 3;
+			break;
+			case SPE:
+				i = 4;
+			break;
+		}
+		this.status.statMod[i] = Math.max(Math.min(this.status.statMod[i] + level, 6), -6);
+	}
+	
 	
 	/**
 	 * Resets the statistics and certain statuses of a pokemon. Intended to be used
