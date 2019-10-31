@@ -1,16 +1,7 @@
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
-import org.json.simple.*;
-import org.json.simple.parser.*;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class Move {
 	public static class MoveDamage {
@@ -58,16 +49,20 @@ public class Move {
 		if (user.status.freeze) {
 			return;
 		}
-		if (user.status.sleep_turns_left-- > 0) {
-			return;
+		if (user.status.sleep_turns_left > 0) {
+			user.status.sleep_turns_left--;
 		}
 
+		int modifiedAccuracy = 
+			(int)(
+				accuracy * 
+				Math.pow(1 + 0.5*user.status.statMod[5], user.status.statMod[5] > 0 ? 1 : -1) * 
+				Math.pow(1 + 0.5*target.status.statMod[6], target.status.statMod[6] > 0 ? -1 : 1)
+			);
 		
 		// Accuracy Check
-		// TODO: Check user and target accuracy modifications
-		if((accuracy != -1 && (Math.random() * 100) > accuracy) || (Math.random() < 1.0/256)) {
+		if((accuracy != -1 && (Math.random() * 100) > modifiedAccuracy)) {
 			// The attack missed
-			// Any attack has a 1/256 chance of missing due to gen 1 glitch, independently of normal accuracy checks
 			return;
 		}
 		

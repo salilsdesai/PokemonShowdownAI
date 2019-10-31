@@ -230,12 +230,8 @@ public class Pokemon {
 				return 0;
 		}
 		
-		if(this.status.statMod[i] == 0)
-			return stat;
-		else if(this.status.statMod[i] > 0)
-			return (int)(stat*(1 + 0.5*this.status.statMod[i]));
-		else
-			return (int)(stat/(1 + 0.5*this.status.statMod[i]));
+		return (int)(stat * Math.pow(1 + 0.5*this.status.statMod[i], this.status.statMod[i] > 0 ? 1 : -1));
+		
 	}
 	
 	public void transformTo(Pokemon p) {
