@@ -151,12 +151,12 @@ public class Move {
 		
 		int attackingStat, defendingStat;
 		if(this.type.isPhysical()) {
-			attackingStat = user.atk;
-			defendingStat = target.def;
+			attackingStat = user.modifiedStat(Pokemon.Stat.ATK);
+			defendingStat = target.modifiedStat(Pokemon.Stat.DEF);
 		}
 		else {
-			attackingStat = user.spc;
-			defendingStat = target.spc;
+			attackingStat = user.modifiedStat(Pokemon.Stat.SPC);
+			defendingStat = target.modifiedStat(Pokemon.Stat.SPC);
 		}
 		
 		int baseDamage = (((((((2 * level)/5) + 2) * power * attackingStat)/(defendingStat))/50) + 2);
@@ -171,8 +171,6 @@ public class Move {
 		for(Type t : target.types) {
 			modifier *= this.type.effectiveness(t);
 		}
-	
-		//TODO: status + stat modifications
 		
 		return (int)(baseDamage * modifier);
 	}
