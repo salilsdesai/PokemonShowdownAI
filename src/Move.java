@@ -52,6 +52,14 @@ public class Move {
 		if (user.status.sleep_turns_left > 0) {
 			user.status.sleep_turns_left--;
 		}
+		// If the pokemon hurt itself in its confusion, apply damage and return.
+		if (user.status.confuse_turns_left > 0) {
+			user.status.confuse_turns_left--;
+			if(Math.random() < 0.5) {
+				user.currHp -= getMove("CONFUSED").damageDealt(user, user);
+				return;
+			}
+		}
 
 		int modifiedAccuracy = 
 			(int)(
@@ -70,14 +78,8 @@ public class Move {
 		}
 		
 		int damage = damageDealt(user, target);
-		// If the pokemon hurt itself in its confusion, apply damage and return.
-		if (user.status.confuse_turns_left-- > 0 && Math.random() < 0.5) {
-			damage = moves.get("CONFUSED").damageDealt(user, user);
-			user.currHp -= damage;
-			return;
-		}
 		
-		// special case where damage depends on the user's level
+		// special damage calculation cases
 		if (name.equals("dragonrage")) {
 			damage = 40;
 		}
@@ -107,14 +109,19 @@ public class Move {
 			}
 		}
 		// special case where move requires charging
-		else if (name.equals("skyattack") && !user.status.charge) {
-			user.status.charge = true;
-			return;
+		else if (name.equals("skyattack")) {
+			if(!user.status.charge) {
+				user.status.charge = true;
+				return;
+			}
+			else {
+				user.status.charge = false;
+			}
 		}
 		// special case where move depends on opponent's moveset
 		else if (name.equals("mirrormove") && target.lastMoveUsed != null) {
 			if (user.lastAttacker == target && !target.lastMoveUsed.name.equals("mirrormove")) {
-				target.lastMoveUsed.use(user, target);
+				damage = getMove(target.lastMoveUsed.name).damageDealt(user, target);
 			}
 		}
 		
@@ -126,7 +133,7 @@ public class Move {
 		target.lastAttacker = user;
 		
 		// Apply any secondary effects of the current move.
-		moves.get(name).secondaryEffect.accept(new MoveDamage(user, target, damage));
+		this.secondaryEffect.accept(new MoveDamage(user, target, damage));
 		
 	}
 	
