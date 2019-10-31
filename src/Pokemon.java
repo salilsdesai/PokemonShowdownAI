@@ -169,45 +169,73 @@ public class Pokemon {
 	}
 	
 	public enum Stat {
-		HP, ATK, DEF, SPC, SPE, ACC, EVA
+		HP, ATK, DEF, SPC, SPE, ACC, EVA;
+		
+		public int getIndex() {
+			switch (this) {
+				case HP:
+					return 0;
+				case ATK:
+					return 1;
+				case DEF:
+					return 2;
+				case SPC:
+					return 3;
+				case SPE:
+					return 4;
+				case ACC:
+					return 5;
+				case EVA:
+					return 6;
+			}
+			return 0;
+		}
+			
 	}
 	
 	public void statMod(Stat s, int level) {
-		int i = 0;
-		switch (s) {
-			case HP:
-				i = 0;
-			break;
-			case ATK:
-				i = 1;
-			break;
-			case DEF:
-				i = 2;
-			break;
-			case SPC:
-				i = 3;
-			break;
-			case SPE:
-				i = 4;
-			break;
-			case ACC:
-				i = 5;
-			break;
-			case EVA:
-				i = 6;
-			break;
-		}
-		this.status.statMod[i] = Math.max(Math.min(this.status.statMod[i] + level, 6), -6);
+		this.status.statMod[s.getIndex()] = Math.max(Math.min(this.status.statMod[s.getIndex()] + level, 6), -6);
 	}
 	
 	
 	/**
 	 * Returns the value of the specified stat for this pokemon
-	 * after applying stat modifications
+	 * after applying stat modifications and paralysis speed drop
+	 * 
+	 * Precondition: Don't pass in hp, accuracy or evasiveness
 	 */
 	public int modifiedStat(Stat s) {
-		return 0;
-		// TODO
+		int stat = 0;
+		int i = 0;
+		switch (s) {
+			case ATK:
+				stat = this.atk;
+				i = 1;
+			break;
+			case DEF:
+				stat = this.def;
+				i = 2;
+			break;
+			case SPC:
+				stat = this.spc;
+				i = 3;
+			break;
+			case SPE:
+				stat = this.spe / (this.status.paralyze ? 4 : 1);
+				i = 4;
+			break;
+			case HP:
+			case ACC:
+			case EVA:
+				return 0;
+		}
+		
+		if(this.status.statMod[i] == 0)
+			return stat;
+		else if(this.status.statMod[i] > 0)
+			return (int)(stat*(1 + 0.5*this.status.statMod[i]));
+		else
+			return (int)(stat/(1 + 0.5*this.status.statMod[i]));
 	}
 	
 	public void transformTo(Pokemon p) {
