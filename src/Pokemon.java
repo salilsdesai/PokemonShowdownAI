@@ -201,6 +201,20 @@ public class Pokemon {
 	}
 	
 	
+	public void transformTo(Pokemon p) {
+		String[] m = new String[p.moves.length];
+		for(int i = 0; i < p.moves.length; i++)
+			m[i] = p.moves[i].name;
+		this.status.transformed = new Pokemon(p.species, m, p.level);
+		
+		this.status.transformed.level = this.level;
+		this.status.transformed.currHp = this.currHp;
+		this.status.transformed.maxHp = this.maxHp;
+		this.status.transformed.status = this.status;
+		this.status.transformed.status.statMod = Arrays.copyOf(p.status.statMod, p.status.statMod.length);
+	}
+	
+	
 	/**
 	 * Resets the statistics and certain statuses of a pokemon. Intended to be used
 	 * only after a pokemon is switched out (when this happens, it is intended for

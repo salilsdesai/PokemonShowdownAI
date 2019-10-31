@@ -236,9 +236,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-			    md.user.status.transformed = md.target;
+				md.user.transformTo(md.target);
 			}
-		    };
+		};
 		moves.put(m.name, m);
 		
 		// Amnesia
@@ -547,7 +547,7 @@ public class Move {
 		}};
 		moves.put(m.name, m);
 
-			    	
+					
 		m = new Move();
 		m.name = "toxic";
 		m.power = 0;
@@ -890,9 +890,9 @@ public class Move {
 		};
 		moves.put(m.name, m);
 		
-		m = new Move(); // TODO: user's defense is halved during damage calculation 
+		m = new Move();
 		m.name = "selfdestruct";
-		m.power = 130;
+		m.power = 260;
 		m.maxPP = 8;
 		m.accuracy = 100;
 		m.type = Type.NORMAL;
@@ -1294,4 +1294,8 @@ public class Move {
 		moves.put(m.name, m);
 	}
 	
+	public static void main(String[] args) {
+		loadMoves();
+		System.out.println(moves.get("selfdestruct"));
+	}
 }
