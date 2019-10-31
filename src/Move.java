@@ -38,8 +38,6 @@ public class Move {
 		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});
 	}
 	
-	// TODO: Add status/stat modification/secondary effect
-	
 	/**
 	 * Have [user] attempt to use [this] on a [target]
 	 * "attempt to use" means behave as if the user had selected the move, and it is 
@@ -53,7 +51,17 @@ public class Move {
 	 */
 	public void use(Pokemon user, Pokemon target) {
 		
-		// TODO: Check for status conditions that would prevent the move from being executed
+		// Check for status conditions that would prevent the move from being executed.
+		if (user.status.paralyze && Math.random() < 0.25) {
+			return;
+		}
+		if (user.status.freeze) {
+			return;
+		}
+		if (user.status.sleep_turns_left-- > 0) {
+			return;
+		}
+
 		
 		// Accuracy Check
 		// TODO: Check user and target accuracy modifications
@@ -64,8 +72,13 @@ public class Move {
 		}
 		
 		int damage = damageDealt(user, target);
+		// If the pokemon hurt itself in its confusion, apply damage and return.
+		if (user.status.confuse_turns_left-- > 0 && Math.random() < 0.5) {
+			damage = moves.get("CONFUSED").damageDealt(user, user);
+			user.currHp -= damage;
+			return;
+		}
 		
-		// TODO: consider "superfang"
 		// special case where damage depends on the user's level
 		if (name.equals("dragonrage")) {
 			damage = 40;
@@ -75,6 +88,9 @@ public class Move {
 		}
 		else if (name.equals("psywave")) {
 			damage = (int)(Math.random() * 1.5 * user.level) + 1;
+		}
+		else if (name.equals("superfang")) {
+			damage = target.currHp/2;
 		}
 		// special case where number of hits is random (so damage is not constant)
 		else if (name.equals("pinmissle")) {
@@ -107,11 +123,12 @@ public class Move {
 		// apply the damage onto the target
 		target.currHp = Math.max(0, target.currHp - damage);
 		
-		// Set the [lastMoveUsed] and [lastAttacker]
+		// Set the [lastMoveUsed] and [lastAttacker].
 		user.lastMoveUsed = this;
 		target.lastAttacker = user;
 		
-		// TODO: Check for secondary effects
+		// Apply any secondary effects of the current move.
+		moves.get(name).secondaryEffect.accept(new MoveDamage(user, target, damage));
 		
 	}
 	
@@ -165,22 +182,9 @@ public class Move {
 	private static void loadMoves() {
 		
 		moves = new HashMap<String, Move>();
-		
-		/*
-		 
-		TODO: Add all moves to map in this format:
-		 
 		Move m = new Move();
-		m.power = ...
-		m.... = ...
-		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
-			System.out.println(md.user);
-		}};
-		moves.put(name, m);
-		 
-		*/
 		
-		Move m = new Move();
+		
 		// Agility
 		m = new Move();
 		m.name = "agility";
@@ -1284,6 +1288,21 @@ public class Move {
 		m.maxPP = 8;
 		m.accuracy = 90;
 		m.type = Type.WATER;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() {
+			public void accept(MoveDamage md) {
+				return;
+			}
+		};
+		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "CONFUSED";
+		m.power = 40;
+		m.maxPP = Integer.MAX_VALUE;
+		m.accuracy = -1;
+		m.type = Type.NONE;
 		m.highCritRatio = false;
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
