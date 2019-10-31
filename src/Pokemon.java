@@ -17,9 +17,9 @@ public class Pokemon {
 	
 	/* Class which reprsents all of a pokemon's possible status effects. */
 	public static class Status {
-		/* An array of length 5 containing the counter storing how many times
+		/* An array of length 7 containing the counter storing how many times
 		 * a particular statistic has been modified. The indices 0-4 represent
-		 * [hp, atk, def, spc, spe] respectively. A positive value [y] indicates a
+		 * [hp, atk, def, spc, spe, acc, eva] respectively. A positive value [y] indicates a
 		 * modified statistic of [x(1 + 0.5y)] where [x] is the original stat
 		 * and a negative value [y] indicates a modified statistic [x/(1 + 0.5y)]. 
 		 * All values are initialized to 0. */
@@ -42,7 +42,7 @@ public class Pokemon {
 		public Pokemon transformed;
 		
 		public Status() {
-			statMod = new int[5];
+			statMod = new int[7];
 		}
 	}
 	
@@ -169,7 +169,7 @@ public class Pokemon {
 	}
 	
 	public enum Stat {
-		HP, ATK, DEF, SPC, SPE
+		HP, ATK, DEF, SPC, SPE, ACC, EVA
 	}
 	
 	public void statMod(Stat s, int level) {
@@ -189,6 +189,12 @@ public class Pokemon {
 			break;
 			case SPE:
 				i = 4;
+			break;
+			case ACC:
+				i = 5;
+			break;
+			case EVA:
+				i = 6;
 			break;
 		}
 		this.status.statMod[i] = Math.max(Math.min(this.status.statMod[i] + level, 6), -6);
