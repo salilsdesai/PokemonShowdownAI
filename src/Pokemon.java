@@ -58,9 +58,6 @@ public class Pokemon {
 		return new String(sb);
 	}
 	
-	//TODO: status effects ex. sleep, substitute
-	//TODO: stat modifications ex. atk down, def up
-	
 	/**
 	 * Construct a new pokemon with the specified species and moves.
 	 * Uses Pokedex JSON to get base stats and types, and uses the Move objects
