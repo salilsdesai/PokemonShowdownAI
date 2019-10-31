@@ -564,7 +564,6 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			if(md.damage == 0)
 				md.user.currHp -= 1;
-			// TODO: set recoil if it misses
 		}};
 		moves.put(m.name, m);
 
@@ -784,7 +783,7 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));// TODO: check sleep distribution
+				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
 			}
 		};
 		moves.put(m.name, m);
@@ -866,7 +865,7 @@ public class Move {
 		};
 		moves.put(m.name, m);
 		
-		m = new Move(); // TODO: make sure don't need to include charge in secondary
+		m = new Move();
 		m.name = "skyattack";
 		m.power = 140;
 		m.maxPP = 8;
@@ -997,7 +996,13 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				// TODO: function to reset major status conditions
+				// Clear existing statuses
+				md.user.status.poison = false;
+				md.user.status.freeze = false;
+				md.user.status.paralyze = false;
+				md.user.status.burn = false;
+				md.user.status.badly_poisoned_counter = 0;
+				
 				md.user.currHp = md.user.maxHp;
 				md.user.setStatusCondition(Pokemon.StatusCondition.SLEEP, 2);
 			}
