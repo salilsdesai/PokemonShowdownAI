@@ -99,9 +99,8 @@ public class Simulator {
 			// Relevant statistics needed for analyzing turn-order.
 			int p1 = aa1.move.priority;
 			int p2 = aa2.move.priority;
-			// TODO: take speed stat modifications into account
-			int spd1 = aa1.user.spe;
-			int spd2 = aa2.user.spe;
+			int spd1 = aa1.user.modifiedStat(Pokemon.Stat.SPE);
+			int spd2 = aa2.user.modifiedStat(Pokemon.Stat.SPE);
 			
 			/* Player 1's pokemon can attack first if and only if:
 			 * 1) It's move is higher priority, or
