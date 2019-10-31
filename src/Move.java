@@ -63,6 +63,9 @@ public class Move {
 		// Accuracy Check
 		if((accuracy != -1 && (Math.random() * 100) > modifiedAccuracy)) {
 			// The attack missed
+			if(this.name.equals("highjumpkick")) {
+				user.currHp -= 1;
+			}
 			return;
 		}
 		
