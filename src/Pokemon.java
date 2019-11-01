@@ -164,6 +164,8 @@ public class Pokemon {
 	 * - Confuse: n = number of turns confusion should last 
 	 */
 	public void setStatusCondition(StatusCondition s, int n) {
+		if(!this.isAlive())
+			return;
 		switch (s) {
 			case FREEZE:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
@@ -204,7 +206,7 @@ public class Pokemon {
 			case SLEEP:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
 					this.status.sleep_turns_left = n;
-					Simulator.addMessage(this.species + " made a substitute (" + this.status.substitute_hp + ")");
+					Simulator.addMessage(this.species + " fell asleep (" + this.status.sleep_turns_left + ")");
 				}	
 			break;
 		}
@@ -236,6 +238,8 @@ public class Pokemon {
 	}
 	
 	public void statMod(Stat s, int level) {
+		if(!this.isAlive())
+			return;
 		this.status.statMod[s.getIndex()] = Math.max(Math.min(this.status.statMod[s.getIndex()] + level, 6), -6);
 		Simulator.addMessage(this.species + "'s stats changed: " + Arrays.toString(this.status.statMod));
 	}

@@ -42,12 +42,18 @@ public class Move {
 	 */
 	public void use(Pokemon user, Pokemon target) {
 		
+		if(this.name.equals("RECHARGE")) {
+			Simulator.addMessage(user.species + " recharged");
+			return;
+		}
+		
 		// Check for status conditions that would prevent the move from being executed.
 		if (user.status.paralyze && Math.random() < 0.25) {
 			Simulator.addMessage(user.species + " is fully paralyzed");
 			return;
 		}
 		if (user.status.freeze) {
+			// TODO: Make freeze end when it should
 			Simulator.addMessage(user.species + " is frozen solid");
 			return;
 		}
@@ -71,6 +77,8 @@ public class Move {
 			}
 		}
 
+		Simulator.addMessage(user.species + " used " + this.name);
+		
 		int modifiedAccuracy = 
 			(int)(
 				accuracy * 
@@ -84,6 +92,7 @@ public class Move {
 			if(this.name.equals("highjumpkick")) {
 				user.currHp -= 1;
 			}
+			Simulator.addMessage("The attack missed!");
 			return;
 		}
 		
@@ -91,6 +100,7 @@ public class Move {
 		if (name.equals("skyattack")) {
 			if(!user.status.charge) {
 				user.status.charge = true;
+				Simulator.addMessage(user.species + " began charging ");
 				return;
 			}
 			else {
@@ -161,11 +171,15 @@ public class Move {
 		if(target.status.substitute_hp > 0) {
 			damage = Math.min(damage, target.status.substitute_hp);
 			target.status.substitute_hp -= damage;
-			Simulator.addMessage(target.species + "'s substitute took " + damage + " damage (" + target.status.substitute_hp);
+			if(damage > 0) {
+				Simulator.addMessage(target.species + "'s substitute took " + damage + " damage (" + target.status.substitute_hp);
+			}
 		}
 		else {
 			target.currHp = Math.max(0, target.currHp - damage);
-			Simulator.addMessage(target.species + " lost " + damage + " hp (" + target.currHp + "/" + target.maxHp + ")");
+			if (damage > 0) {
+				Simulator.addMessage(target.species + " lost " + damage + " hp (" + target.currHp + "/" + target.maxHp + ")");
+			}
 		}
 		
 		// If this was a physical move, store damage
@@ -195,6 +209,10 @@ public class Move {
 	 * Uses the following formula: https://bulbapedia.bulbagarden.net/wiki/Damage#Damage_calculation
 	 */
 	public int damageDealt(Pokemon user, Pokemon target) {
+		
+		if(this.power == 0)
+			return 0;
+		
 		boolean critical = (Math.random() < Pokedex.getDex().get(user.species).baseStats[4]/(!highCritRatio ? 512.0 : 64.0));
 		
 		if(critical) {
@@ -773,6 +791,7 @@ public class Move {
 				if (md.user.currHp > md.user.maxHp/4 && md.user.status.substitute_hp <= 0) {
 					md.user.status.substitute_hp = md.user.maxHp/4;
 					md.user.currHp -= md.user.maxHp/4;
+					Simulator.addMessage(md.user.species + "made a substitute (" + md.user.status.substitute_hp + ")");
 				}
 			}
 		};
@@ -1400,7 +1419,7 @@ public class Move {
 		m.highCritRatio = false;
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() { public void accept(MoveDamage md) {
-			return;
+			md.user.status.recharge = false;
 		}};
 		moves.put(m.name, m);
 		

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Simulator {	
 	public static class Team {
@@ -51,7 +52,7 @@ public class Simulator {
 			return actions;
 		}
 		public String toString() {
-			return "Active: " + activePokemon + "\n" + "Full Team: " + Arrays.toString(pokemonList.toArray());
+			return "Active: " + activePokemon + "\n\t" + "Full Team: " + Arrays.toString(pokemonList.toArray());
 		}
 	}
 	public enum ActionType {
@@ -118,16 +119,18 @@ public class Simulator {
 	 * Example: 'quickattack' has priority +1, so it will go before any move with
 	 * priority less than +1.
 	 */
-	public void executeTurn(Action a1, Action a2, Team t1, Team t2) {
+	public static void executeTurn(Action a1, Action a2, Team t1, Team t2) {
 		// If any actions are switch actions, execute them first.
 		if (a1.getType() == ActionType.SWITCH) {
 			SwitchAction s1 = (SwitchAction)a1;
+			addMessage(t1.activePokemon.species + " was switched with " + s1.switchTo.species);
 			t1.activePokemon.resetUponSwitch();
 			t1.activePokemon = s1.switchTo;
 			
 		}
 		if (a2.getType() == ActionType.SWITCH) {
 			SwitchAction s2 = (SwitchAction)a2;
+			addMessage(t2.activePokemon.species + " was switched with " + s2.switchTo.species);
 			t2.activePokemon.resetUponSwitch();
 			t2.activePokemon = s2.switchTo;
 		}
@@ -201,25 +204,27 @@ public class Simulator {
 	 * - reset mirror move
 	 * - reset counter damage
 	 */
-	public void endOfTurn(Team t1, Team t2) {
+	public static void endOfTurn(Team t1, Team t2) {
 
 		// TODO: Set mirror move
 		
 		// Apply poison/burn damage, reset counter damage
 		for(Pokemon p : new Pokemon[] {t1.activePokemon, t2.activePokemon}) {
-			if(p.status.burn || p.status.poison) {
-				p.currHp -= p.maxHp/16;
+			if(p.isAlive()) {
+				if(p.status.burn || p.status.poison) {
+					p.currHp -= p.maxHp/16;
+					Simulator.addMessage(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+				}
+				if(p.status.badly_poisoned_counter > 0) {
+					p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
+					p.status.badly_poisoned_counter++;
+					Simulator.addMessage(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+				}
+				p.status.counter_damage = 0;
 			}
-			if(p.status.badly_poisoned_counter > 0) {
-				p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
-				p.status.badly_poisoned_counter++;
-			}
-			p.status.counter_damage = 0;
 		}
 		
 		// TODO: Make players switch in new pokemon if current ones are fainted
-		
-		
 		
 		// Print and clear the current turn's message
 		System.out.println(Simulator.message);
@@ -227,6 +232,33 @@ public class Simulator {
 	}
 	
 	public static void main(String[] args) {
-		// TODO: Finish main function.		
+		Team t1 = new Team(TeamGenerator.randomTeam());
+		Team t2 = new Team(TeamGenerator.randomTeam());
+		
+		Scanner input = new Scanner(System.in);
+		
+		while(t1.activePokemon.isAlive() && t2.activePokemon.isAlive()) {
+			System.out.println(t1);
+			System.out.println(t2);
+			
+			ArrayList<ArrayList<Action>> bothPlayerActions = new ArrayList<ArrayList<Action>>();
+			bothPlayerActions.add(t1.getActions());
+			bothPlayerActions.add(t2.getActions());
+			
+			Action[] chosenActions = new Action[2];
+			for(int i = 0; i < 2; i++) {
+				System.out.println("t" + i + ", choose an action");
+				for(int j = 0; j < bothPlayerActions.get(i).size(); j++) {
+					System.out.println(j + ": " + bothPlayerActions.get(i).get(j));
+				}
+				int selection = input.nextInt();
+				chosenActions[i] = bothPlayerActions.get(i).get(selection);
+			}
+			
+			executeTurn(chosenActions[0], chosenActions[1], t1, t2);
+			endOfTurn(t1, t2);
+		}
+		
+		input.close();
 	}
 }
