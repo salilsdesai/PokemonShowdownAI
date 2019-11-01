@@ -26,7 +26,7 @@ public class Pokemon {
 		public int[] statMod;
 		/* Statistics which vary a pokemon's ability to move. All values are
 		 * initialized to false. */
-		public boolean bide, freeze, paralyze, burn, recharge, charge, poison, flinch;
+		public boolean bide, freeze, paralyze, burn, recharge, charge, poison;
 		/* Statistics which can vary in effect. [badly_poisoned] stores the
 		 * number of turns since being inflicted as damage increases for each 
 		 * successive turn. [sleep] will store the number of remaining turns
@@ -34,15 +34,17 @@ public class Pokemon {
 		 * will hold the remaining [hp] of a dummy substitute used to tank 
 		 * the opponents attacks. All values are initialized to 0. */
 		public int badly_poisoned_counter, sleep_turns_left, confuse_turns_left, substitute_hp, bide_damage;
-		/* [move] will store an opponent's move learned through [mimic]. If
-		 * [mimic] is unknown or never used, value will be [null]. */
-		public Move move;
+		/* [mimicIndex] is which index in the pokemon's moveslot mimic was originally
+		 * in before it got replaced, or -1 if it never got replaced
+		 * [mimicPP] is how much pp mimic had before it got replaced. */
+		public int mimicIndex, mimicPP;
 		/* [transform] will store the active transformed pokemon. If [transform]
 		 * is unknown or never used, value will be [null]. */
 		public Pokemon transformed;
 		
 		public Status() {
 			statMod = new int[7];
+			mimicIndex = -1;
 		}
 	}
 	
@@ -101,7 +103,7 @@ public class Pokemon {
 	}
 	
 	public enum StatusCondition {
-		FREEZE, PARALYZE, CONFUSE, BURN, POISON, BADLY_POISON, SLEEP, FLINCH
+		FREEZE, PARALYZE, CONFUSE, BURN, POISON, BADLY_POISON, SLEEP
 	}
 	
 	
@@ -155,11 +157,6 @@ public class Pokemon {
 			case SLEEP:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
 					this.status.sleep_turns_left = n;
-				}	
-			break;
-			case FLINCH:
-				if(this.status.substitute_hp == 0) {
-					this.status.flinch = true;
 				}	
 			break;
 		}
@@ -254,10 +251,27 @@ public class Pokemon {
 	 * and badly-poisoned counter to be cleared).
 	 */
 	public void resetUponSwitch() {
-		// Reset the status of [mirrormove] helpers.
+		
+		this.status.confuse_turns_left = 0;
+		this.status.substitute_hp = 0;
+		this.status.badly_poisoned_counter = 1;
+		
+		// Clear Transform
+		this.status.transformed = null;
+		
+		// Clear mimic
+		if(this.status.mimicIndex != -1) {
+			this.moves[this.status.mimicIndex] = Move.getMove("mimic");
+			this.pp[this.status.mimicIndex] = this.status.mimicPP;
+			this.status.mimicIndex = -1;
+		}
+		
+		for(int i = 0; i < this.status.statMod.length; i++) {
+			this.status.statMod[i] = 0;
+		}
+		
 		lastMoveUsed = null;
 		lastAttacker = null;
-		//TODO: reset the base stats of a pokemon and certain stat effects like confused
 	}
 	
 }

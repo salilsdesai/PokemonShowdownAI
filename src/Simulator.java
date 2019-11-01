@@ -12,6 +12,9 @@ public class Simulator {
 		public ArrayList<Action> getActions() {
 			ArrayList<Action> actions = new ArrayList<Action>();
 			
+			// TODO:
+			// Struggle, recharge, sky attack
+			
 			// Moves
 			for(int i = 0; i < activePokemon.moves.length; i++) {
 				if(activePokemon.pp[i] > 0) {

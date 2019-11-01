@@ -1168,13 +1168,20 @@ public class Move {
 		m.name = "mimic";
 		m.power = 0;
 		m.maxPP = 16;
-		m.accuracy = -1;
+		m.accuracy = 100;
 		m.type = Type.NORMAL;
 		m.highCritRatio = false;
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.user.status.move = md.target.moves[(int)(Math.random() * 4)];
+				for(int i = 0; i < md.user.moves.length; i++) {
+					if(md.user.moves[i].name.equals("mimic")) {
+						md.user.status.mimicIndex = i;
+						md.user.status.mimicPP = md.user.pp[i];
+						md.user.moves[i] = md.target.moves[(int)(Math.random() * 4)];
+						md.user.pp[i] = md.user.moves[i].maxPP;
+					}
+				}
 			}
 		};
 		moves.put(m.name, m);
