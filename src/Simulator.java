@@ -43,16 +43,27 @@ public class Simulator {
 			}
 			
 			// Switches
-			for(Pokemon p : pokemonList) {
-				if(p != activePokemon && p.isAlive()) {
-					actions.add(new SwitchAction(p));
-				}
-			}
+			actions.addAll(switchActions());
 			
 			return actions;
 		}
 		public String toString() {
 			return "Active: " + activePokemon + "\n\t" + "Full Team: " + Arrays.toString(pokemonList.toArray());
+		}
+		public boolean hasAlive() {
+			for(Pokemon p : pokemonList)
+				if(p.isAlive())
+					return true;
+			return false;
+		}
+		public ArrayList<Action> switchActions() {
+			ArrayList<Action> actions = new ArrayList<Action>();
+			for(Pokemon p : pokemonList) {
+				if(p != activePokemon && p.isAlive()) {
+					actions.add(new SwitchAction(p));
+				}
+			}
+			return actions;
 		}
 	}
 	public enum ActionType {
@@ -107,6 +118,8 @@ public class Simulator {
 		else
 			message += "\n" + s;
 	}
+	
+	public static Scanner input;
 	
 	/**
 	 * Executes a single turn of battle given that player 1 selects action [a1]
@@ -225,19 +238,32 @@ public class Simulator {
 		}
 		
 		// TODO: Make players switch in new pokemon if current ones are fainted
-		
-		// Print and clear the current turn's message
-		System.out.println(Simulator.message);
-		Simulator.message = null;
+		for(Team t : new Team[] {t1, t2}) {
+			if(!t.activePokemon.isAlive()) {
+				System.out.println(t.activePokemon.species + " fainted ");
+				if(t.hasAlive()) {
+					ArrayList<Action> a = t.switchActions();
+					System.out.println("Choose a switch in");
+					for(int i = 0; i < a.size(); i++) {
+						System.out.println("" + i + ": " + a.get(i));
+					}
+					int choice = input.nextInt();
+					SwitchAction sa = (SwitchAction)(a.get(choice));
+					t.activePokemon = sa.switchTo;
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
+		input = new Scanner(System.in);
+		
 		Team t1 = new Team(TeamGenerator.randomTeam());
 		Team t2 = new Team(TeamGenerator.randomTeam());
 		
-		Scanner input = new Scanner(System.in);
+		int turn = 1;
 		
-		while(t1.activePokemon.isAlive() && t2.activePokemon.isAlive()) {
+		while(t1.hasAlive() && t2.hasAlive()) {
 			System.out.println(t1);
 			System.out.println(t2);
 			
@@ -247,7 +273,7 @@ public class Simulator {
 			
 			Action[] chosenActions = new Action[2];
 			for(int i = 0; i < 2; i++) {
-				System.out.println("t" + i + ", choose an action");
+				System.out.println("t" + (i+1) + ", choose an action");
 				for(int j = 0; j < bothPlayerActions.get(i).size(); j++) {
 					System.out.println(j + ": " + bothPlayerActions.get(i).get(j));
 				}
@@ -255,10 +281,15 @@ public class Simulator {
 				chosenActions[i] = bothPlayerActions.get(i).get(selection);
 			}
 			
+			System.out.println("Turn #" + turn);
 			executeTurn(chosenActions[0], chosenActions[1], t1, t2);
+			
+			// Print and clear the current turn's message
+			System.out.println(Simulator.message);
+			Simulator.message = null;
+			
 			endOfTurn(t1, t2);
+			turn++;
 		}
-		
-		input.close();
 	}
 }

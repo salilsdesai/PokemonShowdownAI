@@ -309,7 +309,7 @@ public class Pokemon {
 		
 		this.status.confuse_turns_left = 0;
 		this.status.substitute_hp = 0;
-		this.status.badly_poisoned_counter = Math.max(this.status.badly_poisoned_counter, 1);
+		this.status.badly_poisoned_counter = Math.min(this.status.badly_poisoned_counter, 1);
 		this.status.counter_damage = 0;
 		
 		// Clear Transform

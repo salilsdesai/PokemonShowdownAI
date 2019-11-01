@@ -44,6 +44,7 @@ public class Move {
 		
 		if(this.name.equals("RECHARGE")) {
 			Simulator.addMessage(user.species + " recharged");
+			user.status.recharge = false;
 			return;
 		}
 		
@@ -79,6 +80,18 @@ public class Move {
 
 		Simulator.addMessage(user.species + " used " + this.name);
 		
+		// special case where move requires charging
+		if (name.equals("skyattack")) {
+			if(!user.status.charge) {
+				user.status.charge = true;
+				Simulator.addMessage(user.species + " began charging ");
+				return;
+			}
+			else {
+				user.status.charge = false;
+			}
+		}
+		
 		int modifiedAccuracy = 
 			(int)(
 				accuracy * 
@@ -96,17 +109,6 @@ public class Move {
 			return;
 		}
 		
-		// special case where move requires charging
-		if (name.equals("skyattack")) {
-			if(!user.status.charge) {
-				user.status.charge = true;
-				Simulator.addMessage(user.species + " began charging ");
-				return;
-			}
-			else {
-				user.status.charge = false;
-			}
-		}
 		int damage;
 		// special damage calculation cases
 		if (name.equals("dragonrage")) {
@@ -172,7 +174,7 @@ public class Move {
 			damage = Math.min(damage, target.status.substitute_hp);
 			target.status.substitute_hp -= damage;
 			if(damage > 0) {
-				Simulator.addMessage(target.species + "'s substitute took " + damage + " damage (" + target.status.substitute_hp);
+				Simulator.addMessage(target.species + "'s substitute took " + damage + " damage (" + target.status.substitute_hp + ")");
 			}
 		}
 		else {
@@ -743,7 +745,7 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.user.status.statMod[2] = Integer.min(3, md.target.status.statMod[2] + 2); 
+				md.user.statMod(Pokemon.Stat.ATK, 2);
 			}
 		};
 		moves.put(m.name, m);
@@ -1004,7 +1006,6 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				md.user.currHp = 0;
 			}
 		};
 		moves.put(m.name, m);
@@ -1435,10 +1436,5 @@ public class Move {
 			md.user.currHp -= md.damage/2;
 		}};
 		moves.put(m.name, m);
-	}
-	
-	public static void main(String[] args) {
-		loadMoves();
-		System.out.println(moves.get("selfdestruct"));
 	}
 }
