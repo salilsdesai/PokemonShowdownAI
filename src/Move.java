@@ -1353,6 +1353,19 @@ public class Move {
 			return;
 		}};
 		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "STRUGGLE";
+		m.power = 50;
+		m.maxPP = Integer.MAX_VALUE;
+		m.accuracy = 100;
+		m.type = Type.NORMAL;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() { public void accept(MoveDamage md) {
+			md.user.currHp -= md.damage/2;
+		}};
+		moves.put(m.name, m);
 	}
 	
 	public static void main(String[] args) {

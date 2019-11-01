@@ -11,9 +11,7 @@ public class Simulator {
 		}
 		public ArrayList<Action> getActions() {
 			ArrayList<Action> actions = new ArrayList<Action>();
-			
-			// TODO: Struggle
-			
+
 			// Recharge after hyperbeam
 			if(activePokemon.status.recharge) {
 				actions.add(new AttackAction(activePokemon, Move.getMove("RECHARGE")));
@@ -32,6 +30,11 @@ public class Simulator {
 					actions.add(new AttackAction(activePokemon, activePokemon.moves[i]));
 				}
 			}
+			if(actions.isEmpty()) {
+				// No moves have any pp
+				actions.add(new AttackAction(activePokemon, Move.getMove("STRUGGLE")));
+			}
+			
 			// Switches
 			for(Pokemon p : pokemonList) {
 				if(p != activePokemon && p.isAlive()) {
