@@ -27,7 +27,7 @@ public class Simulator {
 			// Attacks
 			for(int i = 0; i < activePokemon.moves.length; i++) {
 				if(activePokemon.pp[i] > 0) {
-					actions.add(new AttackAction(activePokemon, activePokemon.moves[i]));
+					actions.add(new AttackAction(activePokemon, activePokemon.moves[i], i));
 				}
 			}
 			if(actions.isEmpty()) {
@@ -72,9 +72,18 @@ public class Simulator {
 		}
 		public Pokemon user;
 		public Move move;
+		/**
+		 * The index in user's move list to deduct pp from, or -1
+		 * if no pp should be deducted
+		 */
+		public int deductPPIndex;
 		public AttackAction(Pokemon user, Move move) {
+			this(user, move, -1);
+		}
+		public AttackAction(Pokemon user, Move move, int i) {
 			this.user = user;
 			this.move = move;
+			this.deductPPIndex = i;
 		}
 		public String toString() {
 			return "Attack: " + Arrays.toString(new String[] {user.species, move.name});
@@ -123,16 +132,28 @@ public class Simulator {
 			 * 2) It's move is not lower priority and it wins out on speed. */
 			if (p1 > p2 || (p1 == p2 && ((spd1 > spd2) || (spd1 == spd2 && Math.random() < 0.5)))) {
 				aa1.move.use(aa1.user, t2.activePokemon);
+				if(aa1.deductPPIndex != -1) {
+					aa1.user.pp[aa1.deductPPIndex]--;
+				}
 				if (t2.activePokemon.isAlive()) {
 					aa2.move.use(aa2.user, t1.activePokemon);
+					if(aa2.deductPPIndex != -1) {
+						aa2.user.pp[aa2.deductPPIndex]--;
+					}
 				}
 			}
 			/* If none of the conditions above are satisifed, then player 2
 			 * must attack first. */
 			else {
 				aa2.move.use(aa2.user, t1.activePokemon);
+				if(aa2.deductPPIndex != -1) {
+					aa2.user.pp[aa2.deductPPIndex]--;
+				}
 				if (t1.activePokemon.isAlive()) {
 					aa1.move.use(aa1.user, t2.activePokemon);
+					if(aa1.deductPPIndex != -1) {
+						aa1.user.pp[aa1.deductPPIndex]--;
+					}
 				}
 			}
 		}
@@ -143,10 +164,16 @@ public class Simulator {
 			if (a1.getType() == ActionType.ATTACK) {
 				AttackAction aa1 = (AttackAction)a1;
 				aa1.move.use(aa1.user, t2.activePokemon);
+				if(aa1.deductPPIndex != -1) {
+					aa1.user.pp[aa1.deductPPIndex]--;
+				}
 			}
 			else if (a2.getType() == ActionType.ATTACK){
 				AttackAction aa2 = (AttackAction)a2;
 				aa2.move.use(aa2.user, t1.activePokemon);
+				if(aa2.deductPPIndex != -1) {
+					aa2.user.pp[aa2.deductPPIndex]--;
+				}
 			}
 		}
 	}
