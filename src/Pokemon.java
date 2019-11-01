@@ -92,10 +92,10 @@ public class Pokemon {
 		sb.append(", " + Arrays.toString(moveInfo));
 		sb.append(level);
 		String[] statInfo = new String[4];
-		statInfo[0] = "" + atk + "(" + modifiedStat(Stat.ATK) + ")";
-		statInfo[1] = "" + def + "(" + modifiedStat(Stat.DEF) + ")";
-		statInfo[2] = "" + spc + "(" + modifiedStat(Stat.SPC) + ")";
-		statInfo[3] = "" + spe + "(" + modifiedStat(Stat.SPE) + ")";
+		statInfo[0] = "atk: " + atk + "(" + modifiedStat(Stat.ATK) + ")";
+		statInfo[1] = "def: " + def + "(" + modifiedStat(Stat.DEF) + ")";
+		statInfo[2] = "spc: " + spc + "(" + modifiedStat(Stat.SPC) + ")";
+		statInfo[3] = "spe: " + spe + "(" + modifiedStat(Stat.SPE) + ")";
 		sb.append(", " + Arrays.toString(statInfo));
 		sb.append(", " + status.toString());
 		return new String(sb);

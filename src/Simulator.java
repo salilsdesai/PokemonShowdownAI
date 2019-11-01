@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Simulator {
+public class Simulator {	
 	public static class Team {
 		public ArrayList<Pokemon> pokemonList;
 		public Pokemon activePokemon;
@@ -94,6 +94,17 @@ public class Simulator {
 		public String toString() {
 			return "Attack: " + Arrays.toString(new String[] {user.species, move.name});
 		}
+	}
+	
+	/**
+	 * A message indicating what has happened over the past turn
+	 */
+	public static String message;
+	public static void addMessage(String s) {
+		if(message == null)
+			message = s;
+		else
+			message += "\n" + s;
 	}
 	
 	/**
@@ -207,6 +218,12 @@ public class Simulator {
 		}
 		
 		// TODO: Make players switch in new pokemon if current ones are fainted
+		
+		
+		
+		// Print and clear the current turn's message
+		System.out.println(Simulator.message);
+		Simulator.message = null;
 	}
 	
 	public static void main(String[] args) {
