@@ -237,26 +237,44 @@ public class Simulator {
 			}
 		}
 		
-		// TODO: Make players switch in new pokemon if current ones are fainted
 		for(Team t : new Team[] {t1, t2}) {
 			if(!t.activePokemon.isAlive()) {
 				System.out.println(t.activePokemon.species + " fainted ");
 				if(t.hasAlive()) {
 					ArrayList<Action> a = t.switchActions();
-					System.out.println("Choose a switch in");
-					for(int i = 0; i < a.size(); i++) {
-						System.out.println("" + i + ": " + a.get(i));
-					}
-					int choice = input.nextInt();
-					SwitchAction sa = (SwitchAction)(a.get(choice));
+					SwitchAction sa = (SwitchAction)(Simulator.getActionChoice(a));
 					t.activePokemon = sa.switchTo;
 				}
 			}
 		}
 	}
 	
+	/**
+	 * "Get" an action choice out of a list of possible actions
+	 * ex. Prompt for an action choice using scanner
+	 * Separating this into a separate method so we can replace it
+	 * with random action choice or action choice using neural network
+	 * in the future without changing main simulator loop
+	 */
+	public static Action getActionChoice(ArrayList<Action> a) {
+//		Choose random action
+		return a.get((int)(Math.random() * a.size()));
+		
+//		Prompt player using scanner
+//		
+//		if(input == null)
+//			input = new Scanner(System.in);
+//		System.out.println("choose an action");
+//		for(int i = 0; i < a.size(); i++) {
+//			System.out.println("" + i + ": " + a.get(i));
+//		}
+//		int choice = input.nextInt();
+//		return a.get(choice);
+		
+	}
+	
+	
 	public static void main(String[] args) {
-		input = new Scanner(System.in);
 		
 		Team t1 = new Team(TeamGenerator.randomTeam());
 		Team t2 = new Team(TeamGenerator.randomTeam());
@@ -273,15 +291,10 @@ public class Simulator {
 			
 			Action[] chosenActions = new Action[2];
 			for(int i = 0; i < 2; i++) {
-				System.out.println("t" + (i+1) + ", choose an action");
-				for(int j = 0; j < bothPlayerActions.get(i).size(); j++) {
-					System.out.println(j + ": " + bothPlayerActions.get(i).get(j));
-				}
-				int selection = input.nextInt();
-				chosenActions[i] = bothPlayerActions.get(i).get(selection);
+				chosenActions[i] = getActionChoice(bothPlayerActions.get(i));
 			}
 			
-			System.out.println("Turn #" + turn);
+			Simulator.addMessage("Turn #" + turn);
 			executeTurn(chosenActions[0], chosenActions[1], t1, t2);
 			
 			// Print and clear the current turn's message
