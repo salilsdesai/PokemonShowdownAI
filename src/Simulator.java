@@ -12,16 +12,26 @@ public class Simulator {
 		public ArrayList<Action> getActions() {
 			ArrayList<Action> actions = new ArrayList<Action>();
 			
-			// TODO:
-			// Struggle, recharge, sky attack
+			// TODO: Struggle
 			
-			// Moves
+			// Recharge after hyperbeam
+			if(activePokemon.status.recharge) {
+				actions.add(new AttackAction(activePokemon, Move.getMove("RECHARGE")));
+				return actions;
+			}
+			
+			// Sky attack -> forces player to use the attack once charged
+			if(activePokemon.status.charge) {
+				actions.add(new AttackAction(activePokemon, Move.getMove("skyattack")));
+				return actions;
+			}
+			
+			// Attacks
 			for(int i = 0; i < activePokemon.moves.length; i++) {
 				if(activePokemon.pp[i] > 0) {
 					actions.add(new AttackAction(activePokemon, activePokemon.moves[i]));
 				}
 			}
-			
 			// Switches
 			for(Pokemon p : pokemonList) {
 				if(p != activePokemon && p.isAlive()) {
