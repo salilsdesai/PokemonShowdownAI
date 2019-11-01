@@ -206,7 +206,7 @@ public class Pokemon {
 		int i = 0;
 		switch (s) {
 			case ATK:
-				stat = this.atk;
+				stat = this.atk / (this.status.burn ? 2 : 1);
 				i = 1;
 			break;
 			case DEF:

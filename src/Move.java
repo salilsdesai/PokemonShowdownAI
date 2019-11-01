@@ -164,17 +164,14 @@ public class Move {
 		int level = user.level * (critical ? 2 : 1);
 		int power = this.power;
 		
-		// TODO: Ignore stat mods if critical hit
-		// TODO: Burn halves attack
-		
 		int attackingStat, defendingStat;
 		if(this.type.isPhysical()) {
-			attackingStat = user.modifiedStat(Pokemon.Stat.ATK);
-			defendingStat = target.modifiedStat(Pokemon.Stat.DEF);
+			attackingStat = critical ? user.atk : user.modifiedStat(Pokemon.Stat.ATK);
+			defendingStat = critical ? target.def : target.modifiedStat(Pokemon.Stat.DEF);
 		}
 		else {
-			attackingStat = user.modifiedStat(Pokemon.Stat.SPC);
-			defendingStat = target.modifiedStat(Pokemon.Stat.SPC);
+			attackingStat = critical ? user.spc : user.modifiedStat(Pokemon.Stat.SPC);
+			defendingStat = critical ? target.spc : target.modifiedStat(Pokemon.Stat.SPC);
 		}
 		
 		int baseDamage = (((((((2 * level)/5) + 2) * power * attackingStat)/(defendingStat))/50) + 2);
