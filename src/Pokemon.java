@@ -52,17 +52,52 @@ public class Pokemon {
 			statMod = new int[7];
 			mimicIndex = -1;
 		}
+		
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(Arrays.toString(statMod));
+			if(freeze)
+				sb.append(", Frozen");
+			if(paralyze)
+				sb.append(", Paralyzed");
+			if(burn)
+				sb.append(", Burned");
+			if(recharge)
+				sb.append(", Recharge");
+			if(charge)
+				sb.append(", Charge");
+			if(poison)
+				sb.append(", Poison");
+			if(badly_poisoned_counter > 0)
+				sb.append(", Badly Poison (" + badly_poisoned_counter + ")");
+			if(sleep_turns_left > 0)
+				sb.append(", Sleep (" + sleep_turns_left + ")");
+			if(confuse_turns_left > 0)
+				sb.append(", Confused (" + confuse_turns_left + ")");
+			if(substitute_hp > 0)
+				sb.append(", Substitute (" + substitute_hp + ")");
+			if(bide_turns_left > 0)
+				sb.append(", Bide (" + bide_turns_left + ", " + bide_damage + ")");
+			return new String(sb);
+		}
 	}
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(species);
-		sb.append("\n\t" + Arrays.toString(types));
-		sb.append("\n\t" + Arrays.toString(moves));
-		sb.append("\n\t" + Arrays.toString(pp));
-		sb.append("\n\t" + level);
-		sb.append("\n\t" + currHp);
-		sb.append("\n\t" + Arrays.toString(new int[] {maxHp, atk, def, spc, spe}));
+		sb.append(", " + currHp + "/" + maxHp);
+		String[] moveInfo = new String[moves.length];
+		for(int i = 0; i < moves.length; i++)
+			moveInfo[i] = moves[i].name + "(" + pp[i] + "/" + moves[i].maxPP + ")";
+		sb.append(", " + Arrays.toString(moveInfo));
+		sb.append(level);
+		String[] statInfo = new String[4];
+		statInfo[0] = "" + atk + "(" + modifiedStat(Stat.ATK) + ")";
+		statInfo[1] = "" + def + "(" + modifiedStat(Stat.DEF) + ")";
+		statInfo[2] = "" + spc + "(" + modifiedStat(Stat.SPC) + ")";
+		statInfo[3] = "" + spe + "(" + modifiedStat(Stat.SPE) + ")";
+		sb.append(", " + Arrays.toString(statInfo));
+		sb.append(", " + status.toString());
 		return new String(sb);
 	}
 	

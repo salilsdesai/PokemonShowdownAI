@@ -138,7 +138,7 @@ public class Move {
 			}
 			else {
 				if(user.status.bide_turns_left == 1) {
-					damage = user.status.bide_damage;
+					damage = user.status.bide_damage*2;
 					user.status.bide_damage = 0;
 				}
 				user.status.bide_turns_left--;
