@@ -44,20 +44,29 @@ public class Move {
 		
 		// Check for status conditions that would prevent the move from being executed.
 		if (user.status.paralyze && Math.random() < 0.25) {
+			Simulator.addMessage(user.species + " is fully paralyzed");
 			return;
 		}
 		if (user.status.freeze) {
+			Simulator.addMessage(user.species + " is frozen solid");
 			return;
 		}
 		if (user.status.sleep_turns_left > 0) {
+			if(user.status.sleep_turns_left == 1)
+				Simulator.addMessage(user.species + " woke up");
+			else
+				Simulator.addMessage(user.species + " is asleep");
 			user.status.sleep_turns_left--;
 			return;
 		}
 		// If the pokemon hurt itself in its confusion, apply damage and return.
 		if (user.status.confuse_turns_left > 0) {
+			Simulator.addMessage(user.species + " is confused");
 			user.status.confuse_turns_left--;
 			if(Math.random() < 0.5) {
-				user.currHp -= getMove("CONFUSED").damageDealt(user, user);
+				int damage = getMove("CONFUSED").damageDealt(user, user);
+				user.currHp -= damage;
+				Simulator.addMessage(user.species + " hurt itself in confusion (" + damage + ")");
 				return;
 			}
 		}
@@ -78,8 +87,17 @@ public class Move {
 			return;
 		}
 		
-		int damage = damageDealt(user, target);
-		
+		// special case where move requires charging
+		if (name.equals("skyattack")) {
+			if(!user.status.charge) {
+				user.status.charge = true;
+				return;
+			}
+			else {
+				user.status.charge = false;
+			}
+		}
+		int damage;
 		// special damage calculation cases
 		if (name.equals("dragonrage")) {
 			damage = 40;
@@ -92,32 +110,6 @@ public class Move {
 		}
 		else if (name.equals("superfang")) {
 			damage = target.currHp/2;
-		}
-		// special case where number of hits is random (so damage is not constant)
-		else if (name.equals("pinmissle")) {
-			double rand = Math.random();
-			if (rand < 0.375) {
-				damage *= 2;
-			}
-			else if (rand >= 0.375 && rand < 0.75) {
-				damage *= 3;
-			}
-			else if (rand >= 0.75 && rand < 0.875) {
-				damage *= 4;
-			}
-			else {
-				damage *= 5;
-			}
-		}
-		// special case where move requires charging
-		else if (name.equals("skyattack")) {
-			if(!user.status.charge) {
-				user.status.charge = true;
-				return;
-			}
-			else {
-				user.status.charge = false;
-			}
 		}
 		// special case where move depends on opponent's moveset
 		else if (name.equals("mirrormove")) {
@@ -144,13 +136,36 @@ public class Move {
 				user.status.bide_turns_left--;
 			}
 		}
+		else {
+			// Normal damage
+			damage = damageDealt(user, target);
+			
+			// special case where number of hits is random (so damage is not constant)
+			if (name.equals("pinmissle")) {
+				double rand = Math.random();
+				if (rand < 0.375) {
+					damage *= 2;
+				}
+				else if (rand >= 0.375 && rand < 0.75) {
+					damage *= 3;
+				}
+				else if (rand >= 0.75 && rand < 0.875) {
+					damage *= 4;
+				}
+				else {
+					damage *= 5;
+				}
+			}
+		}
 		
 		if(target.status.substitute_hp > 0) {
 			damage = Math.min(damage, target.status.substitute_hp);
 			target.status.substitute_hp -= damage;
+			Simulator.addMessage(target.species + "'s substitute took " + damage + " damage (" + target.status.substitute_hp);
 		}
 		else {
 			target.currHp = Math.max(0, target.currHp - damage);
+			Simulator.addMessage(target.species + " lost " + damage + " hp (" + target.currHp + "/" + target.maxHp + ")");
 		}
 		
 		// If this was a physical move, store damage
@@ -158,8 +173,11 @@ public class Move {
 			target.status.counter_damage = damage;
 		
 		// Save bide damage
-		if(target.status.bide_turns_left > 0)
+		if(target.status.bide_turns_left > 0) {
 			target.status.bide_damage += damage;
+			Simulator.addMessage(target.species + " is storing damage " + (target.status.bide_damage));
+		}
+			
 		
 		// Set the [lastMoveUsed] and [lastAttacker] for mirror move
 		user.lastMoveUsed = this;
@@ -178,6 +196,10 @@ public class Move {
 	 */
 	public int damageDealt(Pokemon user, Pokemon target) {
 		boolean critical = (Math.random() < Pokedex.getDex().get(user.species).baseStats[4]/(!highCritRatio ? 512.0 : 64.0));
+		
+		if(critical) {
+			Simulator.addMessage("Critical hit!");
+		}
 		
 		int level = user.level * (critical ? 2 : 1);
 		int power = this.power;
@@ -202,7 +224,14 @@ public class Move {
 				modifier *= 1.5;
 		// Type effectiveness
 		for(Type t : target.types) {
-			modifier *= this.type.effectiveness(t);
+			double typeModifier = this.type.effectiveness(t);
+			if(typeModifier == 0)
+				Simulator.addMessage("It didn't affect " + target.species);
+			else if(typeModifier > 1)
+				Simulator.addMessage("It's super effective!");
+			else if(typeModifier < 1)
+				Simulator.addMessage("It's not very effective");
+			modifier *= typeModifier;
 		}
 		
 		return (int)(baseDamage * modifier);

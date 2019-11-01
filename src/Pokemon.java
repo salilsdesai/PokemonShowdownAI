@@ -168,36 +168,43 @@ public class Pokemon {
 			case FREEZE:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
 					this.status.freeze = true;
+					Simulator.addMessage(this.species + " was frozen");
 				}	
 			break;
 			case PARALYZE:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
 					this.status.paralyze = true;
+					Simulator.addMessage(this.species + " was paralyzed");
 				}	
 			break;
 			case CONFUSE:
 				if(this.status.confuse_turns_left == 0 && this.status.substitute_hp == 0) {
 					this.status.confuse_turns_left = n;
+					Simulator.addMessage(this.species + " was confused (" + n + ")");
 				}	
 			break;
 			case BURN:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
 					this.status.burn = true;
+					Simulator.addMessage(this.species + " was burn");
 				}	
 			break;
 			case POISON:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0 && this.types[0] != Type.POISON && this.types[1] != Type.POISON) {
 					this.status.poison = true;
+					Simulator.addMessage(this.species + " was poisoned");
 				}	
 			break;
 			case BADLY_POISON: 
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0 && this.types[0] != Type.POISON && this.types[1] != Type.POISON) {
 					this.status.badly_poisoned_counter = 1;
+					Simulator.addMessage(this.species + " was badly poisoned");
 				}	
 			break;
 			case SLEEP:
 				if(!this.hasMajorStatus() && this.status.substitute_hp == 0) {
 					this.status.sleep_turns_left = n;
+					Simulator.addMessage(this.species + " made a substitute (" + this.status.substitute_hp + ")");
 				}	
 			break;
 		}
@@ -230,6 +237,7 @@ public class Pokemon {
 	
 	public void statMod(Stat s, int level) {
 		this.status.statMod[s.getIndex()] = Math.max(Math.min(this.status.statMod[s.getIndex()] + level, 6), -6);
+		Simulator.addMessage(this.species + "'s stats changed: " + Arrays.toString(this.status.statMod));
 	}
 	
 	
@@ -282,6 +290,8 @@ public class Pokemon {
 		this.status.transformed.status.statMod = Arrays.copyOf(p.status.statMod, p.status.statMod.length);
 		for(int i = 0; i < this.status.transformed.pp.length; i++)
 			this.status.transformed.pp[i] = 5;
+		
+		Simulator.addMessage(this.species + " transformed into " + p.species);
 	}
 	
 	
