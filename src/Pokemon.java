@@ -36,9 +36,10 @@ public class Pokemon {
 		public int badly_poisoned_counter, sleep_turns_left, confuse_turns_left, substitute_hp;
 		/* bide_turns_left is number of turns after which pokemon should unleash energy
 		 * or -1 if the pokemon is not biding
-		 * bide_damage is amount of damage done to it so far
-		 */
+		 * bide_damage is amount of damage done to it so far */
 		public int bide_turns_left, bide_damage;
+		/* Amount of physical damage taken in the current turn for Counter */
+		public int counter_damage;
 		/* [mimicIndex] is which index in the pokemon's moveslot mimic was originally
 		 * in before it got replaced, or -1 if it never got replaced
 		 * [mimicPP] is how much pp mimic had before it got replaced. */
@@ -259,7 +260,8 @@ public class Pokemon {
 		
 		this.status.confuse_turns_left = 0;
 		this.status.substitute_hp = 0;
-		this.status.badly_poisoned_counter = 1;
+		this.status.badly_poisoned_counter = Math.max(this.status.badly_poisoned_counter, 1);
+		this.status.counter_damage = 0;
 		
 		// Clear Transform
 		this.status.transformed = null;

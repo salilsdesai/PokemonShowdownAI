@@ -129,9 +129,7 @@ public class Move {
 			}
 		}
 		else if(name.equals("counter")) {
-			// For counter, power is stored to be the amount of physical damage
-			// dealt in this turn
-			damage = power;
+			damage = user.status.counter_damage*2;
 		}
 		else if(name.equals("bide")) {
 			damage = 0;
@@ -155,9 +153,9 @@ public class Move {
 			target.currHp = Math.max(0, target.currHp - damage);
 		}
 		
-		// If this was a physical move, store Counter's power as twice the damage done
+		// If this was a physical move, store damage
 		if(this.type.isPhysical())
-			getMove("counter").power = 2*damage;
+			target.status.counter_damage = damage;
 		
 		// Save bide damage
 		if(target.status.bide_turns_left > 0)
