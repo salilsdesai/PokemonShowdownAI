@@ -242,6 +242,8 @@ public class Pokemon {
 		this.status.transformed.maxHp = this.maxHp;
 		this.status.transformed.status = this.status;
 		this.status.transformed.status.statMod = Arrays.copyOf(p.status.statMod, p.status.statMod.length);
+		for(int i = 0; i < this.status.transformed.pp.length; i++)
+			this.status.transformed.pp[i] = 5;
 	}
 	
 	
