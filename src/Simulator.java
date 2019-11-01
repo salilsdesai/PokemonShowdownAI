@@ -185,7 +185,23 @@ public class Simulator {
 	 * - reset counter damage
 	 */
 	public void endOfTurn(Team t1, Team t2) {
-		// TODO
+		// Reset counter damage
+		Move.getMove("counter").power = 0;
+		
+		// TODO: Set mirror move
+		
+		// Apply poison/burn damage
+		for(Pokemon p : new Pokemon[] {t1.activePokemon, t2.activePokemon}) {
+			if(p.status.burn || p.status.poison) {
+				p.currHp -= p.maxHp/16;
+			}
+			if(p.status.badly_poisoned_counter > 0) {
+				p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
+				p.status.badly_poisoned_counter++;
+			}
+		}
+		
+		// TODO: Make players switch in new pokemon if current ones are fainted
 	}
 	
 	public static void main(String[] args) {
