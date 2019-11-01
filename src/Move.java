@@ -120,15 +120,31 @@ public class Move {
 			}
 		}
 		// special case where move depends on opponent's moveset
-		else if (name.equals("mirrormove") && target.lastMoveUsed != null) {
-			if (user.lastAttacker == target && !target.lastMoveUsed.name.equals("mirrormove")) {
+		else if (name.equals("mirrormove")) {
+			if (target.lastMoveUsed != null && user.lastAttacker == target && !target.lastMoveUsed.name.equals("mirrormove")) {
 				damage = getMove(target.lastMoveUsed.name).damageDealt(user, target);
+			}
+			else {
+				damage = 0;
 			}
 		}
 		else if(name.equals("counter")) {
 			// For counter, power is stored to be the amount of physical damage
 			// dealt in this turn
 			damage = power;
+		}
+		else if(name.equals("bide")) {
+			damage = 0;
+			if(user.status.bide_turns_left == 0) {
+				user.status.bide_turns_left = (int)((Math.random() * 2) + 2);
+			}
+			else {
+				if(user.status.bide_turns_left == 1) {
+					damage = user.status.bide_damage;
+					user.status.bide_damage = 0;
+				}
+				user.status.bide_turns_left--;
+			}
 		}
 		
 		if(target.status.substitute_hp > 0) {
@@ -142,6 +158,10 @@ public class Move {
 		// If this was a physical move, store Counter's power as twice the damage done
 		if(this.type.isPhysical())
 			getMove("counter").power = 2*damage;
+		
+		// Save bide damage
+		if(target.status.bide_turns_left > 0)
+			target.status.bide_damage += damage;
 		
 		// Set the [lastMoveUsed] and [lastAttacker] for mirror move
 		user.lastMoveUsed = this;
@@ -296,8 +316,11 @@ public class Move {
 		m.name = "bide";
 		m.maxPP = 16;
 		m.power = 0;
+		m.accuracy = -1;
+		m.type = Type.NONE;
+		m.highCritRatio = false;
+		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
-			// TODO: Set secondary effect for BIDE
 		}};
 		moves.put(m.name, m);
 		

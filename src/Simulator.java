@@ -24,6 +24,12 @@ public class Simulator {
 				return actions;
 			}
 			
+			// Bide -> forces player to use the attack once charging
+			if(activePokemon.status.bide_turns_left > 0) {
+				actions.add(new AttackAction(activePokemon, Move.getMove("bide")));
+				return actions;
+			}
+			
 			// Attacks
 			for(int i = 0; i < activePokemon.moves.length; i++) {
 				if(activePokemon.pp[i] > 0) {

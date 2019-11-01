@@ -33,7 +33,12 @@ public class Pokemon {
 		 * for which the current pokemon will be asleep for, and [substitute]
 		 * will hold the remaining [hp] of a dummy substitute used to tank 
 		 * the opponents attacks. All values are initialized to 0. */
-		public int badly_poisoned_counter, sleep_turns_left, confuse_turns_left, substitute_hp, bide_damage;
+		public int badly_poisoned_counter, sleep_turns_left, confuse_turns_left, substitute_hp;
+		/* bide_turns_left is number of turns after which pokemon should unleash energy
+		 * or -1 if the pokemon is not biding
+		 * bide_damage is amount of damage done to it so far
+		 */
+		public int bide_turns_left, bide_damage;
 		/* [mimicIndex] is which index in the pokemon's moveslot mimic was originally
 		 * in before it got replaced, or -1 if it never got replaced
 		 * [mimicPP] is how much pp mimic had before it got replaced. */
