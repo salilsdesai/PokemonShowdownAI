@@ -231,7 +231,13 @@ public class TeamGenerator {
 				// Counter to store the types of moves encountered in the moveset
 				HashMap<String, Integer> type_counter = new HashMap<>();
 				for (String m : ret) {
-					String type = Move.getMove(m).type.toString();
+					String type = "";
+					try {
+						type = Move.getMove(m).type.toString();
+					} catch(NullPointerException e) {
+						System.out.println("Tried to fetch move " + m + " but failed.");
+						System.exit(1);
+					}
 					Integer reocc = type_counter.get(type);
 					type_counter.put(type, reocc == null ? 1 :reocc + 1);
 				}
@@ -345,5 +351,9 @@ public class TeamGenerator {
 		else {
 			throw new RuntimeException("[level] called with unrecognized tier!");
 		}
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("Hello world!");
 	}
 }
