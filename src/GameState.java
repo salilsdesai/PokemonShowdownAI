@@ -24,4 +24,16 @@ public class GameState {
 	this.p2_active = p2_active;
 	p2_pokemon.put(p2_active, new HashSet<>());
     }
+
+    /* Pass a deep copy of [p2_pokemon]. Intended to be used by successor game state. */
+    public HashMap<Pokemon, HashSet<Move>> pass_on() {
+	HashMap<Pokemon, HashSet<Move>> ret = new HashMap<>();
+	// For every key, re-insert the key,value into the new hash map.
+	for (Pokemon p : p2_pokemon.keySet()) {
+	    // TODO: It might be helpful to clone the pokemon.
+	    ret.put(p, p2_pokemon.get(p));
+	}
+
+	return ret;
+    }
 }
