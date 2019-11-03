@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class GameState {
     /* Representation of player-one's team of pokemon and movesets. */
@@ -9,7 +10,7 @@ public class GameState {
      * The value of each key stores the moves which player-one knows player-two's
      * pokemon can perform. If player-one has not seen a specific pokemon use a move,
      * then the value in the map will be an empty list. */
-    public HashMap<Pokemon, ArrayList<Move>> p2_pokemon;
+    public HashMap<Pokemon, HashSet<Move>> p2_pokemon;
 
     /* Player-two's active pokemon. */
     public static Pokemon p2_active;
@@ -21,6 +22,6 @@ public class GameState {
 	/* Set up the current field. */
 	this.p1_team = p1_team;
 	this.p2_active = p2_active;
-	p2_pokemon.put(p2_active, new ArrayList<>());
+	p2_pokemon.put(p2_active, new HashSet<>());
     }
 }
