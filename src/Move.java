@@ -43,6 +43,11 @@ public class Move {
 	 * - Update both pokemon's statuses and hp as necessary, considering base damage and secondary effects
 	 */
 	public void use(Pokemon user, Pokemon target) {
+		if(user.status.transformed != null)
+			user = user.status.transformed;
+		if(target.status.transformed != null)
+			target = target.status.transformed;
+		
 		
 		if(this.name.equals("RECHARGE")) {
 			Simulator.addMessage(user.species + " recharged");
@@ -605,6 +610,8 @@ public class Move {
 		m.name = "growth";
 		m.maxPP = 64;
 		m.power = 0;
+		m.accuracy = -1;
+		m.type = Type.NORMAL;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.statMod(Pokemon.Stat.SPC, 1);
 		}};

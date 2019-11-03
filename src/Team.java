@@ -58,7 +58,7 @@ public class Team {
 	public ArrayList<Simulator.Action> switchActions() {
 		ArrayList<Simulator.Action> actions = new ArrayList<Simulator.Action>();
 		for(Pokemon p : pokemonList) {
-			if(p != activePokemon && p.isAlive()) {
+			if(p != activePokemon && p != activePokemon.status.transformedFrom && p.isAlive()) {
 				actions.add(new Simulator.SwitchAction(p));
 			}
 		}

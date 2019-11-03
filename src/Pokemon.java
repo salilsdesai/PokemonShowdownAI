@@ -45,8 +45,10 @@ public class Pokemon {
 		 * [mimicPP] is how much pp mimic had before it got replaced. */
 		public int mimicIndex, mimicPP;
 		/* [transform] will store the active transformed pokemon. If [transform]
-		 * is unknown or never used, value will be [null]. */
+		 * is unknown or never used, value will be [null]. TransformedFrom is 
+		 * a reference to the original pokemon object before transforming */
 		public Pokemon transformed;
+		public Pokemon transformedFrom;
 		
 		public Status() {
 			statMod = new int[7];
@@ -78,13 +80,15 @@ public class Pokemon {
 				sb.append(", Substitute (" + substitute_hp + ")");
 			if(bide_turns_left > 0)
 				sb.append(", Bide (" + bide_turns_left + ", " + bide_damage + ")");
+			if(transformed != null)
+				sb.append(", Tranformed to: " + transformed.species + " (" + (transformed.status.transformed != null ? transformed.status.transformed.species : "null") + ")");
 			return new String(sb);
 		}
 	}
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(species);
+		sb.append(this.status.transformed != null ? this.status.transformedFrom.species : species);
 		sb.append(", " + currHp + "/" + maxHp);
 		String[] moveInfo = new String[moves.length];
 		for(int i = 0; i < moves.length; i++)
@@ -282,6 +286,10 @@ public class Pokemon {
 	}
 	
 	public void transformTo(Pokemon p) {
+		// Don't transform if already transformed
+		if(this.status.transformed != null)
+			return;
+		
 		String[] m = new String[p.moves.length];
 		for(int i = 0; i < p.moves.length; i++)
 			m[i] = p.moves[i].name;
@@ -294,6 +302,8 @@ public class Pokemon {
 		this.status.transformed.status.statMod = Arrays.copyOf(p.status.statMod, p.status.statMod.length);
 		for(int i = 0; i < this.status.transformed.pp.length; i++)
 			this.status.transformed.pp[i] = 5;
+		
+		this.status.transformedFrom = this;
 		
 		Simulator.addMessage(this.species + " transformed into " + p.species);
 	}
@@ -313,7 +323,12 @@ public class Pokemon {
 		this.status.counter_damage = 0;
 		
 		// Clear Transform
-		this.status.transformed = null;
+		if(this.status.transformed != null) {
+			this.status.transformedFrom.currHp = this.status.transformed.currHp;
+			this.status.transformed = null;
+			this.status.transformedFrom = null;
+		}
+		
 		
 		// Clear mimic
 		if(this.status.mimicIndex != -1) {
@@ -328,6 +343,7 @@ public class Pokemon {
 		
 		lastMoveUsed = null;
 		lastAttacker = null;
+		
 	}
 	
 }
