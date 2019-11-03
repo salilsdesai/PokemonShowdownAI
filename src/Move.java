@@ -1,7 +1,9 @@
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.ArrayList;
 
 public class Move {
 	public static class MoveDamage {
@@ -1436,5 +1438,20 @@ public class Move {
 			md.user.currHp -= md.damage/2;
 		}};
 		moves.put(m.name, m);
+	}
+	
+	public static void main(String[] args) {
+		Object[] moveNameObject = moves.keySet().toArray();
+		ArrayList<String> moveNames = new ArrayList<>();
+		
+		for (int i = 0; i < moveNameObject.length; i++) {
+			moveNames.add((String)moveNameObject[i]);
+		}
+		
+		Collections.sort(moveNames);
+		
+		for (int i = 0; i < moveNames.size(); i++) {
+			System.out.println(moveNames.get(i));
+		}
 	}
 }
