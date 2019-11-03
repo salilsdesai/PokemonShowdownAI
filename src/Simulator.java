@@ -2,70 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Simulator {	
-	public static class Team {
-		public ArrayList<Pokemon> pokemonList;
-		public Pokemon activePokemon;
-		public Team(ArrayList<Pokemon> l) {
-			pokemonList = l;
-			activePokemon = l.get(0);
-		}
-		public ArrayList<Action> getActions() {
-			ArrayList<Action> actions = new ArrayList<Action>();
-
-			// Recharge after hyperbeam
-			if(activePokemon.status.recharge) {
-				actions.add(new AttackAction(activePokemon, Move.getMove("RECHARGE")));
-				return actions;
-			}
-			
-			// Sky attack -> forces player to use the attack once charged
-			if(activePokemon.status.charge) {
-				actions.add(new AttackAction(activePokemon, Move.getMove("skyattack")));
-				return actions;
-			}
-			
-			// Bide -> forces player to use the attack once charging
-			if(activePokemon.status.bide_turns_left > 0) {
-				actions.add(new AttackAction(activePokemon, Move.getMove("bide")));
-				return actions;
-			}
-			
-			// Attacks
-			for(int i = 0; i < activePokemon.moves.length; i++) {
-				if(activePokemon.pp[i] > 0) {
-					actions.add(new AttackAction(activePokemon, activePokemon.moves[i], i));
-				}
-			}
-			if(actions.isEmpty()) {
-				// No moves have any pp
-				actions.add(new AttackAction(activePokemon, Move.getMove("STRUGGLE")));
-			}
-			
-			// Switches
-			actions.addAll(switchActions());
-			
-			return actions;
-		}
-		public String toString() {
-			return "Active: " + activePokemon + "\n\t" + "Full Team: " + Arrays.toString(pokemonList.toArray());
-		}
-		public boolean hasAlive() {
-			for(Pokemon p : pokemonList)
-				if(p.isAlive())
-					return true;
-			return false;
-		}
-		public ArrayList<Action> switchActions() {
-			ArrayList<Action> actions = new ArrayList<Action>();
-			for(Pokemon p : pokemonList) {
-				if(p != activePokemon && p.isAlive()) {
-					actions.add(new SwitchAction(p));
-				}
-			}
-			return actions;
-		}
-	}
+public class Simulator {
 	public enum ActionType {
 		ATTACK, SWITCH;
 	}
@@ -221,11 +158,6 @@ public class Simulator {
 
 		// TODO: Set mirror move
 		
-		// If transformed, set active pokemon to be the transformed version
-		if(t1.activePokemon.status.transformed != null)
-			t1.activePokemon = t1.activePokemon.status.transformed;
-		if(t1.activePokemon.status.transformed != null)
-			t2.activePokemon = t1.activePokemon.status.transformed;
 		
 		// Apply poison/burn damage, reset counter damage
 		for(Team t : new Team[] {t1, t2}) {

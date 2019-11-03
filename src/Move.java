@@ -938,21 +938,6 @@ public class Move {
 		};
 		moves.put(m.name, m);
 		
-		m = new Move();
-		m.name = "skyattack";
-		m.power = 140;
-		m.maxPP = 8;
-		m.accuracy = 90;
-		m.type = Type.FLYING;
-		m.highCritRatio = false;
-		m.priority = 0;
-		m.secondaryEffect = new Consumer<MoveDamage>() {
-			public void accept(MoveDamage md) {
-				return;
-			}
-		};
-		moves.put(m.name, m);
-		
 		m = new Move(); 
 		m.name = "skyattack";
 		m.power = 140;
