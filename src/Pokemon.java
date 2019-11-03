@@ -88,7 +88,7 @@ public class Pokemon {
 		sb.append(", " + currHp + "/" + maxHp);
 		String[] moveInfo = new String[moves.length];
 		for(int i = 0; i < moves.length; i++)
-			moveInfo[i] = moves[i].name + "(" + pp[i] + "/" + moves[i].maxPP + ")";
+			moveInfo[i] = (moves[i] != null ? (moves[i].name + "(" + pp[i] + "/" + moves[i].maxPP + ")") : "null");
 		sb.append(", " + Arrays.toString(moveInfo));
 		sb.append(level);
 		String[] statInfo = new String[4];

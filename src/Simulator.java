@@ -221,17 +221,28 @@ public class Simulator {
 
 		// TODO: Set mirror move
 		
+		// If transformed, set active pokemon to be the transformed version
+		if(t1.activePokemon.status.transformed != null)
+			t1.activePokemon = t1.activePokemon.status.transformed;
+		if(t1.activePokemon.status.transformed != null)
+			t2.activePokemon = t1.activePokemon.status.transformed;
+		
 		// Apply poison/burn damage, reset counter damage
-		for(Pokemon p : new Pokemon[] {t1.activePokemon, t2.activePokemon}) {
+		for(Team t : new Team[] {t1, t2}) {
+			if(t.activePokemon.status.transformed != null)
+				t.activePokemon = t.activePokemon.status.transformed;
+			
+			Pokemon p = t.activePokemon;
+			
 			if(p.isAlive()) {
 				if(p.status.burn || p.status.poison) {
 					p.currHp -= p.maxHp/16;
-					Simulator.addMessage(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+					System.out.println(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 				}
 				if(p.status.badly_poisoned_counter > 0) {
 					p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
+					System.out.println(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 					p.status.badly_poisoned_counter++;
-					Simulator.addMessage(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 				}
 				p.status.counter_damage = 0;
 			}
@@ -258,25 +269,25 @@ public class Simulator {
 	 */
 	public static Action getActionChoice(ArrayList<Action> a) {
 //		Choose random action
-		return a.get((int)(Math.random() * a.size()));
+//		return a.get((int)(Math.random() * a.size()));
 		
 //		Prompt player using scanner
 //		
-//		if(input == null)
-//			input = new Scanner(System.in);
-//		System.out.println("choose an action");
-//		for(int i = 0; i < a.size(); i++) {
-//			System.out.println("" + i + ": " + a.get(i));
-//		}
-//		int choice = input.nextInt();
-//		return a.get(choice);
+		if(input == null)
+			input = new Scanner(System.in);
+		System.out.println("choose an action");
+		for(int i = 0; i < a.size(); i++) {
+			System.out.println("" + i + ": " + a.get(i));
+		}
+		int choice = input.nextInt();
+		return a.get(choice);
 		
 	}
 	
 	
 	public static void main(String[] args) {
 		
-		Team t1 = new Team(TeamGenerator.randomTeam());
+		Team t1 = new Team(TeamGenerator.randomTeam());		
 		Team t2 = new Team(TeamGenerator.randomTeam());
 		
 		int turn = 1;

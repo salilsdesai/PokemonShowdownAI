@@ -1068,15 +1068,17 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {
 			public void accept(MoveDamage md) {
-				// Clear existing statuses
-				md.user.status.poison = false;
-				md.user.status.freeze = false;
-				md.user.status.paralyze = false;
-				md.user.status.burn = false;
-				md.user.status.badly_poisoned_counter = 0;
-				
-				md.user.currHp = md.user.maxHp;
-				md.user.setStatusCondition(Pokemon.StatusCondition.SLEEP, 2);
+				if(md.user.currHp != md.user.maxHp) {
+					// Clear existing statuses
+					md.user.status.poison = false;
+					md.user.status.freeze = false;
+					md.user.status.paralyze = false;
+					md.user.status.burn = false;
+					md.user.status.badly_poisoned_counter = 0;
+					
+					md.user.currHp = md.user.maxHp;
+					md.user.setStatusCondition(Pokemon.StatusCondition.SLEEP, 2);
+				}
 			}
 		};
 		moves.put(m.name, m);
@@ -1441,6 +1443,7 @@ public class Move {
 	}
 	
 	public static void main(String[] args) {
+		loadMoves();
 		Object[] moveNameObject = moves.keySet().toArray();
 		ArrayList<String> moveNames = new ArrayList<>();
 		
