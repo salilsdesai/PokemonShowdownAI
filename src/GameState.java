@@ -84,14 +84,14 @@ public class GameState {
     public boolean isTerminal() {
     	boolean lost = true;
     	for (Pokemon p : p1_team.pokemonList) {
-    		if (p.currHp > 0) {
+    		if (p.isAlive()) {
     			lost = false;
     		}
     	}
     	
     	boolean won = true;
     	for (Pokemon p : p2_pokemon.keySet()) {
-    		if (p.currHp > 0) {
+    		if (p.isAlive()) {
     			won = false;
     		}
     	}
