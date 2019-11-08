@@ -104,5 +104,4 @@ public class GameState {
     	//TODO: write a simple evaluation function for a terminal node
     	return 0.;
     }
-    }
 }
