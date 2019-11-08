@@ -187,7 +187,7 @@ public class TeamGenerator {
 		}
 	}
 
-	private static String[] moveset(String p_name) {
+	public static String[] moveset(String p_name) {
 		ArrayList<String> ret = new ArrayList<>();
 		
 		/* Entry containing data for [p_name]. */

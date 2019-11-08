@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -12,7 +13,7 @@ public class GameState {
     public HashMap<Pokemon, HashSet<Move>> p2_pokemon;
 
     /* Player-two's active pokemon. */
-    public static Pokemon p2_active;
+    public Pokemon p2_active;
 
     /* Default game state which describes the game as it begins. */
     public GameState(Team p1_team, Pokemon p2_active) {
@@ -26,13 +27,56 @@ public class GameState {
 
     /* Pass a deep copy of [p2_pokemon]. Intended to be used by successor game state. */
     public HashMap<Pokemon, HashSet<Move>> pass_on() {
-	HashMap<Pokemon, HashSet<Move>> ret = new HashMap<>();
+    	HashMap<Pokemon, HashSet<Move>> ret = new HashMap<>();
 		// For every key, re-insert the key,value into the new hash map.
 		for (Pokemon p : p2_pokemon.keySet()) {
 			// TODO: It might be helpful to clone the pokemon.
 			ret.put(p, p2_pokemon.get(p));
 		}
 
-	return ret;
+		return ret;
+    }
+    
+    /* Generates the team represented in the hashmap. */
+    public Team getOpponentTeam() {
+    	// List representation of the opponent's team. 
+    	ArrayList<Pokemon> rep = new ArrayList<>();
+
+    	/* Add every seen pokemon that was seen into the tree. */
+    	for (Pokemon p : p2_pokemon.keySet()) {
+    		/* If the pokemon seen has never been observed to perform moves, assign
+    		 * it a random moveset which is consistent with how moves are generated. */
+    		if (p2_pokemon.get(p).size() == 0) {
+    			String[] moves = TeamGenerator.moveset(p.species);
+    			p.moves = new Move[moves.length];
+   				for(int i = 0; i < moves.length; i++) {
+   					p.moves[i] = Move.getMove(moves[i]);
+   				}
+   			}
+    		else {
+    			// Debugging statement
+    			if (p2_pokemon.get(p).size() > p.moves.length) {
+    				throw new RuntimeException("Error in gamestate: pokemon knows too many moves.");
+    			}
+    			/* Assign all the known moves to the pokemon. Fill the remainder
+    			 * of the moveset with [null]. */
+    			int counter = 0;
+    			for (Move m : p2_pokemon.get(p)) {
+    				p.moves[counter++] = m;
+    			}
+    			for (; counter < p.moves.length; counter++) {
+    				p.moves[counter] = null;
+    			}
+    		}
+    		rep.add(p);
+    	}
+    	
+    	/* Swap the ordering of the list such that the first pokemon is the active pokemon. */
+    	int active_index = rep.indexOf(p2_active);
+    	Pokemon tmp = rep.get(0);
+    	rep.set(0, p2_active);
+    	rep.set(active_index, tmp);
+    	
+    	return new Team(rep);
     }
 }
