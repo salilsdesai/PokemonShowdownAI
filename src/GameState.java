@@ -15,7 +15,7 @@ public class GameState {
     /* Player-two's active pokemon. */
     public Pokemon p2_active;
 
-    /* Default game state which describes the game as it begins. */
+    /** Default game state which describes the game as it begins. */
     public GameState(Team p1_team, Pokemon p2_active) {
     	/* Initialize variables. */
     	p2_pokemon = new HashMap<>();
@@ -37,7 +37,7 @@ public class GameState {
 		return ret;
     }
     
-    /* Generates the team represented in the hashmap. */
+    /** Generates the team represented in the hashmap. */
     public Team getOpponentTeam() {
     	// List representation of the opponent's team. 
     	ArrayList<Pokemon> rep = new ArrayList<>();
@@ -78,5 +78,31 @@ public class GameState {
     	rep.set(active_index, tmp);
     	
     	return new Team(rep);
+    }
+    
+    /** Returns if the current game-state is terminal (if either player has lost). */
+    public boolean isTerminal() {
+    	boolean lost = true;
+    	for (Pokemon p : p1_team.pokemonList) {
+    		if (p.currHp > 0) {
+    			lost = false;
+    		}
+    	}
+    	
+    	boolean won = true;
+    	for (Pokemon p : p2_pokemon.keySet()) {
+    		if (p.currHp > 0) {
+    			won = false;
+    		}
+    	}
+    	
+    	return lost || won;
+    }
+    
+    /** Returns the estimate of how favorable a terminal state is for player one. */
+    public double evalTerminalNode() {
+    	//TODO: write a simple evaluation function for a terminal node
+    	return 0.;
+    }
     }
 }
