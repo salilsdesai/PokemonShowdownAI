@@ -15,6 +15,10 @@ public class GameState {
     /* Player-two's active pokemon. */
     public Pokemon p2_active;
 
+    /** Empty game-state used for construction */
+    private GameState() {
+    	
+    }
     /** Default game state which describes the game as it begins. */
     public GameState(Team p1_team, Pokemon p2_active) {
     	/* Initialize variables. */
@@ -27,7 +31,21 @@ public class GameState {
    
     public GameState simulateTurn(Simulator.Action playerAction, Simulator.Action opponentAction) {
     	//TODO: simulate a turn
-    	return null;
+    	GameState next = new GameState();
+
+    	// Create a deep copy of player-one's team
+    	Team next_team = new Team(new ArrayList<>());
+    	for (Pokemon p : p1_team.pokemonList) {
+    		Pokemon clone = p.clone();
+    		next_team.pokemonList.add(clone);
+    		if (p == p1_team.activePokemon) {
+    			next_team.activePokemon = clone;
+    		}
+    	}
+    	next.p1_team = next_team;
+    	
+    	// TODO: finish simulation
+    	return next;
     }
 
     /* Pass a deep copy of [p2_pokemon]. Intended to be used by successor game state. */

@@ -5,10 +5,12 @@ import java.util.Arrays;
 public class Team {
 	public ArrayList<Pokemon> pokemonList;
 	public Pokemon activePokemon;
+	
 	public Team(ArrayList<Pokemon> l) {
 		pokemonList = l;
 		activePokemon = l.get(0);
 	}
+	
 	public ArrayList<Simulator.Action> getActions() {
 		ArrayList<Simulator.Action> actions = new ArrayList<Simulator.Action>();
 		
