@@ -132,7 +132,9 @@ public class Move {
 		}
 		// special case where move depends on opponent's moveset
 		else if (name.equals("mirrormove")) {
-			if (target.lastMoveUsed != null && user.lastAttacker == target && !target.lastMoveUsed.name.equals("mirrormove")) {
+			if (target.lastMoveUsed != null && 
+					user.lastAttacker.equals(target.species) && 
+					!target.lastMoveUsed.name.equals("mirrormove")) {
 				damage = getMove(target.lastMoveUsed.name).damageDealt(user, target);
 			}
 			else {
@@ -204,7 +206,7 @@ public class Move {
 		
 		// Set the [lastMoveUsed] and [lastAttacker] for mirror move
 		user.lastMoveUsed = this;
-		target.lastAttacker = user;
+		target.lastAttacker = user.species;
 		
 		// Apply any secondary effects of the current move.
 		this.secondaryEffect.accept(new MoveDamage(user, target, damage));
