@@ -1,18 +1,63 @@
 import java.util.List;
 
 public class MCTS {
+
 	public static class TreeNode {
-		Simulator.Action[] playerActions;
-		Simulator.Action[] opponentActions;
+		public Simulator.Action[] playerActions;
+		public Simulator.Action[] opponentActions;
+		
+		public GameState currentState;
 		/**
 		 * MatrixEntry[i][j] is the entry associated with
 		 * playerActions[i] and opponentActions[j]
 		 */
 		public MatrixEntry[][] entries;
-		public TreeNode(List<Simulator.Action> p1Actions, List<Simulator.Action> oppoActions) {
+		
+		/**
+		 * If there is a previously unselected action pair using playerActions[i] and opponentActions[j]
+		 * for some i and j, [nextUnselectedActions] is {i, j}
+		 * otherwise it is null
+		 */
+		private int[] nextUnselectedActions;
+		
+		/**
+		 * if there is a previously unselected action for this node using playerActions[i] and opponentActions[j]
+		 * - Initializes entries[i][j] to whatever the successor node for playerActions[i] and opponentActions[j] should be
+		 * - Updates nextUnselectedActions class variable
+		 * - returns the newly created matrix entry
+		 * Otherwise, returns null
+		 */
+		public MatrixEntry getAndIncrementNextUnselectedActionMatrixEntry() {
+			if (nextUnselectedActions == null)
+				return null;
+			
+			int i = nextUnselectedActions[0];
+			int j = nextUnselectedActions[1];
+			
+			nextUnselectedActions[1]++;
+			if(nextUnselectedActions[1] >= opponentActions.length) {
+				nextUnselectedActions[1] = 0;
+				nextUnselectedActions[0]++;
+				if(nextUnselectedActions[0] >= playerActions.length) {
+					nextUnselectedActions = null;
+				}
+			}
+			
+			// TODO: Build successor node by simulating turn, getting new actions
+			TreeNode s = null;
+			
+			entries[i][j] = new MatrixEntry(s);
+			
+			return entries[i][j];
+			
+		}
+		
+		public TreeNode(List<Simulator.Action> p1Actions, List<Simulator.Action> oppoActions, GameState currState) {
 			playerActions = p1Actions.toArray(new Simulator.Action[p1Actions.size()]);
 			opponentActions = oppoActions.toArray(new Simulator.Action[oppoActions.size()]);
 			entries = new MatrixEntry[playerActions.length][opponentActions.length];
+			currentState = currState;
+			nextUnselectedActions = (playerActions.length > 0 && opponentActions.length > 0 ? new int[] {0,0} : null);
 		}
 		/**
 		 * Should be called after we are done exploring tree
@@ -32,16 +77,17 @@ public class MCTS {
 		 */
 		public int X;
 		public int n;
-		public MatrixEntry() {
+		public MatrixEntry(TreeNode s) {
 			X = 0;
 			n = 0;
+			successor = s;
 		}
 	}
 	public static Simulator.Action chooseMove(GameState gs) {
 		List<Simulator.Action> playerActions = gs.p1_team.getActions();
 		List<Simulator.Action> opponentActions = gs.getOpponentTeam().getActions();
 		
-		TreeNode root = new TreeNode(playerActions, opponentActions);
+		TreeNode root = new TreeNode(playerActions, opponentActions, gs);
 		
 		while(!stopSearch()) {
 			SMMCTS(root);
@@ -50,8 +96,13 @@ public class MCTS {
 		return root.getBestAction();
 	}
 	
-	public static int SMMCTS(TreeNode s) {
-		// TODO
+	public static double SMMCTS(TreeNode s) {
+		if(s.currentState.isTerminal())
+			return s.currentState.evalTerminalNode();
+		
+		// s ∈ T and ExpansionRequired(s) iff s has unexplored actions
+		// TODO: evaluate non terminal nodes
+		
 		return 0;
 	}
 	
