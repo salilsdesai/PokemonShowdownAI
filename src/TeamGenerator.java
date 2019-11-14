@@ -231,13 +231,7 @@ public class TeamGenerator {
 				// Counter to store the types of moves encountered in the moveset
 				HashMap<String, Integer> type_counter = new HashMap<>();
 				for (String m : ret) {
-					String type = "";
-					try {
-						type = Move.getMove(m).type.toString();
-					} catch(NullPointerException e) {
-						System.out.println("Tried to fetch move " + m + " but failed.");
-						System.exit(1);
-					}
+					String type = getType(m);
 					Integer reocc = type_counter.get(type);
 					type_counter.put(type, reocc == null ? 1 :reocc + 1);
 				}
@@ -294,8 +288,7 @@ public class TeamGenerator {
 						}
 						// overlapping moves which place status effect on the opponent
 						if (type_counter.get("status") != null && type_counter.get("status") > 1) {
-							if (curr.equals("poisonpowder") || curr.equals("poisonpowder") ||
-									curr.equals("sleeppowder") || curr.equals("toxic")) {
+							if (getType(curr).equals("status")) {
 								rejected = true;
 								break;
 							}
@@ -318,6 +311,26 @@ public class TeamGenerator {
 		return ret.toArray(new String[4]);
 	}
 	
+	/** Classifies a move as "physical", "special", "status", or "other" where "physical" and
+	 * 	"special" are moves with the potential to deal damage and "status" are moves which only 
+	 * 	inflict status on the opponent. "other" categorizes everything else. */
+	private static String getType(String m) {
+		if (m.equals("poisonpowder") || m.equals("stunspore") || m.contentEquals("sleeppowder")
+				|| m.equals("toxic") || m.equals("confuseray")) {
+			return "status";
+		}
+		else if (Move.getMove(m).power > 0) {
+			if (Move.getMove(m).type.isPhysical()) {
+				return "physical";
+			}
+			else {
+				return "special";
+			}
+		}
+		else {
+			return "other";
+		}
+	}
 	/**
 	 * Returns the level of the pokemon [name] which is designated by PokemonShowdown. 
 	 * Higher tier pokemon will receive lower levels while lower tier ones will receive
