@@ -35,8 +35,7 @@ public class GameState {
     	HashMap<Pokemon, HashSet<Move>> ret = new HashMap<>();
 		// For every key, re-insert the key,value into the new hash map.
 		for (Pokemon p : p2_pokemon.keySet()) {
-			// TODO: It might be helpful to clone the pokemon.
-			ret.put(p, p2_pokemon.get(p));
+			ret.put(p.clone(), p2_pokemon.get(p));
 		}
 
 		return ret;

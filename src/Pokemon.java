@@ -12,7 +12,7 @@ public class Pokemon {
 	/* [lastAttacker] is the pokemon who attacked this pokemon last, and 
 	 * [lastMoveUsed] is the last move used by this pokemon. Used for
 	 * damage calculation of [mirrormove]. */
-	public Pokemon lastAttacker;
+	public String lastAttacker;
 	public Move lastMoveUsed;
 	
 	/* Class which reprsents all of a pokemon's possible status effects. */
@@ -46,7 +46,7 @@ public class Pokemon {
 		public int mimicIndex, mimicPP;
 		/* [transform] will store the active transformed pokemon. If [transform]
 		 * is unknown or never used, value will be [null]. TransformedFrom is 
-		 * a reference to the original pokemon object before transforming */
+		 * a reference to the original pokemon object before transforming. */
 		public Pokemon transformed;
 		public Pokemon transformedFrom;
 		
@@ -138,6 +138,51 @@ public class Pokemon {
 		
 		this.level = level;
 		status = new Status();
+	}
+	
+	/**
+	 * Creates a deep copy of the Pokemon object (with the exception of the Move objects).
+	 */
+	public Pokemon clone() {
+		String[] movenames = new String[this.moves.length];
+		for (int i = 0; i < movenames.length; i++) {
+			movenames[i] = this.moves[i].name;
+		}
+		Pokemon ret = new Pokemon(this.species, movenames, this.level);
+		ret.currHp = this.currHp;
+		// copy the pp-values into the deep copy
+		for (int i = 0; i < ret.pp.length; i++) {
+			ret.pp[i] = this.pp[i];
+		}
+		// copy the stat modifications
+		for (int i = 0; i < ret.status.statMod.length; i++) {
+			ret.status.statMod[i] = this.status.statMod[i];
+		}
+		// copy status effects minus transform
+		ret.status.badly_poisoned_counter = this.status.badly_poisoned_counter;
+		ret.status.bide = this.status.bide;
+		ret.status.bide_damage = this.status.bide_damage;
+		ret.status.bide_turns_left = this.status.bide_turns_left;
+		ret.status.burn = this.status.burn;
+		ret.status.charge = this.status.charge;
+		ret.status.confuse_turns_left = this.status.confuse_turns_left;
+		ret.status.counter_damage = this.status.counter_damage;
+		ret.status.freeze = this.status.freeze;
+		ret.status.mimicIndex = this.status.mimicIndex;
+		ret.status.mimicPP = this.status.mimicPP;
+		ret.status.paralyze = this.status.paralyze;
+		ret.status.poison = this.status.poison;
+		ret.status.recharge = this.status.recharge;
+		ret.status.sleep_turns_left = this.status.sleep_turns_left;
+		ret.status.substitute_hp = this.status.substitute_hp;
+		ret.status.transformedFrom = this.status.transformedFrom;
+		
+		// if the pokemon is transformed, make a copy of the transformed pokemon
+		if (this.status.transformed != null && this.status.transformed != this) {
+			ret.status.transformed = this.status.transformed.clone();
+		}
+		
+		return ret;
 	}
 	
 	/**
