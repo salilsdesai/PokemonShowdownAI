@@ -43,20 +43,22 @@ public class MCTS {
 				}
 			}
 			
-			// TODO: Build successor node by simulating turn, getting new actions
-			TreeNode s = null;
-			
-			entries[i][j] = new MatrixEntry(s);
+			GameState newGS = currentState.simulateTurn(playerActions[i], opponentActions[j]);
+			TreeNode successorNode = new TreeNode(newGS);
+			entries[i][j] = new MatrixEntry(successorNode);
 			
 			return entries[i][j];
 			
 		}
 		
-		public TreeNode(List<Simulator.Action> p1Actions, List<Simulator.Action> oppoActions, GameState currState) {
+		public TreeNode(GameState gs) {
+			List<Simulator.Action> p1Actions = gs.p1_team.getActions();
+			List<Simulator.Action> oppoActions = gs.getOpponentTeam().getActions();
+			
 			playerActions = p1Actions.toArray(new Simulator.Action[p1Actions.size()]);
 			opponentActions = oppoActions.toArray(new Simulator.Action[oppoActions.size()]);
 			entries = new MatrixEntry[playerActions.length][opponentActions.length];
-			currentState = currState;
+			currentState = gs;
 			nextUnselectedActions = (playerActions.length > 0 && opponentActions.length > 0 ? new int[] {0,0} : null);
 		}
 		/**
@@ -84,10 +86,7 @@ public class MCTS {
 		}
 	}
 	public static Simulator.Action chooseMove(GameState gs) {
-		List<Simulator.Action> playerActions = gs.p1_team.getActions();
-		List<Simulator.Action> opponentActions = gs.getOpponentTeam().getActions();
-		
-		TreeNode root = new TreeNode(playerActions, opponentActions, gs);
+		TreeNode root = new TreeNode(gs);
 		
 		while(!stopSearch()) {
 			SMMCTS(root);
