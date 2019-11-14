@@ -101,7 +101,17 @@ public class GameState {
     
     /** Returns the estimate of how favorable a terminal state is for player one. */
     public double evalTerminalNode() {
-    	//TODO: write a simple evaluation function for a terminal node
-    	return 0.;
+    	//TODO: can replace with another function later
+    	double pokemonRemaining = 0.;
+    	double hpRemaining = 0.;
+    	
+    	for (Pokemon p : p1_team.pokemonList) {
+    		if (p.isAlive()) {
+    			hpRemaining += ((double)p.currHp/p.maxHp);
+    			pokemonRemaining++;
+    		}
+    	}
+    	
+    	return pokemonRemaining/3 + hpRemaining;
     }
 }
