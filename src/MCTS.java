@@ -22,12 +22,12 @@ public class MCTS {
 		
 		/**
 		 * if there is a previously unselected action for this node using playerActions[i] and opponentActions[j]
-		 * - Initializes entries[i][j] to whatever the successor node for playerActions[i] and opponentActions[j] should be
+		 * - Initializes entries[i][j] to contain whatever the successor node for playerActions[i] and opponentActions[j] should be
 		 * - Updates nextUnselectedActions class variable
-		 * - returns the newly created matrix entry
+		 * - returns {i, j}
 		 * Otherwise, returns null
 		 */
-		public MatrixEntry getAndIncrementNextUnselectedActionMatrixEntry() {
+		public int[] getAndIncrementNextUnselectedActions() {
 			if (nextUnselectedActions == null)
 				return null;
 			
@@ -47,7 +47,7 @@ public class MCTS {
 			TreeNode successorNode = new TreeNode(newGS);
 			entries[i][j] = new MatrixEntry(successorNode);
 			
-			return entries[i][j];
+			return new int[] {i, j};
 			
 		}
 		
@@ -70,6 +70,69 @@ public class MCTS {
 			// Pick the action with largest min expected payout over opponent actions.s
 			return null;
 		}
+		
+		/**
+		 * Return the payout of the terimal node obtained by simulating from this node
+		 * to the end of the game
+		 */
+		public double playout() {
+			// TODO
+			return 0;
+		}
+		
+		/**
+		 * playerActions[i] and opponentActions[j] where
+		 * the actions that simulation was performed on which we
+		 * need to update the results from
+		 */
+		public void update(int i, int j, double u1) {
+			// TODO
+		}
+		
+		/**
+		 * Returns {i, j} where (playerActions[i], opponentActions[j])
+		 * is the pair of actions we want to select
+		 */
+		public int[] select() {
+			// TODO
+			return new int [] {0, 0};
+		}
+		
+		public double SMMCTS() {
+			if(currentState.isTerminal())
+				return currentState.evalTerminalNode();
+			
+			int i, j;
+			double u1;
+			
+			// s ∈ T and ExpansionRequired(s) iff s has unexplored actions
+			int[] unexploredActions = getAndIncrementNextUnselectedActions();
+			if(unexploredActions != null) {
+				i = unexploredActions[0];
+				j = unexploredActions[1];
+				MatrixEntry entry = entries[i][j];
+				TreeNode sPrime = entry.successor;
+				u1 = sPrime.playout();
+				/*
+				 * We are using Decoupled UCT, so X and n values are stored in matrix
+				 * entries rather than in nodes like the pseudocode suggests
+				 */
+				entry.X += u1;
+				entry.n += 1;
+			}
+			else {
+				int[] selectedActions = select();
+				i = selectedActions[0];
+				j = selectedActions[1];
+				MatrixEntry entry = entries[i][j];
+				TreeNode sPrime = entry.successor;
+				u1 = sPrime.SMMCTS();
+			}
+			
+			update(i, j, u1);
+			return u1;
+		}
+		
 	}
 	public static class MatrixEntry {
 		public TreeNode successor;
@@ -77,7 +140,7 @@ public class MCTS {
 		 * X and n as defined in this paper:
 		 * http://mlanctot.info/files/papers/cig14-smmctsggp.pdf
 		 */
-		public int X;
+		public double X;
 		public int n;
 		public MatrixEntry(TreeNode s) {
 			X = 0;
@@ -89,20 +152,10 @@ public class MCTS {
 		TreeNode root = new TreeNode(gs);
 		
 		while(!stopSearch()) {
-			SMMCTS(root);
+			root.SMMCTS();
 		}
 		
 		return root.getBestAction();
-	}
-	
-	public static double SMMCTS(TreeNode s) {
-		if(s.currentState.isTerminal())
-			return s.currentState.evalTerminalNode();
-		
-		// s ∈ T and ExpansionRequired(s) iff s has unexplored actions
-		// TODO: evaluate non terminal nodes
-		
-		return 0;
 	}
 	
 	public static boolean stopSearch() {
