@@ -16,8 +16,18 @@ public class Team {
 		pokemonList = new ArrayList<>();
 	}
 	
-	public ArrayList<Simulator.Action> getActions() {
+	public ArrayList<Simulator.Action> getActions(boolean opponent_alive) {
 		ArrayList<Simulator.Action> actions = new ArrayList<Simulator.Action>();
+		
+		// Must wait for opponent if they are switching after being knocked out
+		if (!opponent_alive) {
+			actions.add(new Simulator.AttackAction(activePokemon, Move.getMove("NOTHING")));
+			return actions;
+		}
+		// Must switch if knocked out
+		if (!activePokemon.isAlive()) {
+			return switchActions();
+		}
 		
 		// Recharge after hyperbeam
 		if(activePokemon.status.recharge) {
