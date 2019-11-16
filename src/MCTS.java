@@ -249,4 +249,28 @@ public class MCTS {
 		return root.getBestAction();
 	}
 
+	public static void main(String[] args) {
+//		ArrayList<Pokemon> p1 = TeamGenerator.randomTeam();
+//		ArrayList<Pokemon> p1b = new ArrayList<Pokemon>();
+//		p1b.add(p1.get(0));
+//		
+//		ArrayList<Pokemon> p2 = TeamGenerator.randomTeam();
+//		ArrayList<Pokemon> p2b = new ArrayList<Pokemon>();
+//		p2b.add(p2.get(0));
+//		
+//		Team t1 = new Team(p1b);
+//		Team t2 = new Team(p2b);
+//		
+//		GameState p1GS = new GameState(t1, t2.activePokemon);
+//		
+//		Simulator.Action p1Action = MCTS.chooseMove(p1GS);
+//		ArrayList<Simulator.Action> p2ActionList = t2.getActions(true);
+//		Simulator.Action p2Action = p2ActionList.get(0);
+//		
+//		System.out.println(p1Action);
+//		System.out.println(p2Action);
+//		
+		
+	}
+	
 }

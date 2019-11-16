@@ -174,6 +174,10 @@ public class Simulator {
 				}
 				p.status.counter_damage = 0;
 			}
+			
+			if(p.isAlive()) {
+				System.out.println(p.species + " fainted");
+			}
 		}
 	}
 	
@@ -205,8 +209,6 @@ public class Simulator {
 	public static void main(String[] args) {
 		
 		Team t1 = new Team(TeamGenerator.randomTeam());
-		while(!t1.toString().contains("explosion"))
-			t1 = new Team(TeamGenerator.randomTeam());
 		Team t2 = new Team(TeamGenerator.randomTeam());
 		
 		int turn = 1;
