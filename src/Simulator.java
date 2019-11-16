@@ -175,17 +175,6 @@ public class Simulator {
 				p.status.counter_damage = 0;
 			}
 		}
-		
-		for(Team t : new Team[] {t1, t2}) {
-			if(!t.activePokemon.isAlive()) {
-				System.out.println(t.activePokemon.species + " fainted ");
-				if(t.hasAlive()) {
-					ArrayList<Action> a = t.switchActions();
-					SwitchAction sa = (SwitchAction)(Simulator.getActionChoice(a));
-					t.activePokemon = sa.switchTo;
-				}
-			}
-		}
 	}
 	
 	/**
@@ -225,8 +214,8 @@ public class Simulator {
 			System.out.println(t2);
 			
 			ArrayList<ArrayList<Action>> bothPlayerActions = new ArrayList<ArrayList<Action>>();
-			bothPlayerActions.add(t1.getActions());
-			bothPlayerActions.add(t2.getActions());
+			bothPlayerActions.add(t1.getActions(t2.activePokemon.isAlive()));
+			bothPlayerActions.add(t2.getActions(t1.activePokemon.isAlive()));
 			
 			Action[] chosenActions = new Action[2];
 			for(int i = 0; i < 2; i++) {

@@ -124,8 +124,8 @@ public class MCTS {
 		}
 		
 		public TreeNode(GameState gs) {
-			ArrayList<Simulator.Action> p1Actions = gs.p1_team.getActions();
-			ArrayList<Simulator.Action> oppoActions = gs.getOpponentTeam().getActions();
+			ArrayList<Simulator.Action> p1Actions = gs.p1_team.getActions(gs.getOpponentTeam().activePokemon.isAlive());
+			ArrayList<Simulator.Action> oppoActions = gs.getOpponentTeam().getActions(gs.p1_team.activePokemon.isAlive());
 			
 			playerActions = new ActionData[p1Actions.size()];
 			for(int i = 0; i < playerActions.length; i++)
