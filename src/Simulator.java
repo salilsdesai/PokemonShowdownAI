@@ -50,10 +50,11 @@ public class Simulator {
 	 */
 	public static String message;
 	public static void addMessage(String s) {
-		if(message == null)
-			message = s;
-		else
-			message += "\n" + s;
+		System.out.println(s);
+//		if(message == null)
+//			message = s;
+//		else
+//			message += "\n" + s;
 	}
 	
 	public static Scanner input;

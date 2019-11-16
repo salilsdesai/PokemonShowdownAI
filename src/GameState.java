@@ -45,17 +45,15 @@ public class GameState {
     		// Change the action so that the user/targets are the clones
     		if (a1.getType() == Simulator.ActionType.SWITCH) {
     			Simulator.SwitchAction sw = (Simulator.SwitchAction)(a1);
-    			if (p == sw.switchTo) {
+    			if (p.species.equals(sw.switchTo.species)) {
     				sw.switchTo = clone;
     			}
-    			a1 = sw;
     		}
     		else if (a1.getType() == Simulator.ActionType.ATTACK) {
     			Simulator.AttackAction aa = (Simulator.AttackAction)(a1);
-    			if (p == aa.user) {
+    			if (p.species.equals(aa.user.species)) {
     				aa.user = clone;
     			}
-    			a1 = aa;
     		}
     	}
     	next.p1_team = next_team;
@@ -64,20 +62,21 @@ public class GameState {
     	next.p2_pokemon = pass_on();
     	
     	for (Pokemon p : next.p2_pokemon.keySet()) {
+    		if (p.species.equals(p2_active.species)) {
+    			next.p2_active = p;
+    		}
     		// Change the action so that the user/targets are the clones
     		if (a2.getType() == Simulator.ActionType.SWITCH) {
-    			Simulator.SwitchAction sw = (Simulator.SwitchAction)(a1);
-    			if (p.species == sw.switchTo.species) {
+    			Simulator.SwitchAction sw = (Simulator.SwitchAction)(a2);
+    			if (p.species.equals(sw.switchTo.species)) {
     				sw.switchTo = p;
     			}
-    			a1 = sw;
     		}
     		else if (a2.getType() == Simulator.ActionType.ATTACK) {
-    			Simulator.AttackAction aa = (Simulator.AttackAction)(a1);
-    			if (p.species == aa.user.species) {
+    			Simulator.AttackAction aa = (Simulator.AttackAction)(a2);
+    			if (p.species.equals(aa.user.species)) {
     				aa.user = p;
     			}
-    			a1 = aa;
     		}
     	}
     	
@@ -119,34 +118,37 @@ public class GameState {
 			 * 1) It's move is higher priority, or
 			 * 2) It's move is not lower priority and it wins out on speed. */
 			if (p1 > p2 || (p1 == p2 && ((spd1 > spd2) || (spd1 == spd2 && Math.random() < 0.5)))) {
-				aa1.move.use(aa1.user, p2_active);
+				aa1.move.use(aa1.user, next.p2_active);
 				if(aa1.deductPPIndex != -1) {
 					aa1.user.pp[aa1.deductPPIndex]--;
 				}
-				if (p2_active.isAlive()) {
+				if (next.p2_active.isAlive()) {
 					// Attack
-					aa2.move.use(aa2.user, p1_team.activePokemon);
+					aa2.move.use(aa2.user, next.p1_team.activePokemon);
 					if(aa2.deductPPIndex != -1) {
 						aa2.user.pp[aa2.deductPPIndex]--;
 					}
 					
 					// Update the opponent team if the move has never been seen before
-					next.p2_pokemon.get(aa2.user).add(aa2.move);
+//					NVM we don't want to update during internal simulation
+//					next.p2_pokemon.get(aa2.user).add(aa2.move);
 				}
 			}
 			/* If none of the conditions above are satisifed, then player 2
 			 * must attack first. */
 			else {
-				aa2.move.use(aa2.user, p1_team.activePokemon);
+				aa2.move.use(aa2.user, next.p1_team.activePokemon);
 				if(aa2.deductPPIndex != -1) {
 					aa2.user.pp[aa2.deductPPIndex]--;
 				}
+				
 				// Update the opponent team if the move has never been seen before
-				next.p2_pokemon.get(aa2.user).add(aa2.move);
+//				NVM we don't want to update during internal simulation
+//				next.p2_pokemon.get(aa2.user).add(aa2.move);
 				
 				
-				if (p1_team.activePokemon.isAlive()) {
-					aa1.move.use(aa1.user, p2_active);
+				if (next.p1_team.activePokemon.isAlive()) {
+					aa1.move.use(aa1.user, next.p2_active);
 					if(aa1.deductPPIndex != -1) {
 						aa1.user.pp[aa1.deductPPIndex]--;
 					}
@@ -160,7 +162,7 @@ public class GameState {
 			if (a1.getType() == Simulator.ActionType.ATTACK) {
 				// Attack
 				Simulator.AttackAction aa1 = (Simulator.AttackAction)a1;
-				aa1.move.use(aa1.user, p2_active);
+				aa1.move.use(aa1.user, next.p2_active);
 				
 				if(aa1.deductPPIndex != -1) {
 					aa1.user.pp[aa1.deductPPIndex]--;
@@ -169,14 +171,15 @@ public class GameState {
 			else if (a2.getType() == Simulator.ActionType.ATTACK){
 				// Attack
 				Simulator.AttackAction aa2 = (Simulator.AttackAction)a2;
-				aa2.move.use(aa2.user, p1_team.activePokemon);
+				aa2.move.use(aa2.user, next.p1_team.activePokemon);
 				
 				if(aa2.deductPPIndex != -1) {
 					aa2.user.pp[aa2.deductPPIndex]--;
 				}
 				
 				// Update the opponent team if the move has never been seen before
-				next.p2_pokemon.get(aa2.user).add(aa2.move);
+//				NVM we don't want to update during internal simulation
+//				next.p2_pokemon.get(aa2.user).add(aa2.move);
 			}
 		}
     	
@@ -185,6 +188,7 @@ public class GameState {
 		// Apply poison/burn damage, reset counter damage
 		
 		for (Pokemon p : new Pokemon[] {next.p1_team.activePokemon, next.p2_active}) {
+			
 			// Apply transformation effects
 			if (p.status.transformed != null) {
 				if (p == next.p1_team.activePokemon) {
@@ -226,7 +230,8 @@ public class GameState {
     	HashMap<Pokemon, HashSet<Move>> ret = new HashMap<>();
 		// For every key, re-insert the key,value into the new hash map.
 		for (Pokemon p : p2_pokemon.keySet()) {
-			ret.put(p.clone(), p2_pokemon.get(p));
+			Pokemon clone = p.clone();
+			ret.put(clone, p2_pokemon.get(p));
 		}
 
 		return ret;

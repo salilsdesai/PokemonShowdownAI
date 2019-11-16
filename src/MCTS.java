@@ -38,7 +38,7 @@ public class MCTS {
 		 * to determine which one to select after simulations are over
 		 */
 		public double estimatedReward() {
-			return X/n;
+			return (n != 0 ? X/n : Double.MIN_VALUE);
 		}
 
 		/**
@@ -117,6 +117,7 @@ public class MCTS {
 			}
 			
 			GameState newGS = currentState.simulateTurn(playerActions[i].action, opponentActions[j].action);
+			System.out.println("sim done");
 			SuccessorNodes[i][j] = new TreeNode(newGS);
 			
 			return new int[] {i, j};
@@ -165,8 +166,8 @@ public class MCTS {
 			if(currentState.isTerminal())
 				return currentState.evalTerminalNode();
 			
-			
 			Simulator.Action playerAction = playerActions[(int)(Math.random() * playerActions.length)].action;
+			
 			Simulator.Action opponentAction = opponentActions[(int)(Math.random() * opponentActions.length)].action;
 			
 			GameState nextGS = currentState.simulateTurn(playerAction, opponentAction);
@@ -183,7 +184,7 @@ public class MCTS {
 		 */
 		public void update(int i, int j, double u1) {
 			playerActions[i].update(u1);
-			opponentActions[j].update(u1);
+			opponentActions[j].update(-1*u1);
 		}
 		
 		/**
@@ -241,7 +242,7 @@ public class MCTS {
 		
 		long startTime = System.currentTimeMillis();
 		
-		// Run simulations until [SimulationTimeLimitSeconds] seconds have elapsed
+//		 Run simulations until [SimulationTimeLimitSeconds] seconds have elapsed
 		while(System.currentTimeMillis() - startTime < (long)(SimulationTimeLimitSeconds*1000)) {
 			root.SMMCTS();
 		}
@@ -250,26 +251,27 @@ public class MCTS {
 	}
 
 	public static void main(String[] args) {
-//		ArrayList<Pokemon> p1 = TeamGenerator.randomTeam();
-//		ArrayList<Pokemon> p1b = new ArrayList<Pokemon>();
-//		p1b.add(p1.get(0));
-//		
-//		ArrayList<Pokemon> p2 = TeamGenerator.randomTeam();
-//		ArrayList<Pokemon> p2b = new ArrayList<Pokemon>();
-//		p2b.add(p2.get(0));
-//		
-//		Team t1 = new Team(p1b);
-//		Team t2 = new Team(p2b);
-//		
-//		GameState p1GS = new GameState(t1, t2.activePokemon);
-//		
-//		Simulator.Action p1Action = MCTS.chooseMove(p1GS);
-//		ArrayList<Simulator.Action> p2ActionList = t2.getActions(true);
-//		Simulator.Action p2Action = p2ActionList.get(0);
-//		
-//		System.out.println(p1Action);
-//		System.out.println(p2Action);
-//		
+		Pokemon bulb = new Pokemon("bulbasaur", new String[] {"surf", "thunderbolt", "quickattack", "twineedle"}, 100);
+		Pokemon pid = new Pokemon("pidgey", new String[] {"thunderbolt", "psychic", "flamethrower", "earthquake"}, 90);
+
+		ArrayList<Pokemon> p1b = new ArrayList<Pokemon>();
+		p1b.add(bulb);
+		
+		ArrayList<Pokemon> p2b = new ArrayList<Pokemon>();
+		p2b.add(pid);
+		
+		Team t1 = new Team(p1b);
+		Team t2 = new Team(p2b);
+		
+		GameState p1GS = new GameState(t1, t2.activePokemon);
+		
+		Simulator.Action p1Action = MCTS.chooseMove(p1GS);
+		ArrayList<Simulator.Action> p2ActionList = t2.getActions(true);
+		Simulator.Action p2Action = p2ActionList.get(0);
+		
+		System.out.println(p1Action);
+		System.out.println(p2Action);
+		
 		
 	}
 	

@@ -49,7 +49,7 @@ public class Team {
 			
 		// Attacks
 		for(int i = 0; i < activePokemon.moves.length; i++) {
-			if(activePokemon.pp[i] > 0) {
+			if(activePokemon.moves[i] != null && activePokemon.pp[i] > 0) {
 				actions.add(new Simulator.AttackAction(activePokemon, activePokemon.moves[i], i));
 			}
 		}

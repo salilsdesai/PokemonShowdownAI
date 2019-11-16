@@ -146,7 +146,9 @@ public class Pokemon {
 	public Pokemon clone() {
 		String[] movenames = new String[this.moves.length];
 		for (int i = 0; i < movenames.length; i++) {
-			movenames[i] = this.moves[i].name;
+			if (this.moves[i] != null) {
+				movenames[i] = this.moves[i].name;
+			}
 		}
 		Pokemon ret = new Pokemon(this.species, movenames, this.level);
 		ret.currHp = this.currHp;
