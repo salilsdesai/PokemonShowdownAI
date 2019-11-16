@@ -1,17 +1,81 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class MCTS {
+	
+	/**
+	 * This class contains data for a particular action of a 
+	 * node of the MCTS tree
+	 * 
+	 * We need to store X and n for each action because Decoupled UCT
+	 * stores X and n that way instead of in each node
+	 */
+	public static class ActionData {
+		/**
+		 * The parameter of the select function of SMMCTS that controls 
+		 * how much weight to place on exploration 
+		 * See page 3, second column, first paragraph in
+		 * http://mlanctot.info/files/papers/cig14-smmctsggp.pdf
+		 */
+		public static final double C = 1;
+		
+		public Simulator.Action action;
+		public double X;
+		public int n;
+		public ActionData(Simulator.Action a) {
+			action = a;
+			X = 0;
+			n = 0;
+		}
+		public void update(double u1) {
+			X += u1;
+			n +=1 ;
+		}
 
+		/**
+		 * Calculated using the formula at the bottom left of page 3 of
+		 * http://mlanctot.info/files/papers/cig14-smmctsggp.pdf
+		 */
+		public double UCB(int ns) {
+			return X/n + C*Math.sqrt(Math.log(ns)/n);
+		}
+		
+		
+		/**
+		 * Return the index of the action in [actions] with highest UCB value
+		 * 
+		 * This function is used as a helper function for select()
+		 */
+		public static int bestAction(ActionData[] actions) {
+			int ns = 0;
+			for(int i = 0; i < actions.length; i++)
+				ns += actions[i].n;
+			
+			int bestAction = 0;
+			double bestUCB = actions[0].UCB(ns);
+			
+			for(int i = 1; i < actions.length; i++) {
+				double actionIUCB = actions[i].UCB(ns);
+				if(actionIUCB > bestUCB) {
+					bestUCB = actionIUCB;
+					bestAction = i;
+				}
+			}
+			
+			return bestAction;
+		}
+	}
+	
 	public static class TreeNode {
-		public Simulator.Action[] playerActions;
-		public Simulator.Action[] opponentActions;
+		public ActionData[] playerActions;
+		public ActionData[] opponentActions;
 		
 		public GameState currentState;
 		/**
 		 * MatrixEntry[i][j] is the entry associated with
 		 * playerActions[i] and opponentActions[j]
 		 */
-		public MatrixEntry[][] entries;
+		public TreeNode[][] SuccessorNodes;
 		
 		/**
 		 * If there is a previously unselected action pair using playerActions[i] and opponentActions[j]
@@ -43,21 +107,26 @@ public class MCTS {
 				}
 			}
 			
-			GameState newGS = currentState.simulateTurn(playerActions[i], opponentActions[j]);
-			TreeNode successorNode = new TreeNode(newGS);
-			entries[i][j] = new MatrixEntry(successorNode);
+			GameState newGS = currentState.simulateTurn(playerActions[i].action, opponentActions[j].action);
+			SuccessorNodes[i][j] = new TreeNode(newGS);
 			
 			return new int[] {i, j};
 			
 		}
 		
 		public TreeNode(GameState gs) {
-			List<Simulator.Action> p1Actions = gs.p1_team.getActions();
-			List<Simulator.Action> oppoActions = gs.getOpponentTeam().getActions();
+			ArrayList<Simulator.Action> p1Actions = gs.p1_team.getActions();
+			ArrayList<Simulator.Action> oppoActions = gs.getOpponentTeam().getActions();
 			
-			playerActions = p1Actions.toArray(new Simulator.Action[p1Actions.size()]);
-			opponentActions = oppoActions.toArray(new Simulator.Action[oppoActions.size()]);
-			entries = new MatrixEntry[playerActions.length][opponentActions.length];
+			playerActions = new ActionData[p1Actions.size()];
+			for(int i = 0; i < playerActions.length; i++)
+				playerActions[i] = new ActionData(p1Actions.get(i));
+			
+			opponentActions = new ActionData[oppoActions.size()];
+			for(int i = 0; i < opponentActions.length; i++)
+				opponentActions[i] = new ActionData(oppoActions.get(i));
+			
+			SuccessorNodes = new TreeNode[playerActions.length][opponentActions.length];
 			currentState = gs;
 			nextUnselectedActions = (playerActions.length > 0 && opponentActions.length > 0 ? new int[] {0,0} : null);
 		}
@@ -73,7 +142,7 @@ public class MCTS {
 		
 		/**
 		 * Return the payout of the terimal node obtained by simulating from this node
-		 * to the end of the game
+		 * to the end of the game (as used in SMMCTS alg pseudocode)
 		 */
 		public double playout() {
 			// TODO
@@ -83,20 +152,28 @@ public class MCTS {
 		/**
 		 * playerActions[i] and opponentActions[j] where
 		 * the actions that simulation was performed on which we
-		 * need to update the results from
+		 * need to update the results from (as used in SMMCTS alg pseudocode)
 		 */
 		public void update(int i, int j, double u1) {
-			// TODO
+			playerActions[i].update(u1);
+			opponentActions[j].update(u1);
 		}
 		
 		/**
 		 * Returns {i, j} where (playerActions[i], opponentActions[j])
-		 * is the pair of actions we want to select
+		 * is the pair of actions we want to select (as used in SMMCTS alg pseudocode)
+		 * 
+		 * Returns null if either player actions or opponent actions is empty
 		 */
 		public int[] select() {
-			// TODO
-			return new int [] {0, 0};
+			
+			if(playerActions.length == 0 || opponentActions.length == 0)
+				return null;
+			
+			return new int[] {MCTS.ActionData.bestAction(playerActions), MCTS.ActionData.bestAction(opponentActions)};
+			
 		}
+		
 		
 		public double SMMCTS() {
 			if(currentState.isTerminal())
@@ -110,22 +187,18 @@ public class MCTS {
 			if(unexploredActions != null) {
 				i = unexploredActions[0];
 				j = unexploredActions[1];
-				MatrixEntry entry = entries[i][j];
-				TreeNode sPrime = entry.successor;
+				TreeNode sPrime = SuccessorNodes[i][j];
 				u1 = sPrime.playout();
 				/*
 				 * We are using Decoupled UCT, so X and n values are stored in matrix
 				 * entries rather than in nodes like the pseudocode suggests
 				 */
-				entry.X += u1;
-				entry.n += 1;
 			}
 			else {
 				int[] selectedActions = select();
 				i = selectedActions[0];
 				j = selectedActions[1];
-				MatrixEntry entry = entries[i][j];
-				TreeNode sPrime = entry.successor;
+				TreeNode sPrime = SuccessorNodes[i][j];
 				u1 = sPrime.SMMCTS();
 			}
 			
@@ -133,20 +206,6 @@ public class MCTS {
 			return u1;
 		}
 		
-	}
-	public static class MatrixEntry {
-		public TreeNode successor;
-		/**
-		 * X and n as defined in this paper:
-		 * http://mlanctot.info/files/papers/cig14-smmctsggp.pdf
-		 */
-		public double X;
-		public int n;
-		public MatrixEntry(TreeNode s) {
-			X = 0;
-			n = 0;
-			successor = s;
-		}
 	}
 	public static Simulator.Action chooseMove(GameState gs) {
 		TreeNode root = new TreeNode(gs);
