@@ -733,7 +733,7 @@ public class Move {
 		
 		m = new Move();
 		m.name = "tackle";
-		m.power = 0;
+		m.power = 35;
 		m.maxPP = 56;
 		m.accuracy = 95;
 		m.type = Type.NORMAL;
