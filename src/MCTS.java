@@ -3,6 +3,8 @@ import java.util.List;
 
 public class MCTS {
 	
+	public static int SimulationTimeLimitSeconds = 10;
+	
 	/**
 	 * This class contains data for a particular action of a 
 	 * node of the MCTS tree
@@ -225,16 +227,14 @@ public class MCTS {
 	public static Simulator.Action chooseMove(GameState gs) {
 		TreeNode root = new TreeNode(gs);
 		
-		while(!stopSearch()) {
+		long startTime = System.currentTimeMillis();
+		
+		// Run simulations until [SimulationTimeLimitSeconds] seconds have elapsed
+		while(System.currentTimeMillis() - startTime < (long)(SimulationTimeLimitSeconds*1000)) {
 			root.SMMCTS();
 		}
 		
 		return root.getBestAction();
-	}
-	
-	public static boolean stopSearch() {
-		// TODO
-		return false;
 	}
 
 }
