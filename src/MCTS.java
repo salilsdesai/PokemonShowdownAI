@@ -31,6 +31,13 @@ public class MCTS {
 			X += u1;
 			n +=1 ;
 		}
+		/**
+		 * Return the reward used to compare actions to each other
+		 * to determine which one to select after simulations are over
+		 */
+		public double estimatedReward() {
+			return X/n;
+		}
 
 		/**
 		 * Calculated using the formula at the bottom left of page 3 of
@@ -135,9 +142,17 @@ public class MCTS {
 		 * Choose whichever player actions has highest average 
 		 */
 		public Simulator.Action getBestAction() {
-			// TODO
-			// Pick the action with largest min expected payout over opponent actions.s
-			return null;
+			int bestAction = 0;
+			double bestActionReward = playerActions[0].estimatedReward();
+			for(int i = 1; i < playerActions.length; i++) {
+				double actionIReward = playerActions[i].estimatedReward();
+				if(actionIReward > bestActionReward) {
+					bestAction = i;
+					bestActionReward = actionIReward;
+				}
+			}
+			
+			return playerActions[bestAction].action;
 		}
 		
 		/**
