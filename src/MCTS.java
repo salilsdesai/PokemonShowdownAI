@@ -162,9 +162,19 @@ public class MCTS {
 		 * to the end of the game (as used in SMMCTS alg pseudocode)
 		 */
 		public double playout() {
-			// TODO
-			return 0;
+			if(currentState.isTerminal())
+				return currentState.evalTerminalNode();
+			
+			
+			Simulator.Action playerAction = playerActions[(int)(Math.random() * playerActions.length)].action;
+			Simulator.Action opponentAction = opponentActions[(int)(Math.random() * opponentActions.length)].action;
+			
+			GameState nextGS = currentState.simulateTurn(playerAction, opponentAction);
+			TreeNode nextTreeNode = new TreeNode(nextGS);
+			
+			return nextTreeNode.playout();
 		}
+		
 		
 		/**
 		 * playerActions[i] and opponentActions[j] where
@@ -186,6 +196,8 @@ public class MCTS {
 			
 			if(playerActions.length == 0 || opponentActions.length == 0)
 				return null;
+			
+			// TODO: Replace this with input from neural networks
 			
 			return new int[] {MCTS.ActionData.bestAction(playerActions), MCTS.ActionData.bestAction(opponentActions)};
 			

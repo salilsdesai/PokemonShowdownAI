@@ -3,11 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import Simulator.Action;
-import Simulator.ActionType;
-import Simulator.AttackAction;
-import Simulator.SwitchAction;
-
 public class GameState {
     /* Representation of player-one's team of pokemon and movesets. */
     public Team p1_team;
