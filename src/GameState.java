@@ -1,6 +1,12 @@
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
+
+import Simulator.Action;
+import Simulator.ActionType;
+import Simulator.AttackAction;
+import Simulator.SwitchAction;
 
 public class GameState {
     /* Representation of player-one's team of pokemon and movesets. */
@@ -29,22 +35,194 @@ public class GameState {
     	p2_pokemon.put(p2_active, new HashSet<>());
     }
    
-    public GameState simulateTurn(Simulator.Action playerAction, Simulator.Action opponentAction) {
-    	//TODO: simulate a turn
+    public GameState simulateTurn(Simulator.Action a1, Simulator.Action a2) {
     	GameState next = new GameState();
 
     	// Create a deep copy of player-one's team
-    	Team next_team = new Team(new ArrayList<>());
+    	Team next_team = new Team();
     	for (Pokemon p : p1_team.pokemonList) {
     		Pokemon clone = p.clone();
     		next_team.pokemonList.add(clone);
     		if (p == p1_team.activePokemon) {
     			next_team.activePokemon = clone;
     		}
+    		
+    		// Change the action so that the user/targets are the clones
+    		if (a1.getType() == Simulator.ActionType.SWITCH) {
+    			Simulator.SwitchAction sw = (Simulator.SwitchAction)(a1);
+    			if (p == sw.switchTo) {
+    				sw.switchTo = clone;
+    			}
+    			a1 = sw;
+    		}
+    		else if (a1.getType() == Simulator.ActionType.ATTACK) {
+    			Simulator.AttackAction aa = (Simulator.AttackAction)(a1);
+    			if (p == aa.user) {
+    				aa.user = clone;
+    			}
+    			a1 = aa;
+    		}
     	}
     	next.p1_team = next_team;
     	
-    	// TODO: finish simulation
+    	// Create a deep copy of player-two's known team
+    	next.p2_pokemon = pass_on();
+    	
+    	for (Pokemon p : next.p2_pokemon.keySet()) {
+    		// Change the action so that the user/targets are the clones
+    		if (a2.getType() == Simulator.ActionType.SWITCH) {
+    			Simulator.SwitchAction sw = (Simulator.SwitchAction)(a1);
+    			if (p.species == sw.switchTo.species) {
+    				sw.switchTo = p;
+    			}
+    			a1 = sw;
+    		}
+    		else if (a2.getType() == Simulator.ActionType.ATTACK) {
+    			Simulator.AttackAction aa = (Simulator.AttackAction)(a1);
+    			if (p.species == aa.user.species) {
+    				aa.user = p;
+    			}
+    			a1 = aa;
+    		}
+    	}
+    	
+    	// Execute the turn (analogous to the one in simulator)
+		if (a1.getType() == Simulator.ActionType.SWITCH) {
+			Simulator.SwitchAction s1 = (Simulator.SwitchAction)a1;
+			Simulator.addMessage(p1_team.activePokemon.species + " was switched with " + s1.switchTo.species);
+			
+			// Switch
+			next.p1_team.activePokemon.resetUponSwitch();
+			next.p1_team.activePokemon = s1.switchTo;
+		}
+		if (a2.getType() == Simulator.ActionType.SWITCH) {
+			Simulator.SwitchAction s2 = (Simulator.SwitchAction)a2;
+			Simulator.addMessage(p2_active.species + " was switched with " + s2.switchTo.species);
+			
+			// Switch
+			next.p2_active.resetUponSwitch();
+			next.p2_active = s2.switchTo;
+			
+			// Update the opponent team if the new pokemon has never been seen before
+			if (next.p2_pokemon.get(next.p2_active) == null) {
+				next.p2_pokemon.put(next.p2_active, new HashSet<>());
+			}
+		}
+		
+		// Both moves are attack actions, so must compare speeds
+		if(a1.getType() == Simulator.ActionType.ATTACK && a2.getType() == Simulator.ActionType.ATTACK) {
+			Simulator.AttackAction aa1 = (Simulator.AttackAction)a1;
+			Simulator.AttackAction aa2 = (Simulator.AttackAction)a2;
+			
+			// Relevant statistics needed for analyzing turn-order.
+			int p1 = aa1.move.priority;
+			int p2 = aa2.move.priority;
+			int spd1 = aa1.user.modifiedStat(Pokemon.Stat.SPE);
+			int spd2 = aa2.user.modifiedStat(Pokemon.Stat.SPE);
+			
+			/* Player 1's pokemon can attack first if and only if:
+			 * 1) It's move is higher priority, or
+			 * 2) It's move is not lower priority and it wins out on speed. */
+			if (p1 > p2 || (p1 == p2 && ((spd1 > spd2) || (spd1 == spd2 && Math.random() < 0.5)))) {
+				aa1.move.use(aa1.user, p2_active);
+				if(aa1.deductPPIndex != -1) {
+					aa1.user.pp[aa1.deductPPIndex]--;
+				}
+				if (p2_active.isAlive()) {
+					// Attack
+					aa2.move.use(aa2.user, p1_team.activePokemon);
+					if(aa2.deductPPIndex != -1) {
+						aa2.user.pp[aa2.deductPPIndex]--;
+					}
+					
+					// Update the opponent team if the move has never been seen before
+					next.p2_pokemon.get(aa2.user).add(aa2.move);
+				}
+			}
+			/* If none of the conditions above are satisifed, then player 2
+			 * must attack first. */
+			else {
+				aa2.move.use(aa2.user, p1_team.activePokemon);
+				if(aa2.deductPPIndex != -1) {
+					aa2.user.pp[aa2.deductPPIndex]--;
+				}
+				// Update the opponent team if the move has never been seen before
+				next.p2_pokemon.get(aa2.user).add(aa2.move);
+				
+				
+				if (p1_team.activePokemon.isAlive()) {
+					aa1.move.use(aa1.user, p2_active);
+					if(aa1.deductPPIndex != -1) {
+						aa1.user.pp[aa1.deductPPIndex]--;
+					}
+				}
+			}
+		}
+		/* If both actions aren't attack type, then one or less were. Check the
+		 * two different actions and if either is attack, the other must have been
+		 * switched, so attack immediately. */
+		else {
+			if (a1.getType() == Simulator.ActionType.ATTACK) {
+				// Attack
+				Simulator.AttackAction aa1 = (Simulator.AttackAction)a1;
+				aa1.move.use(aa1.user, p2_active);
+				
+				if(aa1.deductPPIndex != -1) {
+					aa1.user.pp[aa1.deductPPIndex]--;
+				}
+			}
+			else if (a2.getType() == Simulator.ActionType.ATTACK){
+				// Attack
+				Simulator.AttackAction aa2 = (Simulator.AttackAction)a2;
+				aa2.move.use(aa2.user, p1_team.activePokemon);
+				
+				if(aa2.deductPPIndex != -1) {
+					aa2.user.pp[aa2.deductPPIndex]--;
+				}
+				
+				// Update the opponent team if the move has never been seen before
+				next.p2_pokemon.get(aa2.user).add(aa2.move);
+			}
+		}
+    	
+		// Mechanics that take effect at the end of the turn
+		
+		// Apply poison/burn damage, reset counter damage
+		
+		for (Pokemon p : new Pokemon[] {next.p1_team.activePokemon, next.p2_active}) {
+			// Apply transformation effects
+			if (p.status.transformed != null) {
+				if (p == next.p1_team.activePokemon) {
+					next.p1_team.activePokemon = p.status.transformed;
+				}
+				else {
+					next.p2_active = p.status.transformed;
+				}
+			}
+			
+			// Apply poison/burn damage
+			if (p.isAlive()) {
+				if (p.status.burn || p.status.poison) {
+					p.currHp -= p.maxHp/16;
+					System.out.println(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+				}
+				if (p.status.badly_poisoned_counter > 0) {
+					p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
+					System.out.println(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+					p.status.badly_poisoned_counter++;
+				}
+				
+				// Reset counter damage
+				p.status.counter_damage = 0;
+			}
+		}	
+		
+		for(Pokemon p : new Pokemon[] {next.p1_team.activePokemon, next.p2_active}) {
+			if(!p.isAlive()) {
+				System.out.println(p.species + " fainted ");
+			}
+		}
+
     	return next;
     }
 

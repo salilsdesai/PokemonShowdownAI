@@ -11,6 +11,11 @@ public class Team {
 		activePokemon = l.get(0);
 	}
 	
+	/** Default constructor with empty pokemonlist and null active pokemon. */
+	public Team() {
+		pokemonList = new ArrayList<>();
+	}
+	
 	public ArrayList<Simulator.Action> getActions() {
 		ArrayList<Simulator.Action> actions = new ArrayList<Simulator.Action>();
 		

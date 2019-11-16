@@ -1434,6 +1434,19 @@ public class Move {
 			md.user.currHp -= md.damage/2;
 		}};
 		moves.put(m.name, m);
+		
+		m = new Move();
+		m.name = "NOTHING";
+		m.power = 0;
+		m.maxPP = Integer.MAX_VALUE;
+		m.accuracy = 0;
+		m.type = Type.NONE;
+		m.highCritRatio = false;
+		m.priority = 0;
+		m.secondaryEffect = new Consumer<MoveDamage>() { public void accept(MoveDamage md) {
+
+		}};
+		moves.put(m.name, m);
 	}
 	
 	public static void main(String[] args) {

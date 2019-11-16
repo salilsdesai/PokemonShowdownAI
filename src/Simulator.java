@@ -75,8 +75,7 @@ public class Simulator {
 			SwitchAction s1 = (SwitchAction)a1;
 			addMessage(t1.activePokemon.species + " was switched with " + s1.switchTo.species);
 			t1.activePokemon.resetUponSwitch();
-			t1.activePokemon = s1.switchTo;
-			
+			t1.activePokemon = s1.switchTo;	
 		}
 		if (a2.getType() == ActionType.SWITCH) {
 			SwitchAction s2 = (SwitchAction)a2;
@@ -155,9 +154,6 @@ public class Simulator {
 	 * - reset counter damage
 	 */
 	public static void endOfTurn(Team t1, Team t2) {
-
-		// TODO: Set mirror move
-		
 		
 		// Apply poison/burn damage, reset counter damage
 		for(Team t : new Team[] {t1, t2}) {
