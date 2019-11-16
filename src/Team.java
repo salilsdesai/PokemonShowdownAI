@@ -15,7 +15,7 @@ public class Team {
 	public Team() {
 		pokemonList = new ArrayList<>();
 	}
-	
+
 	public ArrayList<Simulator.Action> getActions(boolean opponent_alive) {
 		ArrayList<Simulator.Action> actions = new ArrayList<Simulator.Action>();
 		
