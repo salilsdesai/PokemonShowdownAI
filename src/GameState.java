@@ -20,6 +20,31 @@ public class GameState {
     private GameState() {
     	
     }
+    
+    /** 
+     * Updates the game-state to reflect which move was played. If the opponent
+     * did not switch pokemon, then the first parameter should be null to reflect
+     * this. 
+     */
+    public void update(Pokemon new_p2_active, Move m) {
+    	// Opponent did not switch
+    	if (new_p2_active == null) {
+    		// Update the moveset of the opponent's active pokemon
+    		p2_pokemon.get(p2_active).add(m);
+    		return;
+    	}
+    	
+    	// Opponent switched to a previously seen pokemon
+    	if (p2_pokemon.get(new_p2_active) != null) {
+    		p2_active = new_p2_active;
+    		return;
+    	}
+
+    	// Opponent switched to a known pokemon
+    	p2_pokemon.put(new_p2_active, new HashSet<>());
+    	p2_active = new_p2_active;
+    }
+    
     /** Default game state which describes the game as it begins. */
     public GameState(Team p1_team, Pokemon p2_active) {
     	/* Initialize variables. */
@@ -128,10 +153,6 @@ public class GameState {
 					if(aa2.deductPPIndex != -1) {
 						aa2.user.pp[aa2.deductPPIndex]--;
 					}
-					
-					// Update the opponent team if the move has never been seen before
-//					NVM we don't want to update during internal simulation
-//					next.p2_pokemon.get(aa2.user).add(aa2.move);
 				}
 			}
 			/* If none of the conditions above are satisifed, then player 2
@@ -141,10 +162,6 @@ public class GameState {
 				if(aa2.deductPPIndex != -1) {
 					aa2.user.pp[aa2.deductPPIndex]--;
 				}
-				
-				// Update the opponent team if the move has never been seen before
-//				NVM we don't want to update during internal simulation
-//				next.p2_pokemon.get(aa2.user).add(aa2.move);
 				
 				
 				if (next.p1_team.activePokemon.isAlive()) {
@@ -176,10 +193,6 @@ public class GameState {
 				if(aa2.deductPPIndex != -1) {
 					aa2.user.pp[aa2.deductPPIndex]--;
 				}
-				
-				// Update the opponent team if the move has never been seen before
-//				NVM we don't want to update during internal simulation
-//				next.p2_pokemon.get(aa2.user).add(aa2.move);
 			}
 		}
     	
