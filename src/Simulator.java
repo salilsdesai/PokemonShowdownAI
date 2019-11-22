@@ -233,7 +233,7 @@ public class Simulator {
 			
 			// Update the game state
 			if(p1Action.getType().equals(ActionType.SWITCH)) {
-				p2GameState.update(t2.activePokemon, null);
+				p2GameState.update(t1.activePokemon, null);
 				
 			}
 			else if(p1Action.getType().equals(ActionType.ATTACK)) {

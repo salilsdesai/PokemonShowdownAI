@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class GameState {
     /* Representation of player-one's team of pokemon and movesets. */
@@ -251,13 +252,25 @@ public class GameState {
 		return ret;
     }
     
-    /** Generates the team represented in the hashmap. */
-    public Team getOpponentTeam() {
+    /**
+     * Returns a list where the first element is a list of actions available to the player
+     * and the second element is a list of actions available to the opponent (based on
+     * which moves/pokemon we've seen the opponent use)
+     */
+    public ArrayList<ArrayList<Simulator.Action>> getPlayerAndOpponentActions() {
+    	
     	// List representation of the opponent's team. 
     	ArrayList<Pokemon> rep = new ArrayList<>();
 
+    	// Store original movesets in an array so we can set them back when we're done
+    	Move[][] originalMoves = new Move[p2_pokemon.size()][];
+    	Iterator<Pokemon> it = p2_pokemon.keySet().iterator();
+    	int index = 0;
+    	
     	/* Add every seen pokemon that was seen into the tree. */
-    	for (Pokemon p : p2_pokemon.keySet()) {
+    	while(it.hasNext()) {
+    		Pokemon p = it.next();
+    		originalMoves[index] = p.moves;
     		/* If the pokemon seen has never been observed to perform moves, assign
     		 * it a random moveset which is consistent with how moves are generated. */
     		if (p2_pokemon.get(p).size() == 0) {
@@ -275,6 +288,7 @@ public class GameState {
     			/* Assign all the known moves to the pokemon. Fill the remainder
     			 * of the moveset with [null]. */
     			int counter = 0;
+    			p.moves = new Move[4];
     			for (Move m : p2_pokemon.get(p)) {
     				p.moves[counter++] = m;
     			}
@@ -283,6 +297,7 @@ public class GameState {
     			}
     		}
     		rep.add(p);
+    		index++;
     	}
     	
     	/* Swap the ordering of the list such that the first pokemon is the active pokemon. */
@@ -291,9 +306,27 @@ public class GameState {
     	rep.set(0, p2_active);
     	rep.set(active_index, tmp);
     	
-    	return new Team(rep);
+    	
+    	Team oppoTeam = new Team(rep);
+		ArrayList<Simulator.Action> p1Actions = p1_team.getActions(oppoTeam.activePokemon.isAlive());
+		ArrayList<Simulator.Action> oppoActions = oppoTeam.getActions(p1_team.activePokemon.isAlive());
+    	
+    	ArrayList<ArrayList<Simulator.Action>> actions = new ArrayList<ArrayList<Simulator.Action>>();
+    	actions.add(p1Actions);
+    	actions.add(oppoActions);
+    	
+    	// Restore original movesets of opposing pokemon
+    	it = p2_pokemon.keySet().iterator();
+    	index = 0;
+    	while(it.hasNext()) {
+    		Pokemon p = it.next();
+    		p.moves = originalMoves[index];
+    		index++;
+    	}
+    	
+    	return actions;
     }
-    
+
     /** Returns if the current game-state is terminal (if either player has lost). */
     public boolean isTerminal() {
     	boolean lost = true;
