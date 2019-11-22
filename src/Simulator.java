@@ -50,11 +50,11 @@ public class Simulator {
 	 */
 	public static String message;
 	public static void addMessage(String s) {
-		System.out.println(s);
-//		if(message == null)
-//			message = s;
-//		else
-//			message += "\n" + s;
+//		System.out.println(s);
+		if(message == null)
+			message = s;
+		else
+			message += "\n" + s;
 	}
 	
 	public static Scanner input;
@@ -176,7 +176,7 @@ public class Simulator {
 				p.status.counter_damage = 0;
 			}
 			
-			if(p.isAlive()) {
+			if(!p.isAlive()) {
 				System.out.println(p.species + " fainted");
 			}
 		}
@@ -209,8 +209,11 @@ public class Simulator {
 	
 	public static void main(String[] args) {
 		
+		// t1 is you, t2 is the AI
 		Team t1 = new Team(TeamGenerator.randomTeam());
 		Team t2 = new Team(TeamGenerator.randomTeam());
+		
+		GameState p2GameState = new GameState(t2, t1.activePokemon);
 		
 		int turn = 1;
 		
@@ -218,17 +221,33 @@ public class Simulator {
 			System.out.println(t1);
 			System.out.println(t2);
 			
-			ArrayList<ArrayList<Action>> bothPlayerActions = new ArrayList<ArrayList<Action>>();
-			bothPlayerActions.add(t1.getActions(t2.activePokemon.isAlive()));
-			bothPlayerActions.add(t2.getActions(t1.activePokemon.isAlive()));
+			ArrayList<Action> p1Actions = t1.getActions(t2.activePokemon.isAlive());
+			Action p1Action = getActionChoice(p1Actions);
 			
-			Action[] chosenActions = new Action[2];
-			for(int i = 0; i < 2; i++) {
-				chosenActions[i] = getActionChoice(bothPlayerActions.get(i));
-			}
+			Action p2Action = MCTS.chooseMove(p2GameState);
+			
+			Simulator.message = null;
 			
 			Simulator.addMessage("Turn #" + turn);
-			executeTurn(chosenActions[0], chosenActions[1], t1, t2);
+			executeTurn(p1Action, p2Action, t1, t2);
+			
+			// Update the game state
+			if(p1Action.getType().equals(ActionType.SWITCH)) {
+				p2GameState.update(t2.activePokemon, null);
+				
+			}
+			else if(p1Action.getType().equals(ActionType.ATTACK)) {
+				AttackAction aa = (AttackAction) p1Action;
+				Move m = aa.move;
+				if(
+					m != null && 
+					!m.equals(Move.getMove("NOTHING")) &&
+					!m.equals(Move.getMove("RECHARGE")) &&
+					!m.equals(Move.getMove("STRUGGLE"))
+				)
+					p2GameState.update(null, m);
+			}
+			
 			
 			// Print and clear the current turn's message
 			System.out.println(Simulator.message);
