@@ -22,12 +22,12 @@ public class GameState {
     }
     
     /** 
-     * Updates the game-state to reflect which move was played. If the opponent
-     * did not switch pokemon, then the first parameter should be null to reflect
-     * this. 
+     * Updates the game-state to reflect which move was played. 
+     * If the opponent switched pokemon, m should be null
+     * If the opponent used a move, new_p2_active should be null
      */
     public void update(Pokemon new_p2_active, Move m) {
-    	// Opponent did not switch
+    	// Opponent used a move
     	if (new_p2_active == null) {
     		// Update the moveset of the opponent's active pokemon
     		p2_pokemon.get(p2_active).add(m);
@@ -40,7 +40,7 @@ public class GameState {
     		return;
     	}
 
-    	// Opponent switched to a known pokemon
+    	// Opponent switched to an uknown pokemon
     	p2_pokemon.put(new_p2_active, new HashSet<>());
     	p2_active = new_p2_active;
     }
@@ -216,11 +216,11 @@ public class GameState {
 			if (p.isAlive()) {
 				if (p.status.burn || p.status.poison) {
 					p.currHp -= p.maxHp/16;
-					System.out.println(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+//					System.out.println(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 				}
 				if (p.status.badly_poisoned_counter > 0) {
 					p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
-					System.out.println(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
+//					System.out.println(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 					p.status.badly_poisoned_counter++;
 				}
 				
@@ -229,11 +229,12 @@ public class GameState {
 			}
 		}	
 		
-		for(Pokemon p : new Pokemon[] {next.p1_team.activePokemon, next.p2_active}) {
-			if(!p.isAlive()) {
-				System.out.println(p.species + " fainted ");
-			}
-		}
+		// Don't need to print this out. Uncomment if we do want to see it as the rollout is being performed
+//		for(Pokemon p : new Pokemon[] {next.p1_team.activePokemon, next.p2_active}) {
+//			if(!p.isAlive()) {
+//				System.out.println(p.species + " fainted ");
+//			}
+//		}
 
     	return next;
     }

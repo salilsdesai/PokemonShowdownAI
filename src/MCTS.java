@@ -116,7 +116,6 @@ public class MCTS {
 			}
 			
 			GameState newGS = currentState.simulateTurn(playerActions[i].action, opponentActions[j].action);
-			System.out.println("sim done");
 			SuccessorNodes[i][j] = new TreeNode(newGS);
 			
 			return new int[] {i, j};
