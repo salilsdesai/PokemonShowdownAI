@@ -122,11 +122,6 @@ public class GameState {
 			// Switch
 			next.p2_active.resetUponSwitch();
 			next.p2_active = s2.switchTo;
-			
-			// Update the opponent team if the new pokemon has never been seen before
-			if (next.p2_pokemon.get(next.p2_active) == null) {
-				next.p2_pokemon.put(next.p2_active, new HashSet<>());
-			}
 		}
 		
 		// Both moves are attack actions, so must compare speeds
@@ -217,11 +212,9 @@ public class GameState {
 			if (p.isAlive()) {
 				if (p.status.burn || p.status.poison) {
 					p.currHp -= p.maxHp/16;
-//					System.out.println(p.species + " was hurt by " + (p.status.burn ? "burn" : "poison") + "(" + (p.maxHp/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 				}
 				if (p.status.badly_poisoned_counter > 0) {
 					p.currHp -= p.maxHp*p.status.badly_poisoned_counter/16;
-//					System.out.println(p.species + " was hurt by badly poison (" + (p.maxHp*p.status.badly_poisoned_counter/16) + ", " + p.currHp + "/" + p.maxHp+ ")");
 					p.status.badly_poisoned_counter++;
 				}
 				
@@ -229,13 +222,6 @@ public class GameState {
 				p.status.counter_damage = 0;
 			}
 		}	
-		
-		// Don't need to print this out. Uncomment if we do want to see it as the rollout is being performed
-//		for(Pokemon p : new Pokemon[] {next.p1_team.activePokemon, next.p2_active}) {
-//			if(!p.isAlive()) {
-//				System.out.println(p.species + " fainted ");
-//			}
-//		}
 
     	return next;
     }
