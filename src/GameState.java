@@ -64,7 +64,7 @@ public class GameState {
     	for (Pokemon p : p1_team.pokemonList) {
     		Pokemon clone = p.clone();
     		next_team.pokemonList.add(clone);
-    		if (p == p1_team.activePokemon) {
+    		if (p.species.equals(p1_team.activePokemon.species)) {
     			next_team.activePokemon = clone;
     		}
     		
