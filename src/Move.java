@@ -499,7 +499,7 @@ public class Move {
 		m = new Move();
 		m.name = "dragonrage";
 		m.maxPP = 16;
-		m.power = 0;
+		m.power = 40;
 		m.accuracy = 100;
 		m.type = Type.DRAGON;
 		m.highCritRatio = false;
@@ -994,7 +994,7 @@ public class Move {
 		
 		m = new Move(); 
 		m.name = "seismictoss";
-		m.power = 0;
+		m.power = 80;
 		m.maxPP = 32;
 		m.accuracy = 100;
 		m.type = Type.FIGHTING;
@@ -1204,7 +1204,7 @@ public class Move {
 		
 		m = new Move(); 
 		m.name = "nightshade";
-		m.power = 0;
+		m.power = 80;
 		m.maxPP = 21;
 		m.accuracy = 100;
 		m.type = Type.GHOST;
