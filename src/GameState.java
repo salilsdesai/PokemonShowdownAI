@@ -58,6 +58,7 @@ public class GameState {
    
     public GameState simulateTurn(Simulator.Action a1, Simulator.Action a2) {
     	GameState next = new GameState();
+    	Pokemon t1 = null;
 
     	// Create a deep copy of player-one's team
     	Team next_team = new Team();
@@ -73,12 +74,14 @@ public class GameState {
     			Simulator.SwitchAction sw = (Simulator.SwitchAction)(a1);
     			if (p.species.equals(sw.switchTo.species)) {
     				sw.switchTo = clone;
+    				t1 = p;
     			}
     		}
     		else if (a1.getType() == Simulator.ActionType.ATTACK) {
     			Simulator.AttackAction aa = (Simulator.AttackAction)(a1);
     			if (p.species.equals(aa.user.species)) {
     				aa.user = clone;
+    				t1 = p;
     			}
     		}
     	}
@@ -223,6 +226,14 @@ public class GameState {
 			}
 		}	
 
+		if (a1.getType() == Simulator.ActionType.ATTACK) {
+			Simulator.AttackAction aa = (Simulator.AttackAction)(a1);
+			aa.user = t1;
+		}
+		else {
+			Simulator.SwitchAction sa = (Simulator.SwitchAction)(a1);
+			sa.switchTo = t1;
+		}
     	return next;
     }
 
