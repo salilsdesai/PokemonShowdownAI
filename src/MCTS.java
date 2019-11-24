@@ -243,7 +243,7 @@ public class MCTS {
 		
 		long startTime = System.currentTimeMillis();
 		
-//		 Run simulations until [SimulationTimeLimitSeconds] seconds have elapsed
+		// Run simulations until [SimulationTimeLimitSeconds] seconds have elapsed
 		while(System.currentTimeMillis() - startTime < (long)(SimulationTimeLimitSeconds*1000)) {
 			root.SMMCTS();
 		}
