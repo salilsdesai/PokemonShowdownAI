@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Arrays;
 
 import java.io.IOException;
 import java.io.FileReader;
@@ -17,6 +18,8 @@ public class NeuralNet {
 	private int LAYERS;
 	/** Size of the output layer. */
 	private int OUTPUT;
+	
+	// What each node in input corresponds to: https://i.imgur.com/ym1ra0S.jpg
 	
 	/** 
 	 * Weights of the neural network. weights[i][j][k] will refer
@@ -74,7 +77,7 @@ public class NeuralNet {
 			System.exit(1);
 		}
 	}
-	
+
 	/** Writes the weights of the neural net to file s. */
 	public void save(String s) {
 		try {
@@ -113,24 +116,91 @@ public class NeuralNet {
 		return sig * (1 - sig);
 	}
 	
-	public double[] compute_output(double[] input) {
-		// Check to see if the input length is valid
+	/**
+	 * forward_pass[0][i][j] is the unactivated value of the j'th node in layer i (s[i][j])
+	 * forward_pass[1][i][j] is the activated value of the j'th node in layer i (v[i][j])
+	 */
+	public ArrayList<ArrayList<double[]>> forward_pass(double[] input) {
+		// Check to see if the input length is valid		
 		if (input.length != SIZE) {
 			throw new RuntimeException("invalid input size into the neural net. expected " + SIZE + " got " + input.length + ". ");
 		}
 		
-		double[] ret = new double[OUTPUT];
+		/** 
+		 * s[i][j] is the unactivated value of the j'th node of layer i (for i > 0)
+		 * (s[0][j] is just the j'th value of the input)
+		 */
+		ArrayList<double[]> s = new ArrayList<double[]>();
 		
-		for (int i = 0; i < LAYERS; i++) {
-			double[] tmp = new double[OUTPUT];
-			
+		/** v[i][j] is the activated value of the j'th node of layer i */
+		ArrayList<double[]> v = new ArrayList<double[]>();
+		
+		s.add(new double[SIZE]);
+		v.add(new double[SIZE]);
+		for(int i = 0; i < SIZE; i++) {
+			s.get(0)[i] = input[i];
+			v.get(0)[i] = input[i];
 		}
 		
-		return ret;
+		for (int i = 1; i < LAYERS; i++) { // layer number
+			double[][] w = weights.get(i-1);
+			double[] s_i = new double[w[0].length];
+			double[] v_i = new double[w[0].length];
+			
+			for(int j = 0; j < w.length; j++) {
+				for(int k = 0; k < w[0].length; k++) {
+					s_i[k] += w[j][k]*v.get(i-1)[j];
+				}
+			}
+			
+			for(int k = 0; k < w[0].length; k++) {
+				v_i[k] = activate(s_i[k]);
+			}
+			s.add(s_i);
+			v.add(v_i);
+		}
+		
+		ArrayList<ArrayList<double[]>> sAndV = new ArrayList<ArrayList<double[]>>();
+		sAndV.add(s);
+		sAndV.add(v);
+		
+		return sAndV;
+	}
+	
+	/**
+	 * Test the neural net on sample input and print the result
+	 * Expected Result: https://i.imgur.com/ym1ra0S.jpg
+	 */
+	public static void forwardPassTest() {
+		
+		ArrayList<double[][]> w = new ArrayList<double[][]>();
+		w.add(new double[][] {
+			{0.1, 0.3, 0.5},
+			{0.2, 0.4, 0.6}
+		});
+		w.add(new double[][] {
+			{0.7, 1.0},
+			{0.8, 1.1},
+			{0.9, 1.2}
+		});
+		
+		NeuralNet n = new NeuralNet(w);
+		double[] input = new double[] {13, 14};
+		
+		ArrayList<ArrayList<double[]>> sAndV = n.forward_pass(input);
+		ArrayList<double[]> s = sAndV.get(0);
+		ArrayList<double[]> v = sAndV.get(1);
+		
+		for(double[] d : s.toArray(new double[s.size()][])) {
+			System.out.println(Arrays.toString(d));
+		}
+		System.out.println("--");
+		for(double[] d : v.toArray(new double[s.size()][])) {
+			System.out.println(Arrays.toString(d));
+		}
 	}
 	
 	public static void main(String[] args) {
-		NeuralNet nn = new NeuralNet("input");
-		nn.save("output");
+		forwardPassTest();
 	}
 }
