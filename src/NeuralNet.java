@@ -169,7 +169,7 @@ public class NeuralNet {
 	
 	/**
 	 * Test the neural net on sample input and print the result
-	 * Expected Result: https://i.imgur.com/ym1ra0S.jpg
+	 * Expected Result: https://i.imgur.com/FGCCjlq.jpg
 	 */
 	public static void forwardPassTest() {
 		
