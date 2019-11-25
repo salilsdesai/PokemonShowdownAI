@@ -339,7 +339,7 @@ public class Pokemon {
 		
 		String[] m = new String[p.moves.length];
 		for(int i = 0; i < p.moves.length; i++)
-			m[i] = p.moves[i].name;
+			m[i] = p.moves[i] != null ? p.moves[i].name : null;
 		this.status.transformed = new Pokemon(p.species, m, p.level);
 		
 		this.status.transformed.level = this.level;

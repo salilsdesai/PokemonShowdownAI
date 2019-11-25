@@ -31,7 +31,9 @@ public class GameState {
     	// Opponent used a move
     	if (new_p2_active == null) {
     		// Update the moveset of the opponent's active pokemon
-    		p2_pokemon.get(p2_active).add(m);
+    		HashSet<Move> p2_active_moves = p2_pokemon.get(p2_active);
+    		if(p2_active_moves != null)
+    			p2_active_moves.add(m);
     		return;
     	}
     	
@@ -62,6 +64,7 @@ public class GameState {
 
     	// Create a deep copy of player-one's team
     	Team next_team = new Team();
+    	
     	for (Pokemon p : p1_team.pokemonList) {
     		Pokemon clone = p.clone();
     		next_team.pokemonList.add(clone);
@@ -91,7 +94,7 @@ public class GameState {
     	next.p2_pokemon = pass_on();
     	
     	for (Pokemon p : next.p2_pokemon.keySet()) {
-    		if (p.species.equals(p2_active.species)) {
+    		if (p.species.equals(p2_active.species) || (p.status.transformed != null ? p.status.transformed.species.equals(p2_active.species) : false)) {
     			next.p2_active = p;
     		}
     		// Change the action so that the user/targets are the clones
@@ -299,6 +302,12 @@ public class GameState {
     	
     	/* Swap the ordering of the list such that the first pokemon is the active pokemon. */
     	int active_index = rep.indexOf(p2_active);
+    	if(active_index == -1) {
+    		// They must have transformed
+    		for(int i = 0; i < rep.size() && active_index == -1; i++)
+    			if(rep.get(i).species.equals("ditto"))
+    				active_index = i;
+    	}
     	Pokemon tmp = rep.get(0);
     	rep.set(0, p2_active);
     	rep.set(active_index, tmp);

@@ -167,8 +167,11 @@ public class MCTS {
 			if(currentState.isTerminal())
 				return currentState.evalTerminalNode();
 			
-			Simulator.Action playerAction = playerActions[(int)(Math.random() * playerActions.length)].action;
+			// If either player has no actions consider it a terminal node
+			if(playerActions.length == 0 || opponentActions.length == 0)
+				return currentState.evalTerminalNode();
 			
+			Simulator.Action playerAction = playerActions[(int)(Math.random() * playerActions.length)].action;
 			Simulator.Action opponentAction = opponentActions[(int)(Math.random() * opponentActions.length)].action;
 			
 			GameState nextGS = currentState.simulateTurn(playerAction, opponentAction);
