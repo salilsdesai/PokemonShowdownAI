@@ -29,7 +29,7 @@ public class Replay {
 			int commaIndex = line.indexOf(',', speciesIndex);
 			int endOfLevelIndex = line.indexOf('|', commaIndex);
 			player = (line.charAt(playerIndex) == '1');
-			species = line.substring(speciesIndex, commaIndex).toLowerCase();
+			species = filterNonLetters(line.substring(speciesIndex, commaIndex).toLowerCase());
 			level = Integer.parseInt(line.substring(commaIndex+3, endOfLevelIndex));
 		}
 		public String toString() {
@@ -45,6 +45,15 @@ public class Replay {
 	
 	public String toString() {
 		return (state.toString() + "\nTurn Num: " + turnNum + "\nWinner: " + (winner ? "p1" : "p2"));
+	}
+	
+	public static String filterNonLetters(String s) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < s.length(); i++) {
+			if(s.charAt(i) >= 'a' && s.charAt(i) <= 'z')
+				sb.append(s.charAt(i));
+		}
+		return new String(sb);
 	}
 	
 	/**
@@ -117,7 +126,7 @@ public class Replay {
 		
 		int numTurns = numTurns(lines);
 //		turnNum = (int)(Math.random() * numTurns + 1);
-		turnNum = numTurns;
+		turnNum = 10;
 		int currTurn = 1;
 		
 		/*
@@ -172,7 +181,7 @@ public class Replay {
 				else if (actionCategory.equals("move")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
-					String moveName = lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1)).toLowerCase();
+					String moveName = filterNonLetters(lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1)).toLowerCase());
 					Move move = Move.getMove(moveName);
 					
 					if(player) {
@@ -308,7 +317,7 @@ public class Replay {
 	}
 	
 	public static void main(String[] args) {
-		Replay r = new Replay("Gen1RandomBattle-2019-11-30-sloworno-47olg10.html");	
+		Replay r = new Replay("Gen1RandomBattle-2019-11-30-scaldmanaphy-pi31.html");	
 		System.out.println(r);
 	}
 	
