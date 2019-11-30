@@ -40,6 +40,12 @@ public class Replay {
 	public GameState state;
 	/** true if p1 won, false if p2 won */
 	public boolean winner; 
+	/** the turn number of the saved state from the replay */
+	public int turnNum;
+	
+	public String toString() {
+		return (state.toString() + "\nTurn Num: " + turnNum + "\nWinner: " + (winner ? "p1" : "p2"));
+	}
 	
 	/**
 	 * Read all lines from [filename] and return result
@@ -110,7 +116,7 @@ public class Replay {
 		i += 3;
 		
 		int numTurns = numTurns(lines);
-		int targetTurnNum = (int)(Math.random() * numTurns + 1);
+		turnNum = (int)(Math.random() * numTurns + 1);
 		int currTurn = 1;
 		
 		/*
@@ -118,10 +124,7 @@ public class Replay {
 		 * adding a new game state each time, until we reach our target turn
 		 */
 		
-		while(i < lines[i].length() && currTurn < targetTurnNum) {
-			
-			String currLine = lines[i]; // TODO: Delete after debugging
-			
+		while(i < lines.length && currTurn < turnNum) {
 			int secondBarIndex = lines[i].indexOf('|', 1);
 			
 			if(lines[i].length() >= 2 && secondBarIndex != -1) {
@@ -192,11 +195,11 @@ public class Replay {
 					}
 				}
 				else if (actionCategory.equals("win")) {
-					currTurn = targetTurnNum; // end the loop
+					currTurn = turnNum; // end the loop
 					i--; // decrement i so when it is incremented at the end of the loop we can detect the winner
 				}
 				else if (actionCategory.equals("turn")) {
-					currTurn = Integer.parseInt(lines[i].substring(secondBarIndex));
+					currTurn = Integer.parseInt(lines[i].substring(secondBarIndex+1));
 				}
 				else if (actionCategory.equals("-damage")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
@@ -282,7 +285,7 @@ public class Replay {
 					
 					Pokemon.Stat stat =  Pokemon.Stat.valueOf(lines[i].substring(thirdBarIndex+1, fourthBarIndex).toUpperCase());
 					
-					int boostAmount = Integer.parseInt(lines[i].substring(fourthBarIndex));
+					int boostAmount = Integer.parseInt(lines[i].substring(fourthBarIndex+1));
 					boostAmount *= (actionCategory.equals("-boost") ? 1 : -1);
 					
 					targetPokemon.statMod(stat, boostAmount);
@@ -302,6 +305,7 @@ public class Replay {
 	
 	public static void main(String[] args) {
 		Replay r = new Replay("Gen1RandomBattle-2019-11-30-sloworno-47olg10.html");	
+		System.out.println(r);
 	}
 	
 }

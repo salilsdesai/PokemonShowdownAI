@@ -1,8 +1,9 @@
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 public class GameState {
     /* Representation of player-one's team of pokemon and movesets. */
@@ -20,6 +21,21 @@ public class GameState {
     /** Empty game-state used for construction */
     private GameState() {
     	
+    }
+    
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("p1 Team:\n\t" + p1_team.toString());
+    	sb.append("\np2 active:\n\t" + p2_active);
+    	sb.append("\nP2 Pokemon:");
+    	for(Map.Entry<Pokemon, HashSet<Move>> e : p2_pokemon.entrySet()) {
+    		sb.append("\n\t" + e.getKey().toString());
+    		sb.append("\n\t\t");
+    		for(Move m : e.getValue()) {
+    			sb.append(m == null ? "null" : m.name + ", ");
+    		}
+    	}
+    	return new String(sb);
     }
     
     /** 
