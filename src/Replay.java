@@ -119,6 +119,9 @@ public class Replay {
 		 */
 		
 		while(i < lines[i].length() && currTurn < targetTurnNum) {
+			
+			String currLine = lines[i]; // TODO: Delete after debugging
+			
 			int secondBarIndex = lines[i].indexOf('|', 1);
 			
 			if(lines[i].length() >= 2 && secondBarIndex != -1) {
@@ -128,6 +131,7 @@ public class Replay {
 					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[i]);
 					if(rsa.player) {
 						// p1 switched
+						state.p1_team.activePokemon.resetUponSwitch();
 						boolean foundPokemon = false;
 						for(Pokemon p : state.p1_team.pokemonList) {
 							if(p.species.equals(rsa.species)) {
@@ -143,6 +147,7 @@ public class Replay {
 					}
 					else {
 						// p2 switched
+						state.p2_active.resetUponSwitch();
 						boolean foundPokemon = false;
 						for(Pokemon p : state.p2_pokemon.keySet()) {
 							if(p.species.equals(rsa.species)) {
@@ -187,22 +192,100 @@ public class Replay {
 					}
 				}
 				else if (actionCategory.equals("win")) {
-					// TODO
+					currTurn = targetTurnNum; // end the loop
+					i--; // decrement i so when it is incremented at the end of the loop we can detect the winner
 				}
 				else if (actionCategory.equals("turn")) {
-					// TODO
+					currTurn = Integer.parseInt(lines[i].substring(secondBarIndex));
 				}
 				else if (actionCategory.equals("-damage")) {
-					// TODO
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
+					int backslashIndex = lines[i].indexOf('\\', thirdBarIndex);
+					int remainingHp = (lines[i].charAt(thirdBarIndex+1) == '0' ? 0 : Integer.parseInt(lines[i].substring(thirdBarIndex+1, backslashIndex)));
+					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					targetPokemon.currHp = remainingHp;
 				}
 				else if (actionCategory.equals("-status")) {
-					// TODO
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					
+					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
+					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
+					if(fourthBarIndex == -1)
+						fourthBarIndex = lines[i].length();
+					
+					String status = lines[i].substring(thirdBarIndex+1, fourthBarIndex);
+					
+					if(status.equals("frz")) {
+						targetPokemon.status.freeze = true;
+					}
+					else if(status.equals("par")) {
+						targetPokemon.status.paralyze = true;
+					}
+					else if(status.equals("psn")) {
+						targetPokemon.status.poison = true;
+					}
+					else if(status.equals("brn")) {
+						targetPokemon.status.burn = true;
+					}
+					else if(status.equals("tox")) {
+						targetPokemon.status.badly_poisoned_counter = 1;
+					}
+					else if(status.equals("slp")) {
+						targetPokemon.status.sleep_turns_left = 3; // guess how long sleep will be because we don't know upfront
+					}
+					// TODO: Add missing statuses (confusion, recharge?)
 				}
-				else if (actionCategory.equals("-faint")) {
-					// TODO
+				else if (actionCategory.equals("-curestatus")) {
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					
+					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
+					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
+					if(fourthBarIndex == -1)
+						fourthBarIndex = lines[i].length();
+					
+					String status = lines[i].substring(thirdBarIndex+1, fourthBarIndex);
+					
+					if(status.equals("frz")) {
+						targetPokemon.status.freeze = false;
+					}
+					else if(status.equals("par")) {
+						targetPokemon.status.paralyze = false;
+					}
+					else if(status.equals("psn")) {
+						targetPokemon.status.poison = false;
+					}
+					else if(status.equals("brn")) {
+						targetPokemon.status.burn = false;
+					}
+					else if(status.equals("tox")) {
+						targetPokemon.status.badly_poisoned_counter = 0;
+					}
+					else if(status.equals("slp")) {
+						targetPokemon.status.sleep_turns_left = 0;
+					}
+					// TODO: Add missing statuses (confusion, recharge?)
 				}
-				else if (actionCategory.equals("-unboost")) {
-					// TODO
+				else if (actionCategory.equals("faint")) {
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					targetPokemon.currHp = 0;
+				}
+				else if (actionCategory.equals("-boost") || actionCategory.equals("-unboost")) {
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					
+					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
+					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
+					
+					Pokemon.Stat stat =  Pokemon.Stat.valueOf(lines[i].substring(thirdBarIndex+1, fourthBarIndex).toUpperCase());
+					
+					int boostAmount = Integer.parseInt(lines[i].substring(fourthBarIndex));
+					boostAmount *= (actionCategory.equals("-boost") ? 1 : -1);
+					
+					targetPokemon.statMod(stat, boostAmount);
 				}
 			}
 			i++;
