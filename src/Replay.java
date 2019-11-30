@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 /**
@@ -119,16 +120,71 @@ public class Replay {
 		
 		while(i < lines[i].length() && currTurn < targetTurnNum) {
 			int secondBarIndex = lines[i].indexOf('|', 1);
+			
 			if(lines[i].length() >= 2 && secondBarIndex != -1) {
 				String actionCategory = lines[i].substring(1, secondBarIndex);
+				
 				if(actionCategory.equals("switch")) {
-					// TODO
+					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[i]);
+					if(rsa.player) {
+						// p1 switched
+						boolean foundPokemon = false;
+						for(Pokemon p : state.p1_team.pokemonList) {
+							if(p.species.equals(rsa.species)) {
+								state.p1_team.activePokemon = p;
+								foundPokemon = true;
+							}
+						}
+						if(!foundPokemon) {
+							Pokemon p = new Pokemon(rsa.species, new String[4], rsa.level);
+							state.p1_team.pokemonList.add(p);
+							state.p1_team.activePokemon = p;
+						}
+					}
+					else {
+						// p2 switched
+						boolean foundPokemon = false;
+						for(Pokemon p : state.p2_pokemon.keySet()) {
+							if(p.species.equals(rsa.species)) {
+								state.p2_active = p;
+								foundPokemon = true;
+							}
+						}
+						if(!foundPokemon) {
+							Pokemon p = new Pokemon(rsa.species, new String[4], rsa.level);
+							state.p2_pokemon.put(p, new HashSet<>());
+							state.p2_active = p;
+						}
+					}
 				}
 				else if (actionCategory.equals("move")) {
-					// TODO
-				}
-				else if (actionCategory.equals("faint")) {
-					// TODO
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
+					String moveName = lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1));
+					Move move = Move.getMove(moveName);
+					
+					if(player) {
+						// p1 used the move
+						for(int j = 0; j < state.p1_team.activePokemon.moves.length; j++) {
+							if(state.p1_team.activePokemon.moves[j] == move) {
+								// If we already know p1's active has this move, update pp and do nothing else
+								state.p1_team.activePokemon.pp[j]--;
+								j = state.p1_team.activePokemon.moves.length;
+								
+							}
+							else if(state.p1_team.activePokemon.moves[j] == null) {
+								// Since we didn't know p1's active has this move, add it to its move list
+								state.p1_team.activePokemon.moves[j] = move;
+								state.p1_team.activePokemon.pp[j] = move.maxPP-1;
+								j = state.p1_team.activePokemon.moves.length;
+							}
+						}
+						
+					}
+					else {
+						// p2 used the move
+						state.p2_pokemon.get(state.p2_active).add(move);
+					}
 				}
 				else if (actionCategory.equals("win")) {
 					// TODO
@@ -157,9 +213,6 @@ public class Replay {
 			i++;
 		}
 		String winnerName = lines[i].substring(lines[i].lastIndexOf('|') + 1, lines[i].length());
-		
-		System.out.println(winnerName);
-		System.out.println(p1Name);
 		
 		winner = (winnerName.equals(p1Name));
 	}
