@@ -293,6 +293,7 @@ public class Move {
 		}};
 		moves.put(m.name, m);
 		
+		m = new Move();
 		m.name = "twineedle";
 		m.power = 50;
 		m.maxPP = 32;
