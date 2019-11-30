@@ -116,7 +116,8 @@ public class Replay {
 		i += 3;
 		
 		int numTurns = numTurns(lines);
-		turnNum = (int)(Math.random() * numTurns + 1);
+//		turnNum = (int)(Math.random() * numTurns + 1);
+		turnNum = numTurns;
 		int currTurn = 1;
 		
 		/*
@@ -125,6 +126,9 @@ public class Replay {
 		 */
 		
 		while(i < lines.length && currTurn < turnNum) {
+			
+			String l = lines[i];
+			
 			int secondBarIndex = lines[i].indexOf('|', 1);
 			
 			if(lines[i].length() >= 2 && secondBarIndex != -1) {
@@ -166,9 +170,9 @@ public class Replay {
 					}
 				}
 				else if (actionCategory.equals("move")) {
-					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
-					String moveName = lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1));
+					String moveName = lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1)).toLowerCase();
 					Move move = Move.getMove(moveName);
 					
 					if(player) {
@@ -202,7 +206,7 @@ public class Replay {
 					currTurn = Integer.parseInt(lines[i].substring(secondBarIndex+1));
 				}
 				else if (actionCategory.equals("-damage")) {
-					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					int backslashIndex = lines[i].indexOf('\\', thirdBarIndex);
 					int remainingHp = (lines[i].charAt(thirdBarIndex+1) == '0' ? 0 : Integer.parseInt(lines[i].substring(thirdBarIndex+1, backslashIndex)));
@@ -210,7 +214,7 @@ public class Replay {
 					targetPokemon.currHp = remainingHp;
 				}
 				else if (actionCategory.equals("-status")) {
-					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
 					
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
@@ -241,7 +245,7 @@ public class Replay {
 					// TODO: Add missing statuses (confusion, recharge?)
 				}
 				else if (actionCategory.equals("-curestatus")) {
-					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
 					
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
@@ -272,12 +276,12 @@ public class Replay {
 					// TODO: Add missing statuses (confusion, recharge?)
 				}
 				else if (actionCategory.equals("faint")) {
-					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
 					targetPokemon.currHp = 0;
 				}
 				else if (actionCategory.equals("-boost") || actionCategory.equals("-unboost")) {
-					boolean player = (lines[i].charAt(secondBarIndex + 2) == 1);
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
 					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
 					
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);

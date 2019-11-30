@@ -32,7 +32,7 @@ public class GameState {
     		sb.append("\n\t" + e.getKey().toString());
     		sb.append("\n\t\t");
     		for(Move m : e.getValue()) {
-    			sb.append(m == null ? "null" : m.name + ", ");
+    			sb.append(m == null ? "null, " : m.name + ", ");
     		}
     	}
     	return new String(sb);
