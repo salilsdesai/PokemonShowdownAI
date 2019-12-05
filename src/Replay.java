@@ -1,8 +1,14 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
+
+
+import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.html.*;
 
 /**
  * A class that stores a single randomly chosen gamestate from 
@@ -316,9 +322,26 @@ public class Replay {
 		winner = (winnerName.equals(p1Name));
 	}
 	
-	public static void main(String[] args) {
-		Replay r = new Replay("Gen1RandomBattle-2019-11-30-scaldmanaphy-pi31.html");	
-		System.out.println(r);
+	public static void main(String[] args) throws IOException {
+		
+		WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+		webClient.getOptions().setThrowExceptionOnScriptError(false);
+		webClient.getOptions().setUseInsecureSSL(true);
+        webClient.getCookieManager().setCookiesEnabled(true);
+		
+		HtmlPage htmlPage = webClient.getPage("https://replay.pokemonshowdown.com/search/?format=gen1randombattle");
+
+		
+		System.out.println(htmlPage.asText());
+		
+		HtmlButton htmlButton = (HtmlButton) htmlPage.getElementByName("moreResults");
+        htmlPage = (HtmlPage)htmlButton.click();
+//        webClient.waitForBackgroundJavaScript(7000);
+
+	    System.out.println("\n\n--------------------------\n\n" + htmlPage.asText());
+	    
+	    
+	    webClient.close();
 	}
 	
 }
