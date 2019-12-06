@@ -188,7 +188,6 @@ public class Replay {
 		
 		int numTurns = numTurns(lines);
 		turnNum = (int)(Math.random() * numTurns + 1);
-		turnNum = 5;
 		int currTurn = 1;
 		
 		/*
