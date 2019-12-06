@@ -12,14 +12,32 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 public class NeuralNet {
-	private int SIZE, LAYERS, OUTPUT, EPOCHS;
+	/** 
+	 * Structure of the neural network. SIZE specifies the number of inputs;
+	 * LAYERS the number of layers excluding the output layer, and OUTPUT the
+	 * number of outputs.
+	 */
+	private int SIZE, LAYERS, OUTPUT;
+	/** Value denoting how many iterations to repeat during back progation. */
+	private int EPOCHS;
 	
+	/** Learning rate during training. */
 	private double ALPHA;
 	
 	// What each node in input corresponds to: https://i.imgur.com/ym1ra0S.jpg
 	
+	/** 
+	 * Multi-layered neural network. Each index in the list corresponds to a
+	 * single layer of neurons.
+	 */
 	private List<Neuron[]> nn;
 	
+	/** 
+	 * Constructs a neural network object with SIZE = s, LAYERS = l, OUTPUT = o,
+	 * EPOCHS = e, and ALPHA = a. All neurons in layer i receive inputs from every
+	 * neuron in layer i - 1 (fully connected). All weights are initialized to a 
+	 * random value between 0 and 1.
+	 */
 	public NeuralNet(int s, int l, int o, int e, double a) {
 		// Initialize parameters of neural net
 		SIZE = s; LAYERS = l; OUTPUT = o; EPOCHS = e; ALPHA = a;
@@ -48,6 +66,10 @@ public class NeuralNet {
 		}	
 	}
 
+	/** 
+	 * Calculates the dot product of x and y. Throws runtime exception if
+	 * the dimensions of x and y do not match.
+	 */
 	private double dot(List<Double> x, List<Double> y) {
 		double ret = 0.0;
 		if (x.size() != y.size()) {
@@ -61,6 +83,9 @@ public class NeuralNet {
 		return ret;
 	}
 	
+	/**
+	 * Returns the corresponding values of every neuron which connects to n.
+	 */
 	private List<Double> input_values(Neuron n) {
 		List<Double> ret = new ArrayList<>();
 		for (Neuron input : n.inputs) {
@@ -69,6 +94,14 @@ public class NeuralNet {
 		
 		return ret;
 	}
+	
+	/**
+	 * Forward propagation through the neural network. Used for training and
+	 * to calculate the neural network output given input x. Will modify the
+	 * values of each neuron in the network. The values of the neurons in the
+	 * output after execution are the outputs of input x. Throws runtime
+	 * exception if the dimensions of x are improper.
+	 */
 	public void forward_prop(List<Double> x) {
 		if (x.size() != nn.get(0).length) {
 			throw new RuntimeException("Input invalid into neural network.");
@@ -100,6 +133,7 @@ public class NeuralNet {
 		return sig * (1 - sig);
 	}
 	
+	/** Back propagation based on data. */
 	public void back_prop(List<Data> data) {
 		Map<Neuron, Double> delta = new HashMap<>();
 		// Initialize with all neurons in neural net and keys of 0
@@ -113,9 +147,9 @@ public class NeuralNet {
 			for (Data d : data) {
 				forward_prop(d.x);
 				// update last layer gradients
-				for (Neuron unit : nn.get(LAYERS)) {
-					List<Double> feed = input_values(unit);
-					delta.put(unit, derivative(dot(unit.weights, feed)) * (d.y - unit.value));
+				for (int i = 0; i < nn.get(LAYERS).length; i++) {
+					List<Double> feed = input_values(nn.get(LAYERS)[i]);
+					delta.put(nn.get(LAYERS)[i], derivative(dot(nn.get(LAYERS)[i].weights, feed)) * (d.y.get(i) - nn.get(LAYERS)[i].value));
 				}
 				// update hidden layer gradients
 				for (int i = LAYERS - 1; i >= 0; i--) {
@@ -144,8 +178,10 @@ public class NeuralNet {
 			}
 		}
 	}
+	
+	// Test the neural network using XOR function.
 	public static void main(String[] args) {
-		NeuralNet nn = new NeuralNet(2, 2, 1, 1000000, 0.5);
+		NeuralNet nn = new NeuralNet(2, 2, 1, 1000000, 0.15);
 		
 		List<Double> x1 = new ArrayList<>();
 		List<Double> x2 = new ArrayList<>();
@@ -157,7 +193,17 @@ public class NeuralNet {
 		x3.add(1.0); x3.add(0.0);
 		x4.add(1.0); x4.add(1.0);
 		
-		Data d1 = new Data(x1, 0.0), d2 = new Data(x2, 1.0), d3 = new Data(x3, 1.0), d4 = new Data(x4, 0.0);
+		List<Double> y1 = new ArrayList<>();
+		List<Double> y2 = new ArrayList<>();
+		List<Double> y3 = new ArrayList<>();
+		List<Double> y4 = new ArrayList<>();
+		
+		y1.add(0.0);
+		y2.add(1.0);
+		y3.add(1.0);
+		y4.add(0.0);
+		
+		Data d1 = new Data(x1, y1), d2 = new Data(x2, y2), d3 = new Data(x3, y3), d4 = new Data(x4, y4);
 		List<Data> D = new ArrayList<>();
 		D.add(d1);
 		D.add(d2);
@@ -180,6 +226,7 @@ public class NeuralNet {
 	}
 }
 
+/** Single unit within the multi-layered neural network. */
 class Neuron {
 	public List<Neuron> inputs;
 	public List<Double> weights;
@@ -192,12 +239,49 @@ class Neuron {
 	}
 }
 
+/** Data point. */
 class Data {
 	List<Double> x;
-	double y;
+	List<Double> y;
 	
-	public Data(List<Double> x, double y) {
+	public Data(List<Double> x, List<Double> y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Data(GameState gs) {
+		List<Double> x = new ArrayList<>();
+		for (Move m : gs.p1_team.activePokemon.moves) {
+			x.add((double)m.power);
+			x.add((double)m.accuracy);
+			// TODO: add in stats and status chance
+			x.add((double)m.priority);
+			// TODO: add in counter and bide
+			
+			if (m.name.equals("hyperbeam") || m.name.equals("skyattack")) {
+				x.add(1.0);
+			}
+			else {
+				x.add(0.0);
+			}
+			
+			// TODO: add recoil damage
+			// TODO: add health recovered
+			
+			if (m.name.equals("substitute")) {
+				x.add(1.0);
+			}
+			else {
+				x.add(0.0);
+			}
+		}
+		
+		// Compare speeds: 1 if faster, 0 otherwise.
+		if (Pokedex.getDex().get(gs.p1_team.activePokemon.species).baseStats[4] > Pokedex.getDex().get(gs.p2_active.species).baseStats[4]) {
+			x.add(1.0);
+		}
+		else {
+			x.add(0.0);
+		}
 	}
 }
