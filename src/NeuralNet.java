@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+
 
 import java.io.IOException;
 import java.io.FileReader;
@@ -179,6 +181,103 @@ public class NeuralNet {
 		}
 	}
 	
+	public static List<Double> input(GameState gs) {
+		List<Double> x = new ArrayList<>();
+		
+		// Consider the active pokemon's move-set
+		for (Move m : gs.p1_team.activePokemon.moves) {
+			x.add((double)m.power);
+			x.add((double)m.accuracy);
+			// TODO: add in stats and status chance
+			x.add((double)m.priority);
+			// TODO: add in counter and bide
+			
+			if (m.name.equals("hyperbeam") || m.name.equals("skyattack")) {
+				x.add(1.0);
+			}
+			else {
+				x.add(0.0);
+			}
+			
+			// TODO: add recoil damage
+			// TODO: add health recovered
+			
+			if (m.name.equals("substitute")) {
+				x.add(1.0);
+			}
+			else {
+				x.add(0.0);
+			}
+		}
+		
+		// Consider the active pokemon's effectiveness against the enemy team
+		cal_effect(x, gs.p1_team.activePokemon.moves, gs.p2_pokemon.keySet());
+		
+		// Consider the opponent's active against player one's team
+		x.add(cal_def(gs.p1_team.activePokemon, gs.p2_pokemon.get(gs.p2_active)));
+		for (Pokemon p : gs.p1_team.pokemonList) {
+			if (p.isAlive()) {
+				if (!p.species.equals(gs.p1_team.activePokemon.species)) {
+					x.add(cal_def(p, gs.p2_pokemon.get(gs.p2_active)));
+				}
+			}
+			// Pokemon is fainted and cannot be used
+			else {
+				x.add(4.0);
+			}
+		}
+		
+		// Compare speeds: 1 if faster, 0 otherwise.
+		if (Pokedex.getDex().get(gs.p1_team.activePokemon.species).baseStats[4] > Pokedex.getDex().get(gs.p2_active.species).baseStats[4]) {
+			x.add(1.0);
+		}
+		else {
+			x.add(0.0);
+		}
+		
+		return x;
+	}
+	
+	/**
+	 * Modify x to reflect the effectiveness of moveset on the pokemon in opponent.
+	 */
+	private static void cal_effect(List<Double> x, Move[] moveset, Set<Pokemon> opponent) {
+		for (Move m : moveset) {
+			// Counter used to account for unseen pokemon
+			int fill_counter = 0;
+			for (Pokemon p : opponent) {
+				if (m == null) {
+					x.add(0.0);
+				}
+				else if (p.isAlive()) {
+					x.add(m.type.effectiveness(p.types[0]) * m.type.effectiveness(p.types[1]));
+				}
+				// Use neutral value if opponent pokemon is fainted
+				else {
+					x.add(0.0);
+				}
+				fill_counter++;
+			}
+			// Assume neutral damage for unseen pokemon
+			while (fill_counter++ < 6) {
+				x.add(1.0);
+			}
+		}
+	}
+	
+	/**
+	 * Returns 1 if a move in moveset if super-effective versus p, 0 otherwise.
+	 */
+	private static double cal_def(Pokemon p, Set<Move> moveset) {
+		for (Move m : moveset) {
+			if (m.type.effectiveness(p.types[0]) * m.type.effectiveness(p.types[1]) > 1.0) {
+				return 1;
+			}
+		}
+		
+		return 0;
+	}
+	
 	// Test the neural network using XOR function.
 	public static void main(String[] args) {
 		NeuralNet nn = new NeuralNet(2, 2, 1, 1000000, 0.15);
@@ -223,6 +322,14 @@ public class NeuralNet {
 		
 		nn.forward_prop(x4);
 		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
+		
+		Team t1 = new Team(TeamGenerator.randomTeam());
+		Team t2 = new Team(TeamGenerator.randomTeam());
+		
+		GameState gs = new GameState(t2, t1.activePokemon);
+		List<Double> first_input = input(gs);
+		
+		System.out.print(first_input.size());
 	}
 }
 
@@ -247,41 +354,5 @@ class Data {
 	public Data(List<Double> x, List<Double> y) {
 		this.x = x;
 		this.y = y;
-	}
-	
-	public Data(GameState gs) {
-		List<Double> x = new ArrayList<>();
-		for (Move m : gs.p1_team.activePokemon.moves) {
-			x.add((double)m.power);
-			x.add((double)m.accuracy);
-			// TODO: add in stats and status chance
-			x.add((double)m.priority);
-			// TODO: add in counter and bide
-			
-			if (m.name.equals("hyperbeam") || m.name.equals("skyattack")) {
-				x.add(1.0);
-			}
-			else {
-				x.add(0.0);
-			}
-			
-			// TODO: add recoil damage
-			// TODO: add health recovered
-			
-			if (m.name.equals("substitute")) {
-				x.add(1.0);
-			}
-			else {
-				x.add(0.0);
-			}
-		}
-		
-		// Compare speeds: 1 if faster, 0 otherwise.
-		if (Pokedex.getDex().get(gs.p1_team.activePokemon.species).baseStats[4] > Pokedex.getDex().get(gs.p2_active.species).baseStats[4]) {
-			x.add(1.0);
-		}
-		else {
-			x.add(0.0);
-		}
 	}
 }
