@@ -64,7 +64,11 @@ public class Team {
 		return actions;
 	}
 	public String toString() {
-		return "Active: " + activePokemon + "\n\t" + "Full Team: " + Arrays.toString(pokemonList.toArray());
+		String s = "Active: " + activePokemon + "\n\t" + "Full Team: ";
+		for(Pokemon p : pokemonList) {
+			s += "\n\t\t" + p.toString();
+		}
+		return s;
 	}
 	public boolean hasAlive() {
 		for(Pokemon p : pokemonList)

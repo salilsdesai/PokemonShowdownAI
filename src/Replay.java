@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Base64;
+import java.util.HashMap;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
@@ -116,6 +117,52 @@ public class Replay {
 		}
 		String p1Name = lines[i].substring(11, lines[i].indexOf('|', 11));
 		
+		// Get all of p1's pokemon and their moves eventually used
+		HashMap<String, Pokemon> p1PokemonMap = new HashMap<String,Pokemon>(); // maps from Species to Pokemon
+		Pokemon p1Active = null;
+		for(int j = i; j < lines.length; j++) {
+			int secondBarIndex = lines[j].indexOf('|', 1);
+			if(lines[j].length() >= 2 && secondBarIndex != -1) {
+				String actionCategory = lines[j].substring(1, secondBarIndex);
+				if(actionCategory.equals("switch")) {
+					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[j]);
+					if(rsa.player) {
+						// p1 switched
+						Pokemon p = p1PokemonMap.get(rsa.species);
+						if(p == null) {
+							p = new Pokemon(rsa.species, new String[4], rsa.level);
+							p1PokemonMap.put(rsa.species, p);
+						}
+						p1Active = p;
+					}
+				}
+				else if (actionCategory.equals("move")) {
+					boolean player = (lines[j].charAt(secondBarIndex + 2) == '1');
+					int thirdBarIndex = lines[j].indexOf('|', secondBarIndex+1);
+					String moveName = filterNonLetters(lines[j].substring(thirdBarIndex+1, lines[j].indexOf('|', thirdBarIndex+1)).toLowerCase());
+					Move move = Move.getMove(moveName);
+					if(player) {
+						// p1 used the move
+						for(int k = 0; k < p1Active.moves.length; k++) {
+							if(p1Active.moves[k] == move) {
+								// If we already know p1's active has this move, do nothing
+								k = p1Active.moves.length;
+							}
+							else if(p1Active.moves[k] == null) {
+								// Since we didn't know p1's active has this move, add it to its move list
+								p1Active.moves[k] = move;
+								p1Active.pp[k] = move.maxPP;
+								k = p1Active.moves.length;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
+		// Start parsing the game state turn by turn
+		
 		while(!lines[i].equals("|start")) {
 			i++;
 		}
@@ -123,12 +170,17 @@ public class Replay {
 		ReplaySwitchAction p1StartAction = new ReplaySwitchAction(lines[i+1]);
 		ReplaySwitchAction p2StartAction = new ReplaySwitchAction(lines[i+2]);
 		
-		Pokemon p1StartPokemon = new Pokemon(p1StartAction.species, new String[4], p1StartAction.level);
-		Pokemon p2StartPokemon = new Pokemon(p2StartAction.species, new String[4], p2StartAction.level);
-		
 		ArrayList<Pokemon> p1StartTeamList = new ArrayList<Pokemon>();
-		p1StartTeamList.add(p1StartPokemon);
+		p1StartTeamList.add(p1PokemonMap.get(p1StartAction.species));
+		for(Pokemon p : p1PokemonMap.values()) {
+			if(!p.species.equals(p1StartAction.species)) {
+				// Don't add their starting pokemon because we added it first
+				p1StartTeamList.add(p);
+			}
+		}
+		
 		Team p1StartTeam = new Team(p1StartTeamList);
+		Pokemon p2StartPokemon = new Pokemon(p2StartAction.species, new String[4], p2StartAction.level);
 		
 		state = new GameState(p1StartTeam, p2StartPokemon);
 		
@@ -136,6 +188,7 @@ public class Replay {
 		
 		int numTurns = numTurns(lines);
 		turnNum = (int)(Math.random() * numTurns + 1);
+		turnNum = 5;
 		int currTurn = 1;
 		
 		/*
@@ -155,17 +208,10 @@ public class Replay {
 					if(rsa.player) {
 						// p1 switched
 						state.p1_team.activePokemon.resetUponSwitch();
-						boolean foundPokemon = false;
 						for(Pokemon p : state.p1_team.pokemonList) {
 							if(p.species.equals(rsa.species)) {
 								state.p1_team.activePokemon = p;
-								foundPokemon = true;
 							}
-						}
-						if(!foundPokemon) {
-							Pokemon p = new Pokemon(rsa.species, new String[4], rsa.level);
-							state.p1_team.pokemonList.add(p);
-							state.p1_team.activePokemon = p;
 						}
 					}
 					else {
@@ -193,18 +239,10 @@ public class Replay {
 					
 					if(player) {
 						// p1 used the move
-						for(int j = 0; j < state.p1_team.activePokemon.moves.length; j++) {
-							if(state.p1_team.activePokemon.moves[j] == move) {
-								// If we already know p1's active has this move, update pp and do nothing else
-								state.p1_team.activePokemon.pp[j]--;
-								j = state.p1_team.activePokemon.moves.length;
-								
-							}
-							else if(state.p1_team.activePokemon.moves[j] == null) {
-								// Since we didn't know p1's active has this move, add it to its move list
-								state.p1_team.activePokemon.moves[j] = move;
-								state.p1_team.activePokemon.pp[j] = move.maxPP-1;
-								j = state.p1_team.activePokemon.moves.length;
+						for(int k = 0; k < state.p1_team.activePokemon.moves.length; k++) {
+							if(state.p1_team.activePokemon.moves[k] == move) {
+								state.p1_team.activePokemon.pp[k]--;
+								k = state.p1_team.activePokemon.moves.length;
 							}
 						}
 						
@@ -377,7 +415,7 @@ public class Replay {
 	}
 
 	public static void main(String[] args) {
-		downloadLatestReplays(1);
+//		downloadLatestReplays(1);
 		Replay r = new Replay("replays/0.html");
 		System.out.println(r);
 	}
