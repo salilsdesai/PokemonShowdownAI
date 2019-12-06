@@ -34,6 +34,16 @@ public class NeuralNet {
 	 */
 	private List<Neuron[]> nn;
 	
+	/** Constructs a neural network based on info from file "s". */
+	public NeuralNet(String s) {
+		// TODO: do this
+	}
+	
+	/** Saves the weights of the neural network to this file. */
+	public void save_to_file(String s) {
+		
+	}
+	
 	/** 
 	 * Constructs a neural network object with SIZE = s, LAYERS = l, OUTPUT = o,
 	 * EPOCHS = e, and ALPHA = a. All neurons in layer i receive inputs from every
@@ -199,8 +209,7 @@ public class NeuralNet {
 				x.add(0.0);
 			}
 			
-			// TODO: add recoil damage
-			// TODO: add health recovered
+			// TODO: add recoil damage/health recovered
 			
 			if (m.name.equals("substitute")) {
 				x.add(1.0);
@@ -219,11 +228,15 @@ public class NeuralNet {
 			if (p.isAlive()) {
 				if (!p.species.equals(gs.p1_team.activePokemon.species)) {
 					x.add(cal_def(p, gs.p2_pokemon.get(gs.p2_active)));
+					if (p.hasMajorStatus()) {
+						x.add(1.0);
+					}
 				}
 			}
 			// Pokemon is fainted and cannot be used
 			else {
 				x.add(4.0);
+				x.add(1.0);
 			}
 		}
 		

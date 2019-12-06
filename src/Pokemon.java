@@ -203,7 +203,7 @@ public class Pokemon {
 	 * Returns whether or not this pokemon has a major status, meaning a new
 	 * major status cannot be assigned
 	 */
-	private boolean hasMajorStatus() {
+	public boolean hasMajorStatus() {
 		return (this.status.freeze || this.status.paralyze || this.status.burn || this.status.poison || 
 				(this.status.badly_poisoned_counter > 0) || (this.status.sleep_turns_left > 0));
 	}
