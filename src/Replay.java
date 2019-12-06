@@ -322,26 +322,54 @@ public class Replay {
 		winner = (winnerName.equals(p1Name));
 	}
 	
-	public static void main(String[] args) throws IOException {
-		
-		WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
-		webClient.getOptions().setThrowExceptionOnScriptError(false);
-		webClient.getOptions().setUseInsecureSSL(true);
-        webClient.getCookieManager().setCookiesEnabled(true);
-		
-		HtmlPage htmlPage = webClient.getPage("https://replay.pokemonshowdown.com/search/?format=gen1randombattle");
+	/**
+	 * Download the latest [numReplaysToDownload] Gen 1 Random Battle replays from 
+	 * replay.pokemonshowdown.com
+	 */
+	public static void downloadReplays(int numReplaysToDownload) {
+		try {
+			WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
+			webClient.getOptions().setThrowExceptionOnScriptError(false);
+			webClient.getOptions().setUseInsecureSSL(true);
+			webClient.getCookieManager().setCookiesEnabled(true);
+			
+			HtmlPage htmlPage = webClient.getPage("https://replay.pokemonshowdown.com/search/?format=gen1randombattle");
 
+			int numReplaysOnPage = 50;
+			HtmlButton b = htmlPage.getElementByName("moreResults");
+			while(numReplaysOnPage < numReplaysToDownload) {
+				b.click();
+				numReplaysOnPage += 50;
+				while(b.isDisabled());
+			}
+			
+			DomNodeList<DomNode> allNodes = htmlPage.getBody().getChildNodes().get(3).getFirstChild().getChildNodes().get(11).getChildNodes();
+			
+			ArrayList<DomNode> replayNodes = new ArrayList<DomNode>();
+			
+			for(DomNode d : allNodes) {
+				String t = d.asText();
+				if(t.length() > 0 && t.charAt(0) == '[') {
+					replayNodes.add(d);
+				}
+			}
+			
+			for(DomNode d : replayNodes) {
+				System.out.println(d.asText());
+			}
+			
+			// TODO: Download from the nodes
+			
+			webClient.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		downloadReplays(500);
 		
-		System.out.println(htmlPage.asText());
-		
-		HtmlButton htmlButton = (HtmlButton) htmlPage.getElementByName("moreResults");
-        htmlPage = (HtmlPage)htmlButton.click();
-//        webClient.waitForBackgroundJavaScript(7000);
-
-	    System.out.println("\n\n--------------------------\n\n" + htmlPage.asText());
-	    
-	    
-	    webClient.close();
 	}
 	
 }
