@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -323,10 +324,10 @@ public class Replay {
 	}
 	
 	/**
-	 * Download the latest [numReplaysToDownload] Gen 1 Random Battle replays from 
-	 * replay.pokemonshowdown.com
+	 * Return URLs of the most recent [numReplays] 
+	 * Gen1RandomBattle replays from Pokemon Showdown
 	 */
-	public static void downloadReplays(int numReplaysToDownload) {
+	public static String[] getLatestReplayUrls(int numReplays) {
 		try {
 			WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -337,7 +338,7 @@ public class Replay {
 
 			int numReplaysOnPage = 50;
 			HtmlButton b = htmlPage.getElementByName("moreResults");
-			while(numReplaysOnPage < numReplaysToDownload) {
+			while(numReplaysOnPage < numReplays) {
 				b.click();
 				numReplaysOnPage += 50;
 				while(b.isDisabled());
@@ -354,21 +355,33 @@ public class Replay {
 				}
 			}
 			
-			for(DomNode d : replayNodes) {
+			webClient.close();
+			
+			String[] urls = new String[numReplays];
+			for(int i = 0; i < replayNodes.size() && i < numReplays; i++) {
+				DomNode d = replayNodes.get(i);
 				System.out.println(d.asText());
+				System.out.println(d.asXml());
+				String xml = d.asXml();
+				int urlStart = xml.indexOf("/gen1randombattle-");
+				int urlEnd = xml.indexOf("\"", urlStart);
+				urls[i] = "https://replay.pokemonshowdown.com/" + xml.substring(urlStart, urlEnd);
 			}
 			
-			// TODO: Download from the nodes
-			
-			webClient.close();
+			return urls;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 	}
 	
+
 	public static void main(String[] args) {
-		downloadReplays(500);
+		String[] u = getLatestReplayUrls(60);
+		for(int i = 0; i < u.length; i++) {
+			System.out.println(i + ": " + u[i]);
+		}
 		
 	}
 	
