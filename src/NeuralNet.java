@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.io.IOException;
 import java.io.FileReader;
@@ -10,97 +11,80 @@ import java.io.PrintWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-
 public class NeuralNet {
-	/** Size of input layer. */
-	private int SIZE;
-	/** Number of layers in neural network (excluding the output).*/
-	private int LAYERS;
-	/** Size of the output layer. */
-	private int OUTPUT;
+	private int SIZE, LAYERS, OUTPUT, EPOCHS;
+	
+	private double ALPHA;
 	
 	// What each node in input corresponds to: https://i.imgur.com/ym1ra0S.jpg
 	
-	/** 
-	 * Weights of the neural network. weights[i][j][k] will refer
-	 * to the weight of the edge between j'th node at layer i to 
-	 * the k'th node at layer i + 1. 
-	 */
-	public List<double[][]> weights;
+	private List<Neuron[]> nn;
 	
-	public NeuralNet(List<double[][]> weights) {
-		SIZE = weights.get(0).length;
-		LAYERS = weights.size() + 1;
-		OUTPUT = weights.get(weights.size() - 1)[0].length;
+	public NeuralNet(int s, int l, int o, int e, double a) {
+		// Initialize parameters of neural net
+		SIZE = s; LAYERS = l; OUTPUT = o; EPOCHS = e; ALPHA = a;
 		
-		this.weights = weights;
+		nn = new ArrayList<>();
+		// Initialize the structure of the network
+		for (int i = 0; i < LAYERS; i++) {
+			nn.add(new Neuron[SIZE]);	
+		}
+		nn.add(new Neuron[OUTPUT]);
+		
+		// Initialize first layer of neurons
+		for (int i = 0; i < nn.get(0).length; i++) {
+			nn.get(0)[i] = new Neuron();
+		}
+		// Initialize connectedness of network and all weights to random values
+		for (int i = 1; i < nn.size(); i++) {
+			for (int j = 0; j < nn.get(i).length; j++) {
+				nn.get(i)[j] = new Neuron();
+				
+				for (Neuron input : nn.get(i - 1)) {
+					nn.get(i)[j].inputs.add(input);
+					nn.get(i)[j].weights.add(Math.random());
+				}
+			}
+		}	
+	}
+
+	private double dot(List<Double> x, List<Double> y) {
+		double ret = 0.0;
+		if (x.size() != y.size()) {
+			throw new RuntimeException("Dot product of different length arrays.");
+		}
+		
+		for (int i = 0; i < x.size(); i++) {
+			ret += (x.get(i) * y.get(i));
+		}
+		
+		return ret;
 	}
 	
-	/** Read the weights of the neural net from file s. */
-	public NeuralNet(String s) {
-		try {
-			FileReader fr = new FileReader(s);
-			BufferedReader br = new BufferedReader(fr);
-			StringTokenizer st = new StringTokenizer(br.readLine(), ",");
-			
-			SIZE = Integer.parseInt(st.nextToken());
-			LAYERS = Integer.parseInt(st.nextToken());
-			OUTPUT = Integer.parseInt(st.nextToken());
-
-			weights = new ArrayList<>(LAYERS - 1);
-			for (int i = 0; i < LAYERS - 1; i++) {
-				// Set the initial values of the weights to 0 
-				if (i != LAYERS - 2) {
-					weights.add(i, new double[SIZE][SIZE]);
-				}
-				else {
-					weights.add(i, new double[SIZE][OUTPUT]);
-				}
-			}
-			
-			// Read in layers line by line
-			for (int i = 0; i < weights.size(); i++) {
-				// Read the actual weights from the file
-				st = new StringTokenizer(br.readLine(), ",");
-				for (int j = 0; j < weights.get(i).length; j++) {
-					for (int k = 0; k < weights.get(i)[j].length; k++) {
-						weights.get(i)[j][k] = Double.parseDouble(st.nextToken());
-						//System.out.println(weights.get(i)[j][k]);
-					}
-				}
-			}
-			
-			br.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
+	private List<Double> input_values(Neuron n) {
+		List<Double> ret = new ArrayList<>();
+		for (Neuron input : n.inputs) {
+			ret.add(input.value);
 		}
+		
+		return ret;
 	}
-
-	/** Writes the weights of the neural net to file s. */
-	public void save(String s) {
-		try {
-			FileWriter fw = new FileWriter(s);
-			BufferedWriter bw = new BufferedWriter(fw);
-			PrintWriter pw = new PrintWriter(bw);
-			
-			pw.print(SIZE + "," + LAYERS + "," + OUTPUT + ",\n");
-			
-			// Print layers line by line
-			for (int i = 0; i < weights.size(); i++) {
-				for (int j = 0; j < weights.get(i).length; j++) {
-					for (int k = 0; k < weights.get(i)[0].length; k++) {
-						pw.print(weights.get(i)[j][k] + ",");
-					}
-				}
-				pw.print("\n");
+	public void forward_prop(List<Double> x) {
+		if (x.size() != nn.get(0).length) {
+			throw new RuntimeException("Input invalid into neural network.");
+		}
+		
+		// input x into the neural network
+		for (int i = 0; i < x.size(); i++) {
+			nn.get(0)[i].value = x.get(i);
+		}
+		
+		// propogate the input values upwards
+		for (int i = 1; i < nn.size(); i++) {
+			for (Neuron unit : nn.get(i)) {
+				List<Double> feed = input_values(unit);
+				unit.value = activate(dot(unit.weights, feed));
 			}
-
-			pw.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -116,91 +100,104 @@ public class NeuralNet {
 		return sig * (1 - sig);
 	}
 	
-	/**
-	 * forward_pass[0][i][j] is the unactivated value of the j'th node in layer i (s[i][j])
-	 * forward_pass[1][i][j] is the activated value of the j'th node in layer i (v[i][j])
-	 */
-	public ArrayList<ArrayList<double[]>> forward_pass(double[] input) {
-		// Check to see if the input length is valid		
-		if (input.length != SIZE) {
-			throw new RuntimeException("invalid input size into the neural net. expected " + SIZE + " got " + input.length + ". ");
+	public void back_prop(List<Data> data) {
+		Map<Neuron, Double> delta = new HashMap<>();
+		// Initialize with all neurons in neural net and keys of 0
+		for (int i = 0; i < nn.size(); i++) {
+			for (Neuron n : nn.get(i)) {
+				delta.put(n, 0.0);
+			}
 		}
 		
-		/** 
-		 * s[i][j] is the unactivated value of the j'th node of layer i (for i > 0)
-		 * (s[0][j] is just the j'th value of the input)
-		 */
-		ArrayList<double[]> s = new ArrayList<double[]>();
-		
-		/** v[i][j] is the activated value of the j'th node of layer i */
-		ArrayList<double[]> v = new ArrayList<double[]>();
-		
-		s.add(new double[SIZE]);
-		v.add(new double[SIZE]);
-		for(int i = 0; i < SIZE; i++) {
-			s.get(0)[i] = input[i];
-			v.get(0)[i] = input[i];
-		}
-		
-		for (int i = 1; i < LAYERS; i++) { // layer number
-			double[][] w = weights.get(i-1);
-			double[] s_i = new double[w[0].length];
-			double[] v_i = new double[w[0].length];
-			
-			for(int j = 0; j < w.length; j++) {
-				for(int k = 0; k < w[0].length; k++) {
-					s_i[k] += w[j][k]*v.get(i-1)[j];
+		for (int t = 0; t < EPOCHS; t++) {
+			for (Data d : data) {
+				forward_prop(d.x);
+				// update last layer gradients
+				for (Neuron unit : nn.get(LAYERS)) {
+					List<Double> feed = input_values(unit);
+					delta.put(unit, derivative(dot(unit.weights, feed)) * (d.y - unit.value));
+				}
+				// update hidden layer gradients
+				for (int i = LAYERS - 1; i >= 0; i--) {
+					for (Neuron n : nn.get(i)) {
+						List<Double> feed = input_values(n);
+						
+						List<Double> u = new ArrayList<>();
+						List<Double> q = new ArrayList<>();
+						for (Neuron next : nn.get(i + 1)) {
+							u.add(next.weights.get(next.inputs.indexOf(n)));
+							q.add(delta.get(next));
+						}
+						
+						delta.put(n, derivative(dot(n.weights, feed)) * dot(u, q));
+						
+					}
+				}
+				// update all weights
+				for (int layer = 0; layer < nn.size(); layer++) {
+					for (Neuron unit : nn.get(layer)) {
+						for (int i = 0; i < unit.inputs.size(); i++) {
+							unit.weights.set(i, unit.weights.get(i) + ALPHA * unit.inputs.get(i).value * delta.get(unit));
+						}
+					}
 				}
 			}
-			
-			for(int k = 0; k < w[0].length; k++) {
-				v_i[k] = activate(s_i[k]);
-			}
-			s.add(s_i);
-			v.add(v_i);
-		}
-		
-		ArrayList<ArrayList<double[]>> sAndV = new ArrayList<ArrayList<double[]>>();
-		sAndV.add(s);
-		sAndV.add(v);
-		
-		return sAndV;
-	}
-	
-	/**
-	 * Test the neural net on sample input and print the result
-	 * Expected Result: https://i.imgur.com/FGCCjlq.jpg
-	 */
-	public static void forwardPassTest() {
-		
-		ArrayList<double[][]> w = new ArrayList<double[][]>();
-		w.add(new double[][] {
-			{0.1, 0.3, 0.5},
-			{0.2, 0.4, 0.6}
-		});
-		w.add(new double[][] {
-			{0.7, 1.0},
-			{0.8, 1.1},
-			{0.9, 1.2}
-		});
-		
-		NeuralNet n = new NeuralNet(w);
-		double[] input = new double[] {13, 14};
-		
-		ArrayList<ArrayList<double[]>> sAndV = n.forward_pass(input);
-		ArrayList<double[]> s = sAndV.get(0);
-		ArrayList<double[]> v = sAndV.get(1);
-		
-		for(double[] d : s.toArray(new double[s.size()][])) {
-			System.out.println(Arrays.toString(d));
-		}
-		System.out.println("--");
-		for(double[] d : v.toArray(new double[s.size()][])) {
-			System.out.println(Arrays.toString(d));
 		}
 	}
-	
 	public static void main(String[] args) {
-		forwardPassTest();
+		NeuralNet nn = new NeuralNet(2, 2, 1, 1000000, 0.5);
+		
+		List<Double> x1 = new ArrayList<>();
+		List<Double> x2 = new ArrayList<>();
+		List<Double> x3 = new ArrayList<>();
+		List<Double> x4 = new ArrayList<>();
+		
+		x1.add(0.0); x1.add(0.0);
+		x2.add(0.0); x2.add(1.0);
+		x3.add(1.0); x3.add(0.0);
+		x4.add(1.0); x4.add(1.0);
+		
+		Data d1 = new Data(x1, 0.0), d2 = new Data(x2, 1.0), d3 = new Data(x3, 1.0), d4 = new Data(x4, 0.0);
+		List<Data> D = new ArrayList<>();
+		D.add(d1);
+		D.add(d2);
+		D.add(d3);
+		D.add(d4);
+		
+		nn.back_prop(D);
+		
+		nn.forward_prop(x1);
+		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
+		
+		nn.forward_prop(x2);
+		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
+		
+		nn.forward_prop(x3);
+		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
+		
+		nn.forward_prop(x4);
+		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
+	}
+}
+
+class Neuron {
+	public List<Neuron> inputs;
+	public List<Double> weights;
+	public double value;
+	
+	public Neuron() {
+		inputs = new ArrayList<>();
+		weights = new ArrayList<>();
+		value = 0;
+	}
+}
+
+class Data {
+	List<Double> x;
+	double y;
+	
+	public Data(List<Double> x, double y) {
+		this.x = x;
+		this.y = y;
 	}
 }
