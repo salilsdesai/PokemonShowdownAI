@@ -1,12 +1,15 @@
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
-
+import java.util.Base64;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
@@ -132,8 +135,7 @@ public class Replay {
 		i += 3;
 		
 		int numTurns = numTurns(lines);
-//		turnNum = (int)(Math.random() * numTurns + 1);
-		turnNum = 10;
+		turnNum = (int)(Math.random() * numTurns + 1);
 		int currTurn = 1;
 		
 		/*
@@ -142,8 +144,6 @@ public class Replay {
 		 */
 		
 		while(i < lines.length && currTurn < turnNum) {
-			
-			String l = lines[i];
 			
 			int secondBarIndex = lines[i].indexOf('|', 1);
 			
@@ -324,10 +324,11 @@ public class Replay {
 	}
 	
 	/**
-	 * Return URLs of the most recent [numReplays] 
-	 * Gen1RandomBattle replays from Pokemon Showdown
+	 * Download the most recent [numReplays] 
+	 * Gen1RandomBattle replays from Pokemon Showdown.
+	 * Save the i'th replay as /replays/[i].html
 	 */
-	public static String[] getLatestReplayUrls(int numReplays) {
+	public static void downloadLatestReplays(int numReplays) {
 		try {
 			WebClient webClient = new WebClient(BrowserVersion.FIREFOX_60);
 			webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -336,6 +337,7 @@ public class Replay {
 			
 			HtmlPage htmlPage = webClient.getPage("https://replay.pokemonshowdown.com/search/?format=gen1randombattle");
 
+			// Click "more results" until at least as many replays as we want are loaded on the page
 			int numReplaysOnPage = 50;
 			HtmlButton b = htmlPage.getElementByName("moreResults");
 			while(numReplaysOnPage < numReplays) {
@@ -344,45 +346,40 @@ public class Replay {
 				while(b.isDisabled());
 			}
 			
-			DomNodeList<DomNode> allNodes = htmlPage.getBody().getChildNodes().get(3).getFirstChild().getChildNodes().get(11).getChildNodes();
-			
-			ArrayList<DomNode> replayNodes = new ArrayList<DomNode>();
-			
-			for(DomNode d : allNodes) {
-				String t = d.asText();
-				if(t.length() > 0 && t.charAt(0) == '[') {
-					replayNodes.add(d);
-				}
-			}
-			
-			webClient.close();
-			
+			// Get the urls of the latest replays
+			List<HtmlAnchor> anchors = htmlPage.getAnchors();
 			String[] urls = new String[numReplays];
-			for(int i = 0; i < replayNodes.size() && i < numReplays; i++) {
-				DomNode d = replayNodes.get(i);
-				System.out.println(d.asText());
-				System.out.println(d.asXml());
-				String xml = d.asXml();
-				int urlStart = xml.indexOf("/gen1randombattle-");
-				int urlEnd = xml.indexOf("\"", urlStart);
-				urls[i] = "https://replay.pokemonshowdown.com/" + xml.substring(urlStart, urlEnd);
+			int i = -8; // Skip the first 8 anchors
+			for(HtmlAnchor anchor : anchors) {
+				if(i >= 0 && i < numReplays) {
+					urls[i] = "https://replay.pokemonshowdown.com" + anchor.getHrefAttribute();
+				}
+				i++;
 			}
 			
-			return urls;
+			// Download the replay from each URL
+			for(int j = 0; j < urls.length; j++) {
+				HtmlPage replayPage = webClient.getPage("https://replay.pokemonshowdown.com/gen1randombattle-1023707520");
+				HtmlAnchor replayDownloadButton = replayPage.getAnchors().get(6);
+				replayDownloadButton.click();
+				
+				String encoded = replayDownloadButton.getHrefAttribute().substring(23);
+				String decoded = new String(Base64.getDecoder().decode(URLDecoder.decode(encoded,"UTF-8")));
+			    BufferedWriter writer = new BufferedWriter(new FileWriter("replays/" + j + ".html"));
+			    writer.write(decoded);
+			    writer.close();
+			}
+			webClient.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
-	
 
 	public static void main(String[] args) {
-		String[] u = getLatestReplayUrls(60);
-		for(int i = 0; i < u.length; i++) {
-			System.out.println(i + ": " + u[i]);
-		}
-		
+		downloadLatestReplays(1);
+		Replay r = new Replay("replays/0.html");
+		System.out.println(r);
 	}
 	
 }
