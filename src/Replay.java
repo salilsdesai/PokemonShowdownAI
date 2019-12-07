@@ -509,7 +509,7 @@ public class Replay {
 			data.add(new NeuralNet.Data(r[i]));
 		}
 		
-		NeuralNet nn = new NeuralNet(77, 1, 9, 1000, 0.2);
+		NeuralNet nn = new NeuralNet(77, 2, 9, 1000, 0.2);
 		nn.back_prop(data);
 		
 		for (int i = 0; i < 10; i++) {

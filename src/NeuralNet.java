@@ -248,13 +248,13 @@ public class NeuralNet {
 
 	/** Activation function for the neural net (ReLU). */
 	private double activate(double s) {
-		return 1/(1+Math.exp(-s));
+		return 1/(1+Math.exp(-s/100));
 	}
 
 	/** Derivative of the activation function defined above (ReLU). */
 	private double derivative(double s) {
 		double a = activate(s);
-		return a*(1-a);
+		return 1.0/100*a*(1-a);
 	}
 
 	/** Back propagation based on data. */
