@@ -26,6 +26,9 @@ public class Move {
 	public boolean highCritRatio;
 	public int priority;
 	public Consumer<MoveDamage> secondaryEffect;
+	
+	// Variables to describe the secondary effect
+	public double health_decrease, stat_boost, status_chance;
 
 	public String toString() {
 		return Arrays.toString(new Object[] {name, type, power, accuracy, maxPP});

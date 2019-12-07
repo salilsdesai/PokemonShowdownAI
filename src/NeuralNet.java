@@ -196,12 +196,38 @@ public class NeuralNet {
 		
 		// Consider the active pokemon's move-set
 		for (Move m : gs.p1_team.activePokemon.moves) {
+			// Move statistics
 			x.add((double)m.power);
 			x.add((double)m.accuracy);
-			// TODO: add in stats and status chance
+			x.add(m.stat_boost);
+			x.add(m.status_chance);
+			x.add(m.health_decrease);
 			x.add((double)m.priority);
-			// TODO: add in counter and bide
 			
+			/* Check if counter is a viable choice (1 if yes 0 otherwise). Must also
+			 * Check if the opponent pokemon has a physical move in order to counter. */
+			boolean hasPhysical = false;
+			for (Move opp_move : gs.p2_pokemon.get(gs.p2_active)) {
+				if (TeamGenerator.getType(opp_move.name).equals("physical")) {
+					hasPhysical = true;
+				}
+			}
+			if (m.name.equals("counter") && hasPhysical) {
+				x.add(1.0);
+			}
+			else {
+				x.add(0.0);
+			}
+			
+			// Check if the move is bide (1 yes 0 otherwise)
+			if (m.name.equals("bide")) {
+				x.add(1.0);
+			}
+			else {
+				x.add(0.0);
+			}
+			
+			// Check if move requires charging (1 if yes, 0 otherwise)
 			if (m.name.equals("hyperbeam") || m.name.equals("skyattack")) {
 				x.add(1.0);
 			}
@@ -209,8 +235,7 @@ public class NeuralNet {
 				x.add(0.0);
 			}
 			
-			// TODO: add recoil damage/health recovered
-			
+			// Check if the move is substitute
 			if (m.name.equals("substitute")) {
 				x.add(1.0);
 			}
@@ -224,12 +249,21 @@ public class NeuralNet {
 		
 		// Consider the opponent's active against player one's team
 		x.add(cal_def(gs.p1_team.activePokemon, gs.p2_pokemon.get(gs.p2_active)));
+		if (gs.p1_team.activePokemon.hasMajorStatus()) {
+			x.add(1.0);
+		}
+		else {
+			x.add(0.0);
+		}
 		for (Pokemon p : gs.p1_team.pokemonList) {
 			if (p.isAlive()) {
 				if (!p.species.equals(gs.p1_team.activePokemon.species)) {
 					x.add(cal_def(p, gs.p2_pokemon.get(gs.p2_active)));
 					if (p.hasMajorStatus()) {
 						x.add(1.0);
+					}
+					else {
+						x.add(0.0);
 					}
 				}
 			}

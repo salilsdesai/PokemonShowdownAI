@@ -314,7 +314,7 @@ public class TeamGenerator {
 	/** Classifies a move as "physical", "special", "status", or "other" where "physical" and
 	 * 	"special" are moves with the potential to deal damage and "status" are moves which only 
 	 * 	inflict status on the opponent. "other" categorizes everything else. */
-	private static String getType(String m) {
+	public static String getType(String m) {
 		if (m.equals("poisonpowder") || m.equals("stunspore") || m.contentEquals("sleeppowder")
 				|| m.equals("toxic") || m.equals("confuseray")) {
 			return "status";
