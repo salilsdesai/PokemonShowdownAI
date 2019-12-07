@@ -25,9 +25,9 @@ public class GameState {
     
     public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	sb.append("p1 Team:\n\t" + p1_team.toString());
-    	sb.append("\np2 active:\n\t" + p2_active);
-    	sb.append("\nP2 Pokemon:");
+    	sb.append("Our Team:\n\t" + p1_team.toString());
+    	sb.append("\nOpponent active:\n\t" + p2_active);
+    	sb.append("\nOpponent Pokemon:");
     	for(Map.Entry<Pokemon, HashSet<Move>> e : p2_pokemon.entrySet()) {
     		sb.append("\n\t" + e.getKey().toString());
     		sb.append("\n\t\t");

@@ -1,7 +1,9 @@
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -49,8 +51,9 @@ public class Replay {
 	}
 	
 	public GameState state;
-	/** true if p1 won, false if p2 won */
-	public boolean winner; 
+	/** true if the gamestate is from the perspective of p1 (meaning p1 won),
+	 *  false if from the perspective of p2 (meaning p2 won) */
+	public boolean player; 
 	/** the turn number of the saved state from the replay */
 	public int turnNum;
 	/** the action taken by p1 from the given state (i.e. the node we want the neural network to activate
@@ -63,7 +66,7 @@ public class Replay {
 	public int action;
 	
 	public String toString() {
-		String s = (state.toString() + "\nTurn Num: " + turnNum + "\nWinner: " + (winner ? "p1" : "p2") + "\nNext Action: ");
+		String s = (state.toString() + "\nTurn Num: " + turnNum + "\nPlayer/Winner: " + (player ? "p1" : "p2") + "\nNext Action: ");
 		if(action == -1) {
 			s += "<No Action Taken>";
 		}
@@ -147,8 +150,18 @@ public class Replay {
 		}
 		String p1Name = lines[i].substring(11, lines[i].indexOf('|', 11));
 		
-		// Get all of p1's pokemon and their moves eventually used
-		HashMap<String, Pokemon> p1PokemonMap = new HashMap<String,Pokemon>(); // maps from Species to Pokemon
+		String winnerName = null;
+		// Determine who the winner is (who we the gamestate should be from the perspective from)
+		for(int j = i; winnerName == null; j++) {
+			if(lines[j].length() >= 5 && lines[j].substring(0,5).equals("|win|")) {
+				winnerName = lines[j].substring(lines[j].lastIndexOf('|') + 1, lines[j].length());
+			}
+		}
+		player = winnerName.equals(p1Name);
+		
+		
+		// Get all of player's pokemon and their moves eventually used
+		HashMap<String, Pokemon> playerPokemonMap = new HashMap<String,Pokemon>(); // maps from Species to Pokemon
 		Pokemon p1Active = null;
 		for(int j = i; j < lines.length; j++) {
 			int secondBarIndex = lines[j].indexOf('|', 1);
@@ -156,12 +169,11 @@ public class Replay {
 				String actionCategory = lines[j].substring(1, secondBarIndex);
 				if(actionCategory.equals("switch")) {
 					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[j]);
-					if(rsa.player) {
-						// p1 switched
-						Pokemon p = p1PokemonMap.get(rsa.species);
+					if(rsa.player == player) {
+						Pokemon p = playerPokemonMap.get(rsa.species);
 						if(p == null) {
 							p = new Pokemon(rsa.species, new String[4], rsa.level);
-							p1PokemonMap.put(rsa.species, p);
+							playerPokemonMap.put(rsa.species, p);
 						}
 						p1Active = p;
 					}
@@ -171,7 +183,7 @@ public class Replay {
 					int thirdBarIndex = lines[j].indexOf('|', secondBarIndex+1);
 					String moveName = filterNonLetters(lines[j].substring(thirdBarIndex+1, lines[j].indexOf('|', thirdBarIndex+1)).toLowerCase());
 					Move move = Move.getMove(moveName);
-					if(player) {
+					if(player == this.player) {
 						// p1 used the move
 						for(int k = 0; k < p1Active.moves.length; k++) {
 							if(p1Active.moves[k] == move) {
@@ -197,28 +209,27 @@ public class Replay {
 			i++;
 		}
 				
-		ReplaySwitchAction p1StartAction = new ReplaySwitchAction(lines[i+1]);
-		ReplaySwitchAction p2StartAction = new ReplaySwitchAction(lines[i+2]);
+		ReplaySwitchAction playerStartAction = new ReplaySwitchAction(lines[i+(player ? 1 : 2)]);
+		ReplaySwitchAction opponentStartAction = new ReplaySwitchAction(lines[i+(player ? 2 : 1)]);
 		
-		ArrayList<Pokemon> p1StartTeamList = new ArrayList<Pokemon>();
-		p1StartTeamList.add(p1PokemonMap.get(p1StartAction.species));
-		for(Pokemon p : p1PokemonMap.values()) {
-			if(!p.species.equals(p1StartAction.species)) {
+		ArrayList<Pokemon> playerStartTeamList = new ArrayList<Pokemon>();
+		playerStartTeamList.add(playerPokemonMap.get(playerStartAction.species));
+		for(Pokemon p : playerPokemonMap.values()) {
+			if(!p.species.equals(playerStartAction.species)) {
 				// Don't add their starting pokemon because we added it first
-				p1StartTeamList.add(p);
+				playerStartTeamList.add(p);
 			}
 		}
 		
-		Team p1StartTeam = new Team(p1StartTeamList);
-		Pokemon p2StartPokemon = new Pokemon(p2StartAction.species, new String[4], p2StartAction.level);
+		Team playerStartTeam = new Team(playerStartTeamList);
+		Pokemon playerStartPokemon = new Pokemon(opponentStartAction.species, new String[4], opponentStartAction.level);
 		
-		state = new GameState(p1StartTeam, p2StartPokemon);
+		state = new GameState(playerStartTeam, playerStartPokemon);
 		
 		i += 3;
 		
 		int numTurns = numTurns(lines);
-		turnNum = (int)(numTurns - Math.random()*5);
-//		turnNum = numTurns;
+		turnNum = (int)(numTurns * Math.random() + 1);
 		int currTurn = 1;
 		
 		/*
@@ -235,8 +246,8 @@ public class Replay {
 				
 				if(actionCategory.equals("switch")) {
 					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[i]);
-					if(rsa.player) {
-						// p1 switched
+					if(rsa.player == player) {
+						// player
 						state.p1_team.activePokemon.resetUponSwitch();
 						for(Pokemon p : state.p1_team.pokemonList) {
 							if(p.species.equals(rsa.species)) {
@@ -245,7 +256,7 @@ public class Replay {
 						}
 					}
 					else {
-						// p2 switched
+						// opponent switched
 						state.p2_active.resetUponSwitch();
 						boolean foundPokemon = false;
 						for(Pokemon p : state.p2_pokemon.keySet()) {
@@ -267,8 +278,8 @@ public class Replay {
 					String moveName = filterNonLetters(lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1)).toLowerCase());
 					Move move = Move.getMove(moveName);
 					
-					if(player) {
-						// p1 used the move
+					if(player == this.player) {
+						// player used the move
 						for(int k = 0; k < state.p1_team.activePokemon.moves.length; k++) {
 							if(state.p1_team.activePokemon.moves[k] == move) {
 								state.p1_team.activePokemon.pp[k]--;
@@ -278,13 +289,12 @@ public class Replay {
 						
 					}
 					else {
-						// p2 used the move
+						// opponent used the move
 						state.p2_pokemon.get(state.p2_active).add(move);
 					}
 				}
 				else if (actionCategory.equals("win")) {
 					currTurn = turnNum; // end the loop
-					i--; // decrement i so when it is incremented at the end of the loop we can detect the winner
 				}
 				else if (actionCategory.equals("turn")) {
 					currTurn = Integer.parseInt(lines[i].substring(secondBarIndex+1));
@@ -294,12 +304,12 @@ public class Replay {
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					int backslashIndex = lines[i].indexOf('\\', thirdBarIndex);
 					int remainingHp = (lines[i].charAt(thirdBarIndex+1) == '0' ? 0 : Integer.parseInt(lines[i].substring(thirdBarIndex+1, backslashIndex)));
-					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
 					targetPokemon.currHp = remainingHp;
 				}
 				else if (actionCategory.equals("-status")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
-					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
 					
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
@@ -330,7 +340,7 @@ public class Replay {
 				}
 				else if (actionCategory.equals("-curestatus")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
-					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
 					
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
@@ -361,12 +371,12 @@ public class Replay {
 				}
 				else if (actionCategory.equals("faint")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
-					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
 					targetPokemon.currHp = 0;
 				}
 				else if (actionCategory.equals("-boost") || actionCategory.equals("-unboost")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
-					Pokemon targetPokemon = player ? state.p1_team.activePokemon : state.p2_active;
+					Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
 					
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
@@ -385,11 +395,9 @@ public class Replay {
 			i++;
 		}
 		
-		// Determine what p1's next action was
+		// Determine what players's next action was
 		boolean setAction = false;
 		while(!setAction) {
-			
-			String l = lines[i];
 			
 			int secondBarIndex = lines[i].indexOf('|', 1);
 			
@@ -398,7 +406,7 @@ public class Replay {
 				
 				if(actionCategory.equals("switch")) {
 					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[i]);
-					if(rsa.player) {
+					if(rsa.player == this.player) {
 						int switchNum = 0;
 						for(Pokemon p : state.p1_team.pokemonList) {
 							if(p.species.equals(rsa.species)) {
@@ -417,8 +425,8 @@ public class Replay {
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					String moveName = filterNonLetters(lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1)).toLowerCase());
 					Move move = Move.getMove(moveName);
-					if(player) {
-						// p1 used the move
+					if(player == this.player) {
+						// player used the move
 						for(int k = 0; k < state.p1_team.activePokemon.moves.length; k++) {
 							if(state.p1_team.activePokemon.moves[k] == move) {
 								action = k;
@@ -432,22 +440,13 @@ public class Replay {
 					// The turn or match ended without p1 making an action
 					action = -1;
 					setAction = true;
-					i--;
 				}
 			}
 			i++;
 		}
-		
-		// Determine winner
-		while(lines[i].length() < 2 || lines[i].charAt(1) != 'w') {
-			i++;
-		}
-		String winnerName = lines[i].substring(lines[i].lastIndexOf('|') + 1, lines[i].length());
-		
-		winner = (winnerName.equals(p1Name));
 	}
 	
-	/**
+/**
 	 * Download the most recent [numReplays] 
 	 * Gen1RandomBattle replays from Pokemon Showdown.
 	 * Save the i'th replay as /replays/[i].html
