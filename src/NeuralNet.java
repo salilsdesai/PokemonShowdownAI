@@ -410,7 +410,7 @@ public class NeuralNet {
 			 * Check if the opponent pokemon has a physical move in order to counter. */
 			boolean hasPhysical = false;
 			for (Move opp_move : gs.p2_pokemon.get(gs.p2_active)) {
-				if (TeamGenerator.getType(opp_move.name).equals("physical")) {
+				if (opp_move != null && TeamGenerator.getType(opp_move.name).equals("physical")) {
 					hasPhysical = true;
 				}
 			}
