@@ -53,9 +53,39 @@ public class Replay {
 	public boolean winner; 
 	/** the turn number of the saved state from the replay */
 	public int turnNum;
+	/** the action taken by p1 from the given state (i.e. the node we want the neural network to activate
+	 * 	given this replay's Game State)
+	 *  - [action] = -1 means that p1 did not take any action at the given game state (this replay should be tossed)
+	 *	- 0 ≤ [action] ≤ 3 means p1 used the [action]'th move in their active pokemon's move list  
+	 * 	- 4 ≤ [action] ≤ 8 means p1 switched to the [action - 4]'th pokemon on their team, skipping
+	 * 	  over their previous action pokemon when counting
+	 */
+	public int action;
 	
 	public String toString() {
-		return (state.toString() + "\nTurn Num: " + turnNum + "\nWinner: " + (winner ? "p1" : "p2"));
+		String s = (state.toString() + "\nTurn Num: " + turnNum + "\nWinner: " + (winner ? "p1" : "p2") + "\nNext Action: ");
+		if(action == -1) {
+			s += "<No Action Taken>";
+		}
+		else if(action >= 0 && action <= 3) {
+			s += "use " + state.p1_team.activePokemon.moves[action].name;
+		}
+		else if (action >= 4 && action <= 8) {
+			int switchNum = 0;
+			for(Pokemon p : state.p1_team.pokemonList) {
+				if(p.species.equals(state.p1_team.activePokemon.species)) {
+					switchNum--;
+				}
+				else if(switchNum == action-4) {
+					s += ("switch to " + p.species);
+				}
+				switchNum++;
+			}
+		}
+		else {
+			s += "<invalid action>";
+		}
+		return s;
 	}
 	
 	public static String filterNonLetters(String s) {
@@ -346,6 +376,59 @@ public class Replay {
 					boostAmount *= (actionCategory.equals("-boost") ? 1 : -1);
 					
 					targetPokemon.statMod(stat, boostAmount);
+				}
+			}
+			i++;
+		}
+		
+		// Determine what p1's next action was
+		boolean setAction = false;
+		while(!setAction) {
+			
+			String l = lines[i];
+			
+			int secondBarIndex = lines[i].indexOf('|', 1);
+			
+			if(lines[i].length() >= 2 && secondBarIndex != -1) {
+				String actionCategory = lines[i].substring(1, secondBarIndex);
+				
+				if(actionCategory.equals("switch")) {
+					ReplaySwitchAction rsa = new ReplaySwitchAction(lines[i]);
+					if(rsa.player) {
+						int switchNum = 0;
+						for(Pokemon p : state.p1_team.pokemonList) {
+							if(p.species.equals(rsa.species)) {
+								action = switchNum + 4;
+								setAction = true;
+							}
+							else if(p.species.equals(state.p1_team.activePokemon.species)) {
+								switchNum--;
+							}
+							switchNum++;
+						}
+					}
+				}
+				else if (actionCategory.equals("move")) {
+					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
+					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
+					String moveName = filterNonLetters(lines[i].substring(thirdBarIndex+1, lines[i].indexOf('|', thirdBarIndex+1)).toLowerCase());
+					Move move = Move.getMove(moveName);
+					if(player) {
+						// p1 used the move
+						for(int k = 0; k < state.p1_team.activePokemon.moves.length; k++) {
+							if(state.p1_team.activePokemon.moves[k] == move) {
+								action = k;
+								setAction = true;
+							}
+						}
+						
+					}
+				}
+				else if (actionCategory.equals("win") || actionCategory.equals("turn")) {
+					// The turn or match ended without p1 making an action
+					action = -1;
+					setAction = true;
+					i--;
 				}
 			}
 			i++;
