@@ -13,40 +13,72 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 public class NeuralNet {
+
+	/** Single unit within the multi-layered neural network. */
+	public static class Neuron {
+		public List<Neuron> inputs;
+		public List<Double> weights;
+		public double value;
+
+		public Neuron() {
+			inputs = new ArrayList<>();
+			weights = new ArrayList<>();
+			value = 0;
+		}
+	}
+	
+	/** Data point. */
+	public static class Data {
+		public List<Double> x;
+		public List<Double> y;
+
+		public Data(List<Double> x, List<Double> y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		public Data(Replay r) {
+			x = NeuralNet.input(r.state);
+			y = new ArrayList<>();
+
+			y.add((double)(r.action));
+		}
+	}
+
 	/** 
 	 * Structure of the neural network. SIZE specifies the number of inputs;
 	 * LAYERS the number of layers excluding the output layer, and OUTPUT the
 	 * number of outputs.
 	 */
-	private int SIZE, LAYERS, OUTPUT;
+	public int SIZE, LAYERS, OUTPUT;
 	/** Value denoting how many iterations to repeat during back progation. */
 	private int EPOCHS;
-	
+
 	/** Learning rate during training. */
 	private double ALPHA;
-	
+
 	// What each node in input corresponds to: https://i.imgur.com/ym1ra0S.jpg
-	
+
 	/** 
 	 * Multi-layered neural network. Each index in the list corresponds to a
 	 * single layer of neurons.
 	 */
-	private List<Neuron[]> nn;
-	
+	public List<Neuron[]> nn;
+
 	/** Constructs a neural network based on info from file "s". */
 	public NeuralNet(String s) {
 		try {
 			FileReader fr = new FileReader(s);
 			BufferedReader br = new BufferedReader(fr);
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			
+
 			// Read in the neural network structure from first line
 			SIZE = Integer.parseInt(st.nextToken());
 			LAYERS = Integer.parseInt(st.nextToken());
 			OUTPUT = Integer.parseInt(st.nextToken());
 			EPOCHS = Integer.parseInt(st.nextToken());
 			ALPHA = Double.parseDouble(st.nextToken());
-			
+
 			// Read in the weights of the neural network
 			nn = new ArrayList<>();
 			// Initialize the structure of the network
@@ -54,7 +86,7 @@ public class NeuralNet {
 				nn.add(new Neuron[SIZE]);	
 			}
 			nn.add(new Neuron[OUTPUT]);
-			
+
 			// Initialize first layer of neurons
 			for (int i = 0; i < nn.get(0).length; i++) {
 				nn.get(0)[i] = new Neuron();
@@ -64,29 +96,29 @@ public class NeuralNet {
 				for (int j = 0; j < nn.get(i).length; j++) {
 					st = new StringTokenizer(br.readLine());
 					nn.get(i)[j] = new Neuron();
-					
+
 					for (Neuron input : nn.get(i - 1)) {
 						nn.get(i)[j].inputs.add(input);
 						nn.get(i)[j].weights.add(Double.parseDouble(st.nextToken()));
 					}
 				}
 			}	
-			
+
 			// Close the file
 			br.close();
-			
+
 		} catch (IOException e) {
 			throw new RuntimeException("Error when initializing neural network from " + s + ". ");
 		}
 	}
-	
+
 	/** Saves the weights of the neural network to this file. */
 	public void save_to_file(String s) {
 		try {
 			FileWriter fw = new FileWriter(s);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(bw);
-			
+
 			// Print the parameters of the neural network
 			pw.print(SIZE + " ");
 			pw.print(LAYERS + " ");
@@ -94,7 +126,7 @@ public class NeuralNet {
 			pw.print(EPOCHS + " ");
 			pw.print(ALPHA + " ");
 			pw.print("\n");
-			
+
 			// Print the weights of the neural network
 			for (int i = 1; i < nn.size(); i++) {
 				for (int j = 0; j < nn.get(i).length; j++) {
@@ -106,13 +138,13 @@ public class NeuralNet {
 			}	
 			// Close the file
 			pw.close();
-			
-			
+
+
 		} catch (IOException e) {
 			throw new RuntimeException("Error when saving neural network to " + s + ".");
 		}
 	}
-	
+
 	/** 
 	 * Constructs a neural network object with SIZE = s, LAYERS = l, OUTPUT = o,
 	 * EPOCHS = e, and ALPHA = a. All neurons in layer i receive inputs from every
@@ -122,14 +154,14 @@ public class NeuralNet {
 	public NeuralNet(int s, int l, int o, int e, double a) {
 		// Initialize parameters of neural net
 		SIZE = s; LAYERS = l; OUTPUT = o; EPOCHS = e; ALPHA = a;
-		
+
 		nn = new ArrayList<>();
 		// Initialize the structure of the network
 		for (int i = 0; i < LAYERS; i++) {
 			nn.add(new Neuron[SIZE]);	
 		}
 		nn.add(new Neuron[OUTPUT]);
-		
+
 		// Initialize first layer of neurons
 		for (int i = 0; i < nn.get(0).length; i++) {
 			nn.get(0)[i] = new Neuron();
@@ -138,7 +170,7 @@ public class NeuralNet {
 		for (int i = 1; i < nn.size(); i++) {
 			for (int j = 0; j < nn.get(i).length; j++) {
 				nn.get(i)[j] = new Neuron();
-				
+
 				for (Neuron input : nn.get(i - 1)) {
 					nn.get(i)[j].inputs.add(input);
 					nn.get(i)[j].weights.add(Math.random());
@@ -156,14 +188,14 @@ public class NeuralNet {
 		if (x.size() != y.size()) {
 			throw new RuntimeException("Dot product of different length arrays.");
 		}
-		
+
 		for (int i = 0; i < x.size(); i++) {
 			ret += (x.get(i) * y.get(i));
 		}
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Returns the corresponding values of every neuron which connects to n.
 	 */
@@ -172,10 +204,10 @@ public class NeuralNet {
 		for (Neuron input : n.inputs) {
 			ret.add(input.value);
 		}
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Forward propagation through the neural network. Used for training and
 	 * to calculate the neural network output given input x. Will modify the
@@ -187,33 +219,36 @@ public class NeuralNet {
 		if (x.size() != nn.get(0).length) {
 			throw new RuntimeException("Input invalid into neural network.");
 		}
-		
+
 		// input x into the neural network
 		for (int i = 0; i < x.size(); i++) {
 			nn.get(0)[i].value = x.get(i);
 		}
 		
 		// propogate the input values upwards
-		for (int i = 1; i < nn.size(); i++) {
+		for (int i = 1; i < nn.size() - 1; i++) {
 			for (Neuron unit : nn.get(i)) {
 				List<Double> feed = input_values(unit);
 				unit.value = activate(dot(unit.weights, feed));
 			}
 		}
+		
+		for (Neuron unit : nn.get(LAYERS)) {
+			List<Double> feed = input_values(unit);
+			unit.value = dot(unit.weights, feed);
+		}
 	}
-	
-	/** Activation function for the neural net (sigmoid). */
+
+	/** Activation function for the neural net (ReLU). */
 	private double activate(double s) {
-		double exp = Math.exp(s);
-		return exp / (exp + 1);		
+		return (s > 0) ? s : 0;
 	}
-	
-	/** Derivative of the activation function defined above (sigmoid). */
+
+	/** Derivative of the activation function defined above (ReLU). */
 	private double derivative(double s) {
-		double sig = activate(s);
-		return sig * (1 - sig);
+		return 0.5 + 0.5 * ((s > 0) ? 1 : -1);
 	}
-	
+
 	/** Back propagation based on data. */
 	public void back_prop(List<Data> data) {
 		Map<Neuron, Double> delta = new HashMap<>();
@@ -223,29 +258,29 @@ public class NeuralNet {
 				delta.put(n, 0.0);
 			}
 		}
-		
+
 		for (int t = 0; t < EPOCHS; t++) {
 			for (Data d : data) {
 				forward_prop(d.x);
 				// update last layer gradients
 				for (int i = 0; i < nn.get(LAYERS).length; i++) {
 					List<Double> feed = input_values(nn.get(LAYERS)[i]);
-					delta.put(nn.get(LAYERS)[i], derivative(dot(nn.get(LAYERS)[i].weights, feed)) * (d.y.get(i) - nn.get(LAYERS)[i].value));
+					delta.put(nn.get(LAYERS)[i], derivative(dot(nn.get(LAYERS)[i].weights, feed)) * (d.y.get(i) - nn.get(LAYERS)[i].value)/100.0);
 				}
 				// update hidden layer gradients
 				for (int i = LAYERS - 1; i >= 0; i--) {
 					for (Neuron n : nn.get(i)) {
 						List<Double> feed = input_values(n);
-						
+
 						List<Double> u = new ArrayList<>();
 						List<Double> q = new ArrayList<>();
 						for (Neuron next : nn.get(i + 1)) {
 							u.add(next.weights.get(next.inputs.indexOf(n)));
 							q.add(delta.get(next));
 						}
-						
-						delta.put(n, derivative(dot(n.weights, feed)) * dot(u, q));
-						
+
+						delta.put(n, derivative(dot(n.weights, feed)) * dot(u, q)/100.0);
+
 					}
 				}
 				// update all weights
@@ -259,12 +294,18 @@ public class NeuralNet {
 			}
 		}
 	}
-	
+
 	public static List<Double> input(GameState gs) {
 		List<Double> x = new ArrayList<>();
-		
+
 		// Consider the active pokemon's move-set
 		for (Move m : gs.p1_team.activePokemon.moves) {
+			if (m == null) {
+				for (int i = 0; i < 10; i++) {
+					x.add(0.0);
+				}
+				continue;
+			}
 			// Move statistics
 			x.add((double)m.power);
 			x.add((double)m.accuracy);
@@ -272,7 +313,7 @@ public class NeuralNet {
 			x.add(m.status_chance);
 			x.add(m.health_decrease);
 			x.add((double)m.priority);
-			
+
 			/* Check if counter is a viable choice (1 if yes 0 otherwise). Must also
 			 * Check if the opponent pokemon has a physical move in order to counter. */
 			boolean hasPhysical = false;
@@ -287,7 +328,7 @@ public class NeuralNet {
 			else {
 				x.add(0.0);
 			}
-			
+
 			// Check if the move is bide (1 yes 0 otherwise)
 			if (m.name.equals("bide")) {
 				x.add(1.0);
@@ -295,7 +336,7 @@ public class NeuralNet {
 			else {
 				x.add(0.0);
 			}
-			
+
 			// Check if move requires charging (1 if yes, 0 otherwise)
 			if (m.name.equals("hyperbeam") || m.name.equals("skyattack")) {
 				x.add(1.0);
@@ -303,7 +344,7 @@ public class NeuralNet {
 			else {
 				x.add(0.0);
 			}
-			
+
 			// Check if the move is substitute
 			if (m.name.equals("substitute")) {
 				x.add(1.0);
@@ -312,10 +353,18 @@ public class NeuralNet {
 				x.add(0.0);
 			}
 		}
-		
+		// Ensure that the x is properly pollulated
+		while (x.size() < 40) {
+			x.add(0.0);
+		}
+
 		// Consider the active pokemon's effectiveness against the enemy team
 		cal_effect(x, gs.p1_team.activePokemon.moves, gs.p2_pokemon.keySet());
-		
+		// Ensure that the x is properly pollulated
+		while (x.size() < 64) {
+			x.add(0.0);
+		}
+
 		// Consider the opponent's active against player one's team
 		x.add(cal_def(gs.p1_team.activePokemon, gs.p2_pokemon.get(gs.p2_active)));
 		if (gs.p1_team.activePokemon.hasMajorStatus()) {
@@ -342,7 +391,11 @@ public class NeuralNet {
 				x.add(1.0);
 			}
 		}
-		
+		// Ensure that the x is properly pollulated
+		while (x.size() < 76) {
+			x.add(0.0);
+		}
+
 		// Compare speeds: 1 if faster, 0 otherwise.
 		if (Pokedex.getDex().get(gs.p1_team.activePokemon.species).baseStats[4] > Pokedex.getDex().get(gs.p2_active.species).baseStats[4]) {
 			x.add(1.0);
@@ -350,10 +403,10 @@ public class NeuralNet {
 		else {
 			x.add(0.0);
 		}
-		
+
 		return x;
 	}
-	
+
 	/**
 	 * Modify x to reflect the effectiveness of moveset on the pokemon in opponent.
 	 */
@@ -380,7 +433,7 @@ public class NeuralNet {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns 1 if a move in moveset if super-effective versus p, 0 otherwise.
 	 */
@@ -390,115 +443,78 @@ public class NeuralNet {
 				return 1;
 			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	// Test the neural network using XOR function.
 	public static void main(String[] args) {
 		NeuralNet nn = new NeuralNet(2, 2, 1, 1000000, 0.15);
-		
+
 		List<Double> x1 = new ArrayList<>();
 		List<Double> x2 = new ArrayList<>();
 		List<Double> x3 = new ArrayList<>();
 		List<Double> x4 = new ArrayList<>();
-		
+
 		x1.add(0.0); x1.add(0.0);
 		x2.add(0.0); x2.add(1.0);
 		x3.add(1.0); x3.add(0.0);
 		x4.add(1.0); x4.add(1.0);
-		
+
 		List<Double> y1 = new ArrayList<>();
 		List<Double> y2 = new ArrayList<>();
 		List<Double> y3 = new ArrayList<>();
 		List<Double> y4 = new ArrayList<>();
-		
+
 		y1.add(0.0);
 		y2.add(1.0);
 		y3.add(1.0);
 		y4.add(0.0);
-		
+
 		Data d1 = new Data(x1, y1), d2 = new Data(x2, y2), d3 = new Data(x3, y3), d4 = new Data(x4, y4);
 		List<Data> D = new ArrayList<>();
 		D.add(d1);
 		D.add(d2);
 		D.add(d3);
 		D.add(d4);
-		
+
 		nn.back_prop(D);
-		
+
 		nn.forward_prop(x1);
 		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-		
+
 		nn.forward_prop(x2);
 		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-		
+
 		nn.forward_prop(x3);
 		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-		
+
 		nn.forward_prop(x4);
 		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-		
+
 		nn.save_to_file("input");
-		
+
 		NeuralNet nn2 = new NeuralNet("input");
-		
+
 		nn2.forward_prop(x1);
 		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-		
+
 		nn2.forward_prop(x2);
 		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-		
+
 		nn2.forward_prop(x3);
 		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-		
+
 		nn2.forward_prop(x4);
 		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-		
+
 		Team t1 = new Team(TeamGenerator.randomTeam());
 		Team t2 = new Team(TeamGenerator.randomTeam());
-		
+
 		GameState gs = new GameState(t2, t1.activePokemon);
 		List<Double> first_input = input(gs);
-		
+
 		System.out.print(first_input.size());
 	}
 }
 
-/** Single unit within the multi-layered neural network. */
-class Neuron {
-	public List<Neuron> inputs;
-	public List<Double> weights;
-	public double value;
-	
-	public Neuron() {
-		inputs = new ArrayList<>();
-		weights = new ArrayList<>();
-		value = 0;
-	}
-}
-
-/** Data point. */
-class Data {
-	List<Double> x;
-	List<Double> y;
-	
-	public Data(List<Double> x, List<Double> y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	public Data(Replay r) {
-		x = NeuralNet.input(r.state);
-		y = new ArrayList<>(9);
-		
-		for (int i = 0; i < y.size(); i++) {
-			if (i == r.action) {
-				y.add(1.0);
-			}
-			else {
-				y.add(0.0);
-			}
-		}
-	}
-}

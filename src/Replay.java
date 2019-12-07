@@ -217,7 +217,8 @@ public class Replay {
 		i += 3;
 		
 		int numTurns = numTurns(lines);
-		turnNum = (int)(Math.random() * numTurns + 1);
+//		turnNum = (int)(Math.random() * numTurns + 1);
+		turnNum = numTurns;
 		int currTurn = 1;
 		
 		/*
@@ -370,7 +371,10 @@ public class Replay {
 					int thirdBarIndex = lines[i].indexOf('|', secondBarIndex+1);
 					int fourthBarIndex = lines[i].indexOf('|', thirdBarIndex+1);
 					
-					Pokemon.Stat stat =  Pokemon.Stat.valueOf(lines[i].substring(thirdBarIndex+1, fourthBarIndex).toUpperCase());
+					String statString = lines[i].substring(thirdBarIndex+1, fourthBarIndex).toUpperCase();
+					if(statString.equals("SPD") || statString.equals("SPA"))
+						statString = "SPC";
+					Pokemon.Stat stat =  Pokemon.Stat.valueOf(statString);
 					
 					int boostAmount = Integer.parseInt(lines[i].substring(fourthBarIndex+1));
 					boostAmount *= (actionCategory.equals("-boost") ? 1 : -1);
@@ -479,7 +483,7 @@ public class Replay {
 			
 			// Download the replay from each URL
 			for(int j = 0; j < urls.length; j++) {
-				HtmlPage replayPage = webClient.getPage("https://replay.pokemonshowdown.com/gen1randombattle-1023707520");
+				HtmlPage replayPage = webClient.getPage(urls[j]);
 				HtmlAnchor replayDownloadButton = replayPage.getAnchors().get(6);
 				replayDownloadButton.click();
 				
@@ -497,8 +501,28 @@ public class Replay {
 	}
 
 	public static void main(String[] args) {
-		Replay r = new Replay("replays/0.html");
-		System.out.println(r);
+		//downloadLatestReplays(10);
+		List<NeuralNet.Data> data = new ArrayList<>();
+		Replay[] r = new Replay[10];
+		for (int i = 0; i < r.length; i++) {
+			r[i] = new Replay("replays/" + i + ".html");
+			data.add(new NeuralNet.Data(r[i]));
+		}
+		
+		NeuralNet nn = new NeuralNet(77, 15, 1, 1000, 0.2);
+		nn.back_prop(data);
+		
+		for (int i = 0; i < 10; i++) {
+			System.out.println("Ouput: ");
+			nn.forward_prop(NeuralNet.input(r[i].state));
+			for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
+				System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
+			}
+			System.out.print("Expected: ");
+			System.out.println(r[i].action + "\n\n");
+		}
+		
+		nn.save_to_file("input");
 	}
 	
 }
