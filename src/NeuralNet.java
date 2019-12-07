@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class NeuralNet {
 			value = 0;
 		}
 	}
-	
+
 	/** Data point. */
 	public static class Data {
 		public List<Double> x;
@@ -231,7 +232,7 @@ public class NeuralNet {
 		for (int i = 0; i < x.size(); i++) {
 			nn.get(0)[i].value = x.get(i);
 		}
-		
+
 		// propogate the input values upwards
 		for (int i = 1; i < nn.size() - 1; i++) {
 			for (Neuron unit : nn.get(i)) {
@@ -239,7 +240,7 @@ public class NeuralNet {
 				unit.value = activate(dot(unit.weights, feed));
 			}
 		}
-		
+
 		for (Neuron unit : nn.get(LAYERS)) {
 			List<Double> feed = input_values(unit);
 			unit.value = dot(unit.weights, feed);
@@ -291,6 +292,89 @@ public class NeuralNet {
 
 					}
 				}
+				// update all weights
+				for (int layer = 0; layer < nn.size(); layer++) {
+					for (Neuron unit : nn.get(layer)) {
+						for (int i = 0; i < unit.inputs.size(); i++) {
+							unit.weights.set(i, unit.weights.get(i) + ALPHA * unit.inputs.get(i).value * delta.get(unit));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/** Separates the data into batches of size batch_size. */
+	private static List<List<Data>> to_batches(List<Data> data, int batch_size) {
+		// Shuffles data randomly
+		Random rand = new Random(System.nanoTime());
+		for (int i = 0; i < data.size(); i++) {
+			int swap = rand.nextInt() % (data.size() - i) + i;
+			Data tmp = data.get(i);
+			data.set(i, data.get(swap));
+			data.set(swap, tmp);
+		}
+		
+		List<List<Data>> ret = new ArrayList<>();
+		int idx = 0;
+		
+		// Separate the data into batches
+		while (idx < data.size()) {
+			List<Data> next_layer = new ArrayList<>();
+			// Populate the batch and add it to the return
+			while (next_layer.size() < batch_size) {
+				next_layer.add(data.get(idx++));	
+			}
+			ret.add(next_layer);
+		}
+		return ret;
+	}
+
+	/** Back propagation using stochastic gradient descent based on data. */
+	public void back_prop_batch(List<Data> data, int batch_size) {
+		for (int t = 0; t < EPOCHS; t++) {
+			// Separate the data into batches to be used for training on this epoch
+			List<List<Data>> batches = to_batches(data, batch_size);
+
+			for (List<Data> batch : batches) {
+
+				Map<Neuron, Double> delta = new HashMap<>();
+				// Initialize with all neurons in neural net and keys of 0
+				for (int i = 0; i < nn.size(); i++) {
+					for (Neuron n : nn.get(i)) {
+						delta.put(n, 0.0);
+					}
+				}
+
+				for (Data d : batch) {
+					forward_prop(d.x);
+					// update last layer gradients
+					for (int i = 0; i < nn.get(LAYERS).length; i++) {
+						List<Double> feed = input_values(nn.get(LAYERS)[i]);
+						delta.put(nn.get(LAYERS)[i], derivative(dot(nn.get(LAYERS)[i].weights, feed)) * (d.y.get(i) - nn.get(LAYERS)[i].value));
+					}
+					// update hidden layer gradients
+					for (int i = LAYERS - 1; i >= 0; i--) {
+						for (Neuron n : nn.get(i)) {
+							List<Double> feed = input_values(n);
+
+							List<Double> u = new ArrayList<>();
+							List<Double> q = new ArrayList<>();
+							for (Neuron next : nn.get(i + 1)) {
+								u.add(next.weights.get(next.inputs.indexOf(n)));
+								q.add(delta.get(next));
+							}
+
+							delta.put(n, derivative(dot(n.weights, feed)) * dot(u, q));
+
+						}
+					}
+
+					for (Neuron n : delta.keySet()) {
+						delta.put(n, delta.get(n)/batch_size);
+					}
+				}
+
 				// update all weights
 				for (int layer = 0; layer < nn.size(); layer++) {
 					for (Neuron unit : nn.get(layer)) {
@@ -361,14 +445,14 @@ public class NeuralNet {
 				x.add(0.0);
 			}
 		}
-		// Ensure that the x is properly pollulated
+		// Ensure that the x is properly populated
 		while (x.size() < 40) {
 			x.add(0.0);
 		}
 
 		// Consider the active pokemon's effectiveness against the enemy team
 		cal_effect(x, gs.p1_team.activePokemon.moves, gs.p2_pokemon.keySet());
-		// Ensure that the x is properly pollulated
+		// Ensure that the x is properly populated
 		while (x.size() < 64) {
 			x.add(0.0);
 		}
