@@ -309,7 +309,7 @@ public class NeuralNet {
 		// Shuffles data randomly
 		Random rand = new Random(System.nanoTime());
 		for (int i = 0; i < data.size(); i++) {
-			int swap = rand.nextInt() % (data.size() - i) + i;
+			int swap = rand.nextInt(data.size() - i) + i;
 			Data tmp = data.get(i);
 			data.set(i, data.get(swap));
 			data.set(swap, tmp);

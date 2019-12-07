@@ -522,6 +522,7 @@ public class Replay {
 	}
 
 	public static void main(String[] args) {
+		long x = System.currentTimeMillis();
 		//downloadLatestReplays(10);
 		List<NeuralNet.Data> data = new ArrayList<>();
 		Replay[] r = new Replay[10];
@@ -531,7 +532,7 @@ public class Replay {
 		}
 		
 		NeuralNet nn = new NeuralNet(77, 2, 9, 1000, 0.2);
-		nn.back_prop(data);
+		nn.back_prop_batch(data);
 		
 		for (int i = 0; i < 10; i++) {
 			System.out.println("Ouput: ");
@@ -544,5 +545,6 @@ public class Replay {
 		}
 		
 		nn.save_to_file("input");
+		System.out.println("Took " + (System.currentTimeMillis() - x) + " milliseconds. ");
 	}
 }
