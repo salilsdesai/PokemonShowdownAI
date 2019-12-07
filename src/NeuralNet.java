@@ -35,12 +35,82 @@ public class NeuralNet {
 	
 	/** Constructs a neural network based on info from file "s". */
 	public NeuralNet(String s) {
-		// TODO: do this
+		try {
+			FileReader fr = new FileReader(s);
+			BufferedReader br = new BufferedReader(fr);
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			
+			// Read in the neural network structure from first line
+			SIZE = Integer.parseInt(st.nextToken());
+			LAYERS = Integer.parseInt(st.nextToken());
+			OUTPUT = Integer.parseInt(st.nextToken());
+			EPOCHS = Integer.parseInt(st.nextToken());
+			ALPHA = Double.parseDouble(st.nextToken());
+			
+			// Read in the weights of the neural network
+			nn = new ArrayList<>();
+			// Initialize the structure of the network
+			for (int i = 0; i < LAYERS; i++) {
+				nn.add(new Neuron[SIZE]);	
+			}
+			nn.add(new Neuron[OUTPUT]);
+			
+			// Initialize first layer of neurons
+			for (int i = 0; i < nn.get(0).length; i++) {
+				nn.get(0)[i] = new Neuron();
+			}
+			// Initialize connectedness of network and all weights to random values
+			for (int i = 1; i < nn.size(); i++) {
+				for (int j = 0; j < nn.get(i).length; j++) {
+					st = new StringTokenizer(br.readLine());
+					nn.get(i)[j] = new Neuron();
+					
+					for (Neuron input : nn.get(i - 1)) {
+						nn.get(i)[j].inputs.add(input);
+						nn.get(i)[j].weights.add(Double.parseDouble(st.nextToken()));
+					}
+				}
+			}	
+			
+			// Close the file
+			br.close();
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Error when initializing neural network from " + s + ". ");
+		}
 	}
 	
 	/** Saves the weights of the neural network to this file. */
 	public void save_to_file(String s) {
-		// TODO: do this
+		try {
+			FileWriter fw = new FileWriter(s);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter pw = new PrintWriter(bw);
+			
+			// Print the parameters of the neural network
+			pw.print(SIZE + " ");
+			pw.print(LAYERS + " ");
+			pw.print(OUTPUT + " ");
+			pw.print(EPOCHS + " ");
+			pw.print(ALPHA + " ");
+			pw.print("\n");
+			
+			// Print the weights of the neural network
+			for (int i = 1; i < nn.size(); i++) {
+				for (int j = 0; j < nn.get(i).length; j++) {
+					for (int k = 0; k < nn.get(i)[j].weights.size(); k++) {
+						pw.print(nn.get(i)[j].weights.get(k) + " ");
+					}
+					pw.print("\n");
+				}
+			}	
+			// Close the file
+			pw.close();
+			
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Error when saving neural network to " + s + ".");
+		}
 	}
 	
 	/** 
@@ -368,6 +438,22 @@ public class NeuralNet {
 		
 		nn.forward_prop(x4);
 		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
+		
+		nn.save_to_file("input");
+		
+		NeuralNet nn2 = new NeuralNet("input");
+		
+		nn2.forward_prop(x1);
+		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
+		
+		nn2.forward_prop(x2);
+		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
+		
+		nn2.forward_prop(x3);
+		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
+		
+		nn2.forward_prop(x4);
+		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
 		
 		Team t1 = new Team(TeamGenerator.randomTeam());
 		Team t2 = new Team(TeamGenerator.randomTeam());
