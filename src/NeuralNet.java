@@ -384,6 +384,12 @@ public class NeuralNet {
 					}
 				}
 			}
+			
+			if(t % 1000 == 999) {
+				// Checkpoint every 1000
+				this.save_to_file("PolicyNetwork/PolicyNetworkWeights" + t + ".txt");
+				System.out.println("t = " + t);
+			}
 		}
 	}
 
@@ -531,7 +537,7 @@ public class NeuralNet {
 	 */
 	private static double cal_def(Pokemon p, Set<Move> moveset) {
 		for (Move m : moveset) {
-			if (m.type.effectiveness(p.types[0]) * m.type.effectiveness(p.types[1]) > 1.0) {
+			if (m != null && m.type.effectiveness(p.types[0]) * m.type.effectiveness(p.types[1]) > 1.0) {
 				return 1;
 			}
 		}

@@ -521,21 +521,25 @@ public class Replay {
 		}
 	}
 
-	public static void main(String[] args) {
-		long x = System.currentTimeMillis();
-		//downloadLatestReplays(10);
+	
+	public static void trainPolicyNetwork(int numLayers, int epochs, double stepSize, int batchSize, int numTrainingSamples) {
 		List<NeuralNet.Data> data = new ArrayList<>();
-		Replay[] r = new Replay[10];
+		Replay[] r = new Replay[numTrainingSamples];
 		for (int i = 0; i < r.length; i++) {
-			r[i] = new Replay(i);
+			int retryCount = 0; // try not to have states have no action
+			do {
+				r[i] = new Replay(i);
+				retryCount++;
+			} while(r[i].action == -1 && retryCount < 10);
 			data.add(new NeuralNet.Data(r[i]));
 		}
 		
-		NeuralNet nn = new NeuralNet(77, 2, 9, 1000, 0.2);
-		nn.back_prop_batch(data);
+		NeuralNet nn = new NeuralNet(77, numLayers, 9, epochs, stepSize);
+		nn.back_prop_batch(data, batchSize);
+		nn.save_to_file("PolicyNetwork/PolicyNetworkWeights.txt");
 		
-		for (int i = 0; i < 10; i++) {
-			System.out.println("Ouput: ");
+		for (int i = 0; i < 5; i++) { // print out the first 5 to check
+			System.out.println("nn1 Ouput: ");
 			nn.forward_prop(NeuralNet.input(r[i].state));
 			for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
 				System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
@@ -543,8 +547,9 @@ public class Replay {
 			System.out.print("Expected: ");
 			System.out.println(r[i].action + "\n\n");
 		}
-		
-		nn.save_to_file("input");
-		System.out.println("Took " + (System.currentTimeMillis() - x) + " milliseconds. ");
+	}
+	
+	public static void main(String[] args) {
+		trainPolicyNetwork(2, 30000, 0.2, 5, 500); // train only the first 500 samples
 	}
 }
