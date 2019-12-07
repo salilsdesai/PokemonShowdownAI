@@ -40,8 +40,15 @@ public class NeuralNet {
 		public Data(Replay r) {
 			x = NeuralNet.input(r.state);
 			y = new ArrayList<>();
+			for(int i = 0; i < 9; i++) {
+				if(i == r.action) {
+					y.add(1.0);
+				}
+				else {
+					y.add(0.0);
+				}
+			}
 
-			y.add((double)(r.action));
 		}
 	}
 
@@ -241,12 +248,13 @@ public class NeuralNet {
 
 	/** Activation function for the neural net (ReLU). */
 	private double activate(double s) {
-		return (s > 0) ? s : 0;
+		return 1/(1+Math.exp(-s));
 	}
 
 	/** Derivative of the activation function defined above (ReLU). */
 	private double derivative(double s) {
-		return 0.5 + 0.5 * ((s > 0) ? 1 : -1);
+		double a = activate(s);
+		return a*(1-a);
 	}
 
 	/** Back propagation based on data. */
@@ -265,7 +273,7 @@ public class NeuralNet {
 				// update last layer gradients
 				for (int i = 0; i < nn.get(LAYERS).length; i++) {
 					List<Double> feed = input_values(nn.get(LAYERS)[i]);
-					delta.put(nn.get(LAYERS)[i], derivative(dot(nn.get(LAYERS)[i].weights, feed)) * (d.y.get(i) - nn.get(LAYERS)[i].value)/100.0);
+					delta.put(nn.get(LAYERS)[i], derivative(dot(nn.get(LAYERS)[i].weights, feed)) * (d.y.get(i) - nn.get(LAYERS)[i].value));
 				}
 				// update hidden layer gradients
 				for (int i = LAYERS - 1; i >= 0; i--) {
@@ -279,7 +287,7 @@ public class NeuralNet {
 							q.add(delta.get(next));
 						}
 
-						delta.put(n, derivative(dot(n.weights, feed)) * dot(u, q)/100.0);
+						delta.put(n, derivative(dot(n.weights, feed)) * dot(u, q));
 
 					}
 				}

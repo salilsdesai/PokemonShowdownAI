@@ -217,8 +217,8 @@ public class Replay {
 		i += 3;
 		
 		int numTurns = numTurns(lines);
-//		turnNum = (int)(Math.random() * numTurns + 1);
-		turnNum = numTurns;
+		turnNum = (int)(numTurns - Math.random()*5);
+//		turnNum = numTurns;
 		int currTurn = 1;
 		
 		/*
@@ -509,7 +509,7 @@ public class Replay {
 			data.add(new NeuralNet.Data(r[i]));
 		}
 		
-		NeuralNet nn = new NeuralNet(77, 15, 1, 1000, 0.2);
+		NeuralNet nn = new NeuralNet(77, 1, 9, 1000, 0.2);
 		nn.back_prop(data);
 		
 		for (int i = 0; i < 10; i++) {
