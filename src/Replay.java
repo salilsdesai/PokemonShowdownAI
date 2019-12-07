@@ -388,6 +388,8 @@ public class Replay {
 					String statString = lines[i].substring(thirdBarIndex+1, fourthBarIndex).toUpperCase();
 					if(statString.equals("SPD") || statString.equals("SPA"))
 						statString = "SPC";
+					if(statString.equals("ACCURACY"))
+						statString = "ACC";
 					Pokemon.Stat stat =  Pokemon.Stat.valueOf(statString);
 					
 					int boostAmount = Integer.parseInt(lines[i].substring(fourthBarIndex+1));
@@ -524,7 +526,7 @@ public class Replay {
 		List<NeuralNet.Data> data = new ArrayList<>();
 		Replay[] r = new Replay[10];
 		for (int i = 0; i < r.length; i++) {
-			r[i] = new Replay("replays/" + i + ".html");
+			r[i] = new Replay(i);
 			data.add(new NeuralNet.Data(r[i]));
 		}
 		
@@ -543,5 +545,4 @@ public class Replay {
 		
 		nn.save_to_file("input");
 	}
-	
 }
