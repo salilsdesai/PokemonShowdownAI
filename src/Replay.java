@@ -135,6 +135,12 @@ public class Replay {
 		return Integer.parseInt(replayLines[i].substring(replayLines[i].lastIndexOf('|') + 1, replayLines[i].length()));
 	}
 	
+	/**
+	 * Parse a Replay from replays/[i].html
+	 */
+	public Replay(int i) {
+		this("replays/" + i + ".html");
+	}
 	
 	/**
 	 * Parse a Replay from the provided file
@@ -336,7 +342,6 @@ public class Replay {
 					else if(status.equals("slp")) {
 						targetPokemon.status.sleep_turns_left = 3; // guess how long sleep will be because we don't know upfront
 					}
-					// TODO: Add missing statuses (confusion, recharge?)
 				}
 				else if (actionCategory.equals("-curestatus")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
@@ -367,7 +372,6 @@ public class Replay {
 					else if(status.equals("slp")) {
 						targetPokemon.status.sleep_turns_left = 0;
 					}
-					// TODO: Add missing statuses (confusion, recharge?)
 				}
 				else if (actionCategory.equals("faint")) {
 					boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
@@ -390,6 +394,22 @@ public class Replay {
 					boostAmount *= (actionCategory.equals("-boost") ? 1 : -1);
 					
 					targetPokemon.statMod(stat, boostAmount);
+				}
+				else if (actionCategory.equals("-start")) {
+					String whatIsStarting = lines[i].substring(lines[i].lastIndexOf('|') + 1);			
+					if(whatIsStarting.equals("confusion")) {
+						boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
+						Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
+						targetPokemon.status.confuse_turns_left = 2; // we don't know how long it will last, approximate as 2		
+					}
+				}
+				else if (actionCategory.equals("-end")) {
+					String whatIsEnding = lines[i].substring(lines[i].lastIndexOf('|') + 1);			
+					if(whatIsEnding.equals("confusion")) {
+						boolean player = (lines[i].charAt(secondBarIndex + 2) == '1');
+						Pokemon targetPokemon = (player == this.player) ? state.p1_team.activePokemon : state.p2_active;
+						targetPokemon.status.confuse_turns_left = 0;
+					}
 				}
 			}
 			i++;
