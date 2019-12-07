@@ -497,7 +497,8 @@ public class Replay {
 	}
 
 	public static void main(String[] args) {
-//		downloadLatestReplays(1);
+		downloadLatestReplays(10);
+		
 		Replay r = new Replay("replays/0.html");
 		System.out.println(r);
 	}

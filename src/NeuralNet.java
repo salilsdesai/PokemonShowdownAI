@@ -487,4 +487,18 @@ class Data {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Data(Replay r) {
+		x = NeuralNet.input(r.state);
+		y = new ArrayList<>(9);
+		
+		for (int i = 0; i < y.size(); i++) {
+			if (i == r.action) {
+				y.add(1.0);
+			}
+			else {
+				y.add(0.0);
+			}
+		}
+	}
 }
