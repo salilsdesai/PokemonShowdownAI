@@ -294,6 +294,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.statMod(Pokemon.Stat.SPE, 2);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 1.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -311,6 +314,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.0 * 0.2;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -326,6 +332,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -341,6 +350,9 @@ public class Move {
 				md.user.transformTo(md.target);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		// Amnesia
@@ -355,6 +367,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.statMod(Pokemon.Stat.SPC, 2);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 2.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		// Barrier
@@ -369,6 +384,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.statMod(Pokemon.Stat.DEF, 2);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 2.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		// Bide
@@ -382,6 +400,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		// Blizzard
@@ -397,6 +418,9 @@ public class Move {
 			if(Math.random() < 0.1)
 				md.target.setStatusCondition(Pokemon.StatusCondition.FREEZE, 0);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 4.0 * 0.1;
 		moves.put(m.name, m);
 		
 		// Body Slam
@@ -412,6 +436,9 @@ public class Move {
 			if(Math.random() < 0.3)
 				md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 2.0 * 0.3;
 		moves.put(m.name, m);
 		
 		// BubbleBeam
@@ -427,6 +454,9 @@ public class Move {
 			if(Math.random() < 0.33)
 				md.target.statMod(Pokemon.Stat.SPE, -1);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.16;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		
@@ -442,6 +472,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.target.setStatusCondition(Pokemon.StatusCondition.CONFUSE, (int)(Math.random() * 4 + 1));
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.5;
 		moves.put(m.name, m);
 		
 // 		Counter
@@ -455,6 +488,9 @@ public class Move {
 		m.priority = -1;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		
@@ -469,6 +505,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Double Kick
@@ -482,6 +521,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 	
 	
@@ -497,6 +539,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.currHp = Math.max(md.user.currHp - md.damage/4, 0);
 		}};
+		m.health_decrease = 0.25;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Dragon Rage
@@ -510,6 +555,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Drill Peck
@@ -523,6 +571,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Earthquake
@@ -536,6 +587,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Egg Bomb
@@ -549,6 +603,9 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		
@@ -564,6 +621,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.currHp = 0;
 		}};
+		m.health_decrease = 1.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Fire Blast
@@ -577,8 +637,11 @@ public class Move {
 		m.priority = 0;
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			if(Math.random() < 0.3)
-			md.target.setStatusCondition(Pokemon.StatusCondition.BURN, (int)(Math.random() * 4 + 1));
+				md.target.setStatusCondition(Pokemon.StatusCondition.BURN, (int)(Math.random() * 4 + 1));
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.0 * 0.3;
 		moves.put(m.name, m);
 		
 //		Flamethrower
@@ -594,6 +657,9 @@ public class Move {
 			if(Math.random() < 0.1)
 				md.target.setStatusCondition(Pokemon.StatusCondition.BURN, (int)(Math.random() * 4 + 1));
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.0 * 0.1;
 		moves.put(m.name, m);
 		
 		
@@ -609,6 +675,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, (int)(Math.random() * 4 + 1));
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 2.0;
 		moves.put(m.name, m);
 		
 //		Growth
@@ -621,6 +690,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.statMod(Pokemon.Stat.SPC, 1);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 1.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		Harden
@@ -635,6 +707,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() {public void accept(MoveDamage md) {
 			md.user.statMod(Pokemon.Stat.DEF, 1);
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 1.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 //		High Jump Kick
@@ -650,6 +725,9 @@ public class Move {
 			if(md.damage == 0)
 				md.user.currHp -= 1;
 		}};
+		m.health_decrease = 0.01;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 
 					
@@ -666,6 +744,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.BADLY_POISON, 0);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.5;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -683,6 +764,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 2.0 * 0.1;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -698,6 +782,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 2.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -715,6 +802,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 2.0 * 0.1;
 		moves.put(m.name, m);
 		
 		
@@ -733,6 +823,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 1.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -748,6 +841,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -763,6 +859,9 @@ public class Move {
 				md.user.statMod(Pokemon.Stat.ATK, 2);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 2.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -778,6 +877,9 @@ public class Move {
 				return; 
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -793,6 +895,9 @@ public class Move {
 				return; 
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -812,6 +917,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.25;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -827,6 +935,9 @@ public class Move {
 				md.user.currHp -= md.damage/4;
 			}
 		};
+		m.health_decrease = 0.25;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -842,6 +953,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.PARALYZE, 0);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 2.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -857,6 +971,9 @@ public class Move {
 				md.target.statMod(Pokemon.Stat.SPE, -1);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.5;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -872,6 +989,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 3.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -887,6 +1007,9 @@ public class Move {
 				md.user.currHp = Integer.min(md.user.maxHp, md.user.currHp + md.user.maxHp/2);
 			}
 		};
+		m.health_decrease = -0.5;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -902,6 +1025,9 @@ public class Move {
 				md.target.statMod(Pokemon.Stat.ACC, -1);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.5;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -919,6 +1045,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.0 * 0.4;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -934,6 +1063,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 3.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -949,6 +1081,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -964,6 +1099,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -979,6 +1117,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 3.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -994,6 +1135,9 @@ public class Move {
 				md.user.currHp = 0;
 			}
 		};
+		m.health_decrease = 1.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1008,6 +1152,9 @@ public class Move {
 			public void accept(MoveDamage md) {
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1023,6 +1170,9 @@ public class Move {
 				md.target.statMod(Pokemon.Stat.DEF, -2);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 2.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		
@@ -1039,6 +1189,9 @@ public class Move {
 				md.target.statMod(Pokemon.Stat.ACC, -1);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.5;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1054,6 +1207,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1079,6 +1235,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = -1.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		// TODO: check what reflect actually does (base defense or stat mod)
@@ -1095,6 +1254,9 @@ public class Move {
 				md.user.statMod(Pokemon.Stat.DEF, 2);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 2.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1110,6 +1272,9 @@ public class Move {
 				md.user.currHp = Integer.min(md.user.maxHp, md.user.currHp + md.user.maxHp/2);
 			}
 		};
+		m.health_decrease = -0.5;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1125,6 +1290,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1140,6 +1308,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1155,6 +1326,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1172,6 +1346,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.33;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1189,6 +1366,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 1.0 * 0.2;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1204,6 +1384,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1219,6 +1402,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1234,6 +1420,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1256,6 +1445,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		
@@ -1272,6 +1464,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1287,6 +1482,9 @@ public class Move {
 				md.user.currHp = Integer.min(md.user.maxHp, md.user.currHp + md.damage/2);
 			}
 		};
+		m.health_decrease = -0.5;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1302,6 +1500,9 @@ public class Move {
 				md.user.statMod(Pokemon.Stat.ATK, 1);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 1.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1317,6 +1518,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 3.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1332,6 +1536,9 @@ public class Move {
 				md.target.statMod(Pokemon.Stat.DEF, -1);
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 1.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1349,6 +1556,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 4.0 * 0.1;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1364,6 +1574,9 @@ public class Move {
 				md.target.setStatusCondition(Pokemon.StatusCondition.SLEEP, (int)(Math.random() * 7));
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 3.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1381,6 +1594,9 @@ public class Move {
 				}
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move(); 
@@ -1396,6 +1612,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -1411,6 +1630,9 @@ public class Move {
 				return;
 			}
 		};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -1424,6 +1646,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() { public void accept(MoveDamage md) {
 			md.user.status.recharge = false;
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -1437,6 +1662,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() { public void accept(MoveDamage md) {
 			md.user.currHp -= md.damage/2;
 		}};
+		m.health_decrease = 0.5;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
 		m = new Move();
@@ -1450,6 +1678,9 @@ public class Move {
 		m.secondaryEffect = new Consumer<MoveDamage>() { public void accept(MoveDamage md) {
 
 		}};
+		m.health_decrease = 0.0;
+		m.stat_boost = 0.0;
+		m.status_chance = 0.0;
 		moves.put(m.name, m);
 	}
 	

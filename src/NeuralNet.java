@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
-
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -41,7 +40,7 @@ public class NeuralNet {
 	
 	/** Saves the weights of the neural network to this file. */
 	public void save_to_file(String s) {
-		
+		// TODO: do this
 	}
 	
 	/** 
