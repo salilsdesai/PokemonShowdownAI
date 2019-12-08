@@ -550,6 +550,7 @@ public class Replay {
 	}
 	
 	public static void main(String[] args) {
+		System.out.println("Starting neural net training.");
 		trainPolicyNetwork(2, 30000, 0.2, 5, 500); // train only the first 500 samples
 	}
 }

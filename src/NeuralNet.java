@@ -547,72 +547,9 @@ public class NeuralNet {
 
 	// Test the neural network using XOR function.
 	public static void main(String[] args) {
-		NeuralNet nn = new NeuralNet(2, 2, 1, 1000000, 0.15);
-
-		List<Double> x1 = new ArrayList<>();
-		List<Double> x2 = new ArrayList<>();
-		List<Double> x3 = new ArrayList<>();
-		List<Double> x4 = new ArrayList<>();
-
-		x1.add(0.0); x1.add(0.0);
-		x2.add(0.0); x2.add(1.0);
-		x3.add(1.0); x3.add(0.0);
-		x4.add(1.0); x4.add(1.0);
-
-		List<Double> y1 = new ArrayList<>();
-		List<Double> y2 = new ArrayList<>();
-		List<Double> y3 = new ArrayList<>();
-		List<Double> y4 = new ArrayList<>();
-
-		y1.add(0.0);
-		y2.add(1.0);
-		y3.add(1.0);
-		y4.add(0.0);
-
-		Data d1 = new Data(x1, y1), d2 = new Data(x2, y2), d3 = new Data(x3, y3), d4 = new Data(x4, y4);
-		List<Data> D = new ArrayList<>();
-		D.add(d1);
-		D.add(d2);
-		D.add(d3);
-		D.add(d4);
-
-		nn.back_prop(D);
-
-		nn.forward_prop(x1);
-		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-
-		nn.forward_prop(x2);
-		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-
-		nn.forward_prop(x3);
-		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-
-		nn.forward_prop(x4);
-		System.out.println(nn.nn.get(nn.LAYERS)[0].value);
-
-		nn.save_to_file("input");
-
-		NeuralNet nn2 = new NeuralNet("input");
-
-		nn2.forward_prop(x1);
-		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-
-		nn2.forward_prop(x2);
-		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-
-		nn2.forward_prop(x3);
-		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-
-		nn2.forward_prop(x4);
-		System.out.println(nn2.nn.get(nn2.LAYERS)[0].value);
-
-		Team t1 = new Team(TeamGenerator.randomTeam());
-		Team t2 = new Team(TeamGenerator.randomTeam());
-
-		GameState gs = new GameState(t2, t1.activePokemon);
-		List<Double> first_input = input(gs);
-
-		System.out.print(first_input.size());
+		for (int i = 0; i < 1000000000; i++) {
+			System.out.println(i);
+		}
 	}
 }
 
