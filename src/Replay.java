@@ -677,45 +677,7 @@ public class Replay {
 	}
 	
 	public static void main(String[] args) {
-		
-		
-		printPolicyNetworkTestResults("PolicyNetwork/PolicyNetworkWeights9999.txt");
-//		
-//		
-//		NeuralNet nn = new NeuralNet("");
-//		Replay[] r = new Replay[500];
-//		
-//		int[] actualCounts = new int[9];
-//		int[] correctCounts = new int[9];
-//		
-//		for(int i = 0; i < 500; i++) {
-//			r[i] = new Replay(i+500);
-//			int maxIndex = 0;
-//				nn.forward_prop(NeuralNet.input(r[i].state));
-//				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
-//					if(nn.nn.get(nn.LAYERS)[j].value > nn.nn.get(nn.LAYERS)[maxIndex].value)
-//						maxIndex = j;
-//					System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
-//				}
-//				System.out.print("Expected: ");
-//				System.out.println(r[i].action + "\n\n");
-//				if(r[i].action != -1) {
-//					actualCounts[r[i].action]++;
-//					if(maxIndex == r[i].action) {
-//						correctCounts[r[i].action]++;
-//					}
-//				}
-//		}
-//	
-//		int totalCorrect = 0;
-//		int totalActual = 0;
-//		
-//		for(int i = 0; i < 9; i++) {
-//			System.out.println(i + ": " + correctCounts[i] + "/" + actualCounts[i]);
-//			totalCorrect += correctCounts[i];
-//			totalActual += actualCounts[i];
-//		}
-//		
-//		System.out.println("\nOverall: " + totalCorrect + "/" + totalActual);
+		System.out.println("Starting neural net training.");
+		trainPolicyNetwork(2, 30000, 0.2, 5, 500); // train only the first 500 samples
 	}
 }
