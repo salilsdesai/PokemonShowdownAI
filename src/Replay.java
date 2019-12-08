@@ -10,9 +10,12 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import com.gargoylesoftware.htmlunit.*;
@@ -562,8 +565,157 @@ public class Replay {
 		}
 	}
 	
+	/**
+	 * Print the results of testing the Policy Neural Network with weights saved
+	 * in [weigthsFilePath] on replays 500-999
+	 */
+	public static void printPolicyNetworkTestResults(String weightsFilePath) {
+		NeuralNet nn = new NeuralNet(weightsFilePath);
+		Replay[] r = new Replay[500];
+		for(int i = 0; i < r.length; i++) {
+			int retryCount = 0; // try not to have states have no action
+			do {
+				r[i] = new Replay(i);
+				retryCount++;
+			} while(r[i].action == -1 && retryCount < 10);
+		}
+		
+		System.out.println("Five Randomly Chosen Replays:\n");
+		for(int i = 0; i < 5; i++) {
+			int index = (int)(Math.random()*500 + 500);
+			if(r[i].action != -1) {
+				nn.forward_prop(NeuralNet.input(r[i].state));
+				System.out.println(index + ": ");
+				System.out.println("\tNeural Network Output Layer:");
+				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
+					System.out.println("\t\t[" + j + "]: "+ nn.nn.get(nn.LAYERS)[j].value + " ");
+				}
+				System.out.println("\tExpected: " + r[i].action);
+			}
+			else {
+				i--;
+			}
+		}
+		
+		/** 
+		 * correctCount[i] is the number of times the
+		 * players action was [i] and the i'th output
+		 * node had the highest value in the neural network
+		 */
+		int[] correctCount = new int[9];
+		
+		/** 
+		 * top3Count[i] is the number of times the
+		 * players action was [i] and the i'th output
+		 * node had one of the three highest values 
+		 * in the neural network
+		 */
+		int[] top3Count = new int[9];
+		
+		/** 
+		 * actualCount[i] is the number of times the
+		 * players action was [i]
+		 */
+		int[] actualCount = new int[9];
+		
+		for(int i = 0; i < 500; i++) {
+			if(r[i].action != -1) {
+				nn.forward_prop(NeuralNet.input(r[i].state));
+				// actions are stored as {action number, action value}
+				// lower value actions have higher priority
+				PriorityQueue<double[]> pq = new PriorityQueue<double[]>(
+					4, 
+					new Comparator<double[]>() {
+						@Override
+						public int compare(double[] d1, double[] d2) {
+							return Double.compare(d1[1], d2[1]);
+						}
+					}
+				);
+				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
+					pq.add(new double[] {j, nn.nn.get(nn.LAYERS)[j].value});
+					while(pq.size() > 3) {
+						pq.poll();
+					}
+				}
+				
+				actualCount[r[i].action]++;
+				
+				for(int j = 0; j < 3; j++) {
+					double[] d = pq.poll();
+					if(d[0] == r[i].action) {
+						top3Count[r[i].action]++;
+						if(j == 2) { // this action had the highest value
+							correctCount[r[i].action]++;
+						}
+					}
+				}
+			}
+		}
+		
+		int totalCorrect = 0;
+		int totalTop3 = 0;
+		int totalActual = 0;
+		for(int i = 0; i < 9; i++) {
+			totalCorrect += correctCount[i];
+			totalTop3 += top3Count[i];
+			totalActual += actualCount[i];
+		}
+		
+		
+		System.out.println("Correctness of Each Action");
+		for(int i = 0; i < 9; i++) {
+			System.out.println("\tAction " + i + ":");
+			System.out.println("\t\tCorrect: " + correctCount[i] + "/" + actualCount[i]);
+			System.out.println("\t\tIn top 3: " + top3Count[i] + "/" + actualCount[i]);
+		}
+		
+		System.out.println("Overall Correctness");
+		System.out.println("\tCorrect: " + totalCorrect + "/" + totalActual);
+		System.out.println("\tIn top 3: " + totalTop3 + "/" + totalActual);
+		
+	}
+	
 	public static void main(String[] args) {
-		System.out.println("Starting neural net training.");
-		trainPolicyNetwork(2, 30000, 0.2, 5, 500); // train only the first 500 samples
+		
+		
+		printPolicyNetworkTestResults("PolicyNetwork/PolicyNetworkWeights9999.txt");
+//		
+//		
+//		NeuralNet nn = new NeuralNet("");
+//		Replay[] r = new Replay[500];
+//		
+//		int[] actualCounts = new int[9];
+//		int[] correctCounts = new int[9];
+//		
+//		for(int i = 0; i < 500; i++) {
+//			r[i] = new Replay(i+500);
+//			int maxIndex = 0;
+//				nn.forward_prop(NeuralNet.input(r[i].state));
+//				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
+//					if(nn.nn.get(nn.LAYERS)[j].value > nn.nn.get(nn.LAYERS)[maxIndex].value)
+//						maxIndex = j;
+//					System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
+//				}
+//				System.out.print("Expected: ");
+//				System.out.println(r[i].action + "\n\n");
+//				if(r[i].action != -1) {
+//					actualCounts[r[i].action]++;
+//					if(maxIndex == r[i].action) {
+//						correctCounts[r[i].action]++;
+//					}
+//				}
+//		}
+//	
+//		int totalCorrect = 0;
+//		int totalActual = 0;
+//		
+//		for(int i = 0; i < 9; i++) {
+//			System.out.println(i + ": " + correctCounts[i] + "/" + actualCounts[i]);
+//			totalCorrect += correctCounts[i];
+//			totalActual += actualCounts[i];
+//		}
+//		
+//		System.out.println("\nOverall: " + totalCorrect + "/" + totalActual);
 	}
 }
