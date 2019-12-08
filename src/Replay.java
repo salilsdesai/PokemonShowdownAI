@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -199,12 +200,24 @@ public class Replay {
 							else if(p1Active.moves[k] == null) {
 								// Since we didn't know p1's active has this move, add it to its move list
 								p1Active.moves[k] = move;
-								p1Active.pp[k] = move.maxPP;
 								k = p1Active.moves.length;
 							}
 						}
 					}
 				}
+			}
+		}
+		
+		// Shuffle each Pokemon's move list and assign PP
+		for(Pokemon p : playerPokemonMap.values()) {
+			for(int j = 3; j > 0; j--) {
+				int index = (int)(Math.random()*(j+1));
+				Move temp = p.moves[index];
+				p.moves[index] = p.moves[j];
+				p.moves[j] = temp;
+			}
+			for(int j = 0; j < p.moves.length; j++) {
+				p.pp[j] = p.moves[j] != null ? p.moves[j].maxPP : 0;
 			}
 		}
 		
