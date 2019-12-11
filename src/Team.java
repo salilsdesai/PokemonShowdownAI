@@ -70,6 +70,16 @@ public class Team {
 		}
 		return s;
 	}
+	
+	public void print() {
+		System.out.println(activePokemon.print());
+		for (Pokemon p : pokemonList) {
+			if (p != activePokemon) {
+				System.out.println("\t\t" + p.print());
+			}
+		}
+	}
+	
 	public boolean hasAlive() {
 		for(Pokemon p : pokemonList)
 			if(p.isAlive())

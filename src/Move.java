@@ -1684,6 +1684,16 @@ public class Move {
 		moves.put(m.name, m);
 	}
 	
+	public static boolean isFiller(Move m) {
+		if (m == null) {
+			return true;
+		}
+		if (m.name.equals("STRUGGLE") || m.name.equals("NOTHING") || m.name.equals("RECHARGE")) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static void main(String[] args) {
 		loadMoves();
 		Object[] moveNameObject = moves.keySet().toArray();

@@ -59,7 +59,7 @@ public class GameState {
     		return;
     	}
 
-    	// Opponent switched to an uknown pokemon
+    	// Opponent switched to an unknown pokemon
     	p2_pokemon.put(new_p2_active, new HashSet<>());
     	p2_active = new_p2_active;
     }

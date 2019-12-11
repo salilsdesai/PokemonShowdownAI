@@ -140,6 +140,17 @@ public class Pokemon {
 		status = new Status();
 	}
 	
+	/** Gives the name, hp, and moveset of the pokemon. */
+	public String print() {
+		String ret = species + ": " + currHp + "/" + maxHp + " (";
+		for (Move m : moves) {
+			if (m != null) {
+				ret += " " + m.name + " ";
+			}
+		}
+		ret += ")";
+		return ret;
+	}
 	/**
 	 * Creates a deep copy of the Pokemon object (with the exception of the Move objects).
 	 */
