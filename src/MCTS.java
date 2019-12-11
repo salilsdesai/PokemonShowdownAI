@@ -44,6 +44,8 @@ public class MCTS {
 			policyNetwork = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
 		}
 		
+		policyNetwork.forward_prop(NeuralNet.input(gs));
+		
 		double[] p = new double[policyNetwork.nn.get(policyNetwork.LAYERS).length];
 		
 		// Initially set the weight on each action to be the max of the output from
