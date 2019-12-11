@@ -1,8 +1,67 @@
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 
 public class MCTS {
 	
-	public static int SimulationTimeLimitSeconds = 1;
+	public static final int SIMULATION_TIME_LIMIT_SECONDS = 1;
+	/** 
+	 * The mixing parameter for combining result of valuation neural network
+	 * and result from random rollout (see page 3 of AlphaGo paper) 
+	 * TODO: Set lambda properly
+	 */
+	public static final double LAMBDA = 0.5;
+	
+	/**
+	 * The amount to scale P/(1+N) by to get u since
+	 * u is proportional to P/(1+N) (see page 3 of AlphaGo paper)
+	 * TODO: Set U_SCALE properly
+	 */
+	public static final double U_SCALE = 1.0;
+	
+	
+	/** 
+	 * Do not access directly. Use evaluatePolicyNewtork function instead,
+	 * which handles loading the network if null and making copy of
+	 * output layer
+	 */
+	private static NeuralNet policyNetwork;
+	
+	/**
+	 * Do not access directly. Use evaluateValuationNetwork function instead,
+	 * which handles loading network if null 
+	 */
+	private static NeuralNet valuationNetwork;
+	
+	/**
+	 * Returns a double array of length equal to the number
+	 * of output nodes of the policy network where the i'th
+	 * entry is the weight on action i according to the policy network
+	 */
+	public static double[] evaluatePolicyNetwork(GameState gs) {
+		if(policyNetwork == null) {
+			policyNetwork = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+		}
+		
+		double[] p = new double[policyNetwork.nn.get(policyNetwork.LAYERS).length];
+		
+		// Initially set the weight on each action to be the max of the output from
+		// the neural network and 0.
+		for(int i = 0; i < p.length; i++) {
+			p[i] = Math.max(policyNetwork.nn.get(policyNetwork.LAYERS)[i].value, 0);
+		}
+		
+		return p;
+	}
+	
+	/**
+	 * Return the output of the valuation network on gs
+	 */
+	public static double evaluateValuationNetwork(GameState gs) {
+		// TODO
+		return 0;
+	}
 	
 	/**
 	 * This class contains data for a particular action of a 
@@ -93,6 +152,15 @@ public class MCTS {
 		private int[] nextUnselectedActions;
 		
 		/**
+		 * The value of the state of this node, as predicted by the valuation
+		 * neural network
+		 */
+		private double v_theta;
+		
+		/** The i'th entry is the probability of playerActions[i] based on the policy network */
+		private double[] actionProbabilityDistribution;
+		
+		/**
 		 * if there is a previously unselected action for this node using playerActions[i] and opponentActions[j]
 		 * - Initializes entries[i][j] to contain whatever the successor node for playerActions[i] and opponentActions[j] should be
 		 * - Updates nextUnselectedActions class variable
@@ -140,6 +208,82 @@ public class MCTS {
 			SuccessorNodes = new TreeNode[playerActions.length][opponentActions.length];
 			currentState = gs;
 			nextUnselectedActions = (playerActions.length > 0 && opponentActions.length > 0 ? new int[] {0,0} : null);
+			
+			v_theta = evaluateValuationNetwork(currentState);
+			
+			// Match up probabilities from the neural network with Actions (set actionProbabilityDistribution)
+			actionProbabilityDistribution = new double[playerActions.length];
+			double[] policyNetworkProbabilityDistribution = evaluatePolicyNetwork(currentState);
+			
+			/** Maps from a Move for index in playerActions of the action using that move */
+			HashMap<Move, Integer> attackMap = new HashMap<Move, Integer>();
+			
+			/** Maps from a Pokemon for index in playerActions of the action switching to that Pokemon */
+			HashMap<Pokemon, Integer> switchMap = new HashMap<Pokemon, Integer>();
+			
+			for(int i = 0; i < playerActions.length; i++) {
+				if(playerActions[i].action.getType().equals(Simulator.ActionType.ATTACK)) {
+					Simulator.AttackAction aa = (Simulator.AttackAction)(playerActions[i].action);
+					attackMap.put(aa.move, i);
+				}
+				else if (playerActions[i].action.getType().equals(Simulator.ActionType.SWITCH)) {
+					Simulator.SwitchAction sa = (Simulator.SwitchAction)(playerActions[i].action);
+					switchMap.put(sa.switchTo, i);
+				}
+			}
+			
+			if(gs.p1_team.activePokemon.isAlive()) {
+				// Attack options
+				for(int i = 0; i <= 3; i++) {
+					if(gs.p1_team.activePokemon.pp[i] > 0) {
+						Move m = gs.p1_team.activePokemon.moves[i];
+						if(m != null) {
+							Integer actionIndex = attackMap.get(m);
+							if(actionIndex != null) {
+								actionProbabilityDistribution[actionIndex] = policyNetworkProbabilityDistribution[i];
+							}
+						}
+					}	
+				}
+			}
+			Pokemon[] switchOptions = new Pokemon[5];
+			int index = 0;
+			for(Pokemon p : gs.p1_team.pokemonList) {
+				if(p != gs.p1_team.activePokemon) {
+					switchOptions[index] = p;
+					index++;
+				}
+			}
+			for(int i = 0; i <= 4; i++) {
+				// Switch options
+				Pokemon p = switchOptions[i];
+				if(p != null && p.isAlive()) {
+					Integer actionIndex = switchMap.get(p);
+					if(actionIndex != null) {
+						actionProbabilityDistribution[actionIndex] = policyNetworkProbabilityDistribution[i+4];
+					}
+				}
+			}
+			
+			// Scale all action probabilities so that they add to 1, or if all are
+			// currently 0, set them to be uniform
+			double totalWeight = 0;
+			for(int i = 0; i < playerActions.length; i++) {
+				totalWeight += actionProbabilityDistribution[i];
+			}
+			
+			if(totalWeight != 0) {
+				for(int i = 0; i < playerActions.length; i++) {
+					actionProbabilityDistribution[i] /= totalWeight;
+				}
+			}
+			else {
+				for(int i = 0; i < playerActions.length; i++) {
+					actionProbabilityDistribution[i] = 1.0/playerActions.length;
+				}
+			}
+			
+			
 		}
 		/**
 		 * Should be called after we are done exploring tree
@@ -170,6 +314,8 @@ public class MCTS {
 			// If either player has no actions consider it a terminal node
 			if(playerActions.length == 0 || opponentActions.length == 0)
 				return currentState.evalTerminalNode();
+			
+			// TODO: Use neural network results to perform playout rather than random selection
 			
 			Simulator.Action playerAction = playerActions[(int)(Math.random() * playerActions.length)].action;
 			Simulator.Action opponentAction = opponentActions[(int)(Math.random() * opponentActions.length)].action;
@@ -202,9 +348,32 @@ public class MCTS {
 			if(playerActions.length == 0 || opponentActions.length == 0)
 				return null;
 			
-			// TODO: Replace this with input from neural networks
 			
-			return new int[] {MCTS.ActionData.bestAction(playerActions), MCTS.ActionData.bestAction(opponentActions)};
+			// Use a = (Q(s,a) + u(s,a)) (from AlphaGo paper page 3)
+			double[] N = new double[playerActions.length];
+			double[] Q = new double[playerActions.length];
+			double[] u = new double[playerActions.length];
+			double[] actionValue = new double[playerActions.length];
+			
+			int maxActionValueIndex = 0;
+			
+			for(int i = 0; i < playerActions.length; i++) {
+				N[i] = playerActions[i].n;
+				Q[i] = v_theta*(1-LAMBDA) + playerActions[i].X*LAMBDA/playerActions[i].n;
+				u[i] = actionProbabilityDistribution[i]/(1 + N[i]);
+				actionValue[i] = Q[i] + u[i];
+				
+				if(actionValue[i] > actionValue[maxActionValueIndex]) {
+					maxActionValueIndex = i;
+				}
+			}
+			
+			int chosenPlayerAction = maxActionValueIndex;
+			
+			// Use Decoupled UCB to choose action for opponent
+			int chosenOpponentAction =  MCTS.ActionData.bestAction(opponentActions);
+			
+			return new int[] {chosenPlayerAction, chosenOpponentAction};
 			
 		}
 		
@@ -247,7 +416,7 @@ public class MCTS {
 		long startTime = System.currentTimeMillis();
 		
 		// Run simulations until [SimulationTimeLimitSeconds] seconds have elapsed
-		while(System.currentTimeMillis() - startTime < (long)(SimulationTimeLimitSeconds*1000)) {
+		while(System.currentTimeMillis() - startTime < (long)(SIMULATION_TIME_LIMIT_SECONDS*1000)) {
 			root.SMMCTS();
 		}
 		
