@@ -314,10 +314,10 @@ public class NeuralNet {
 			data.set(i, data.get(swap));
 			data.set(swap, tmp);
 		}
-		
+
 		List<List<Data>> ret = new ArrayList<>();
 		int idx = 0;
-		
+
 		// Separate the data into batches
 		while (idx < data.size()) {
 			List<Data> next_layer = new ArrayList<>();
@@ -384,7 +384,7 @@ public class NeuralNet {
 					}
 				}
 			}
-			
+
 			if(t % 1000 == 999) {
 				// Checkpoint every 1000
 				this.save_to_file("PolicyNetwork/PolicyNetworkWeights" + t + ".txt");
@@ -472,8 +472,8 @@ public class NeuralNet {
 			x.add(0.0);
 		}
 		for (Pokemon p : gs.p1_team.pokemonList) {
-			if (p.isAlive()) {
-				if (!p.species.equals(gs.p1_team.activePokemon.species)) {
+			if (!p.species.equals(gs.p1_team.activePokemon.species)) {
+				if (p.isAlive()) {
 					x.add(cal_def(p, gs.p2_pokemon.get(gs.p2_active)));
 					if (p.hasMajorStatus()) {
 						x.add(1.0);
@@ -482,14 +482,15 @@ public class NeuralNet {
 						x.add(0.0);
 					}
 				}
-			}
-			// Pokemon is fainted and cannot be used
-			else {
-				x.add(4.0);
-				x.add(1.0);
+				// Pokemon is fainted and cannot be used
+				else {
+					x.add(4.0);
+					x.add(1.0);
+				}
 			}
 		}
-		// Ensure that the x is properly pollulated
+
+		// Ensure that the x is properly populated
 		while (x.size() < 76) {
 			x.add(0.0);
 		}
