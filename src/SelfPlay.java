@@ -152,6 +152,7 @@ public class SelfPlay {
 			while(line != null && inputStrings.size() < maxNumTrainingSamples) {
 				inputStrings.add(line);
 				outputStrings.add(br.readLine());// just assume there's an even number of lines
+				br.readLine();
 			}
 			br.close();
 			
@@ -175,6 +176,17 @@ public class SelfPlay {
 			NeuralNet nn = new NeuralNet(77, numLayers, 1, epochs, stepSize);
 			nn.back_prop_batch_with_checkpoints(data, batchSize, "ValuationNetwork/ValuationNetworkWeights", 1000);
 			nn.save_to_file("ValuationNetwork/ValuationNetworkWeights.txt");
+			
+			for (int i = 0; i < 3; i++) { // print out the first 3 to check
+				System.out.println("nn1 Ouput: ");
+				nn.forward_prop(data.get(i).x);
+				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
+					System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
+				}
+				System.out.print("Expected: ");
+				System.out.println(data.get(i).y.get(0) + "\n\n");
+			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -185,6 +197,6 @@ public class SelfPlay {
 		// collect ~1000 total data points
 		for (int i = 0; i < 100; i++) {
 			writeTo("TrainingData/SelfPlayData" + i + ".txt", collectData(10));
-		}
+		}	
 	}
 }
