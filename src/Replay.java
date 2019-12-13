@@ -1,16 +1,12 @@
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -551,7 +547,7 @@ public class Replay {
 		}
 		
 		NeuralNet nn = new NeuralNet(77, numLayers, 9, epochs, stepSize);
-		nn.back_prop_batch(data, batchSize);
+		nn.back_prop_batch_with_checkpoints(data, batchSize, "PolicyNetwork/PolicyNetworkWeights", 1000);
 		nn.save_to_file("PolicyNetwork/PolicyNetworkWeights.txt");
 		
 		for (int i = 0; i < 5; i++) { // print out the first 5 to check

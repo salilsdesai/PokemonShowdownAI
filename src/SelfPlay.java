@@ -1,9 +1,10 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileWriter;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -129,6 +130,55 @@ public class SelfPlay {
 		}
 		
 		return saved;
+	}
+	
+	/**
+	 * Train the valuation network, output result to "ValuationNetwork/ValuationNetworkWeights.txt", and
+	 * checkpoint every 1000 steps during the training
+	 * 
+	 * Number of training samples used will be 
+	 * min([maxNumTrainingSamples], number of training samples available) 
+	 */
+	public static void trainValuationNetwork(int numLayers, int epochs, double stepSize, int batchSize, int maxNumTrainingSamples) {
+		List<NeuralNet.Data> data = new ArrayList<>();
+		try {
+			FileReader fr = new FileReader("TrainingData/SelfPlayData.txt");
+			BufferedReader br = new BufferedReader(fr);
+			
+			List<String> inputStrings = new ArrayList<String>();
+			List<String> outputStrings = new ArrayList<String>();
+			
+			String line = br.readLine();
+			while(line != null && inputStrings.size() < maxNumTrainingSamples) {
+				inputStrings.add(line);
+				outputStrings.add(br.readLine());// just assume there's an even number of lines
+			}
+			br.close();
+			
+			for(int i = 0; i < inputStrings.size(); i++) {
+				String[] inputStringArray = inputStrings.get(i).split(" ");
+				String outputString = outputStrings.get(i);
+				
+				List<Double> x = new ArrayList<Double>();
+				List<Double> y = new ArrayList<Double>();
+				
+				for(int j = 0; j < inputStringArray.length; j++) {
+					x.add(Double.parseDouble(inputStringArray[j]));
+				}
+				
+				y.add(Double.parseDouble(outputString));
+				
+				NeuralNet.Data d = new NeuralNet.Data(x, y);
+				data.add(d);
+			}
+						
+			NeuralNet nn = new NeuralNet(77, numLayers, 1, epochs, stepSize);
+			nn.back_prop_batch_with_checkpoints(data, batchSize, "ValuationNetwork/ValuationNetworkWeights", 1000);
+			nn.save_to_file("ValuationNetwork/ValuationNetworkWeights.txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static void main(String[] args) {

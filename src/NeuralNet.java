@@ -329,9 +329,21 @@ public class NeuralNet {
 		}
 		return ret;
 	}
-
-	/** Back propagation using stochastic gradient descent based on data. */
+	
+	/** 
+	 * Back propagation using stochastic gradient descent based on data. 
+	 */
 	public void back_prop_batch(List<Data> data, int batch_size) {
+		back_prop_batch_with_checkpoints(data, batch_size, null, 0);
+	}
+	
+	/** 
+	 * Back propagation using stochastic gradient descent based on data. 
+	 * 
+	 * if [checkpointFilePath] != null, after every [checkpointNumIterations] iterations, 
+	 * the current weights will be saved at [checkpointFilePath][t].txt
+	 */
+	public void back_prop_batch_with_checkpoints(List<Data> data, int batch_size, String checkpointFilePath, int checkpointNumIterations) {
 		for (int t = 0; t < EPOCHS; t++) {
 			// Separate the data into batches to be used for training on this epoch
 			List<List<Data>> batches = to_batches(data, batch_size);
@@ -385,9 +397,8 @@ public class NeuralNet {
 				}
 			}
 
-			if(t % 1000 == 999) {
-				// Checkpoint every 1000
-				this.save_to_file("PolicyNetwork/PolicyNetworkWeights" + t + ".txt");
+			if(t % checkpointNumIterations == checkpointNumIterations-1 && checkpointFilePath != null) {
+				this.save_to_file(checkpointFilePath + t + ".txt");
 				System.out.println("t = " + t);
 			}
 		}
