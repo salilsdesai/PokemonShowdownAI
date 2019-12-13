@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.File;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,6 +82,8 @@ public class SelfPlay {
 	private static void writeTo(String s, Map<List<Double>, Integer> saved) {
 		// write data to a file
 		try {
+			// create the file
+			File f = new File(s);
 			BufferedWriter br = new BufferedWriter(new FileWriter(s));
 			PrintWriter pw = new PrintWriter(br);
 			
@@ -115,7 +118,7 @@ public class SelfPlay {
 		
 		// gather data from self-play
 		Map<List<Double>, Integer> saved = new HashMap<>();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < size; i++) {
 			try {
 				int tmp = run(policyNetwork, policyNetwork);
 				saved.put(pick(), tmp);
@@ -129,6 +132,9 @@ public class SelfPlay {
 	}
 	
 	public static void main(String[] args) {
-		writeTo("TrainingData/SelfPlayData.txt", collectData(5));
+		// collect ~1000 total data points
+		for (int i = 0; i < 100; i++) {
+			writeTo("TrainingData/SelfPlayData" + i + ".txt", collectData(10));
+		}
 	}
 }
