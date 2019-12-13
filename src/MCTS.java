@@ -118,7 +118,10 @@ public class MCTS {
 		private double[] actionProbabilityDistribution;
 		
 		/**
-		 * This network should be compatible with the input of NeuralNet.input(Gamestate)
+		 * This network should be compatible with the input of NeuralNet.input(Gamestate) and
+		 * should have 9 output nodes with values corresponding to weights on choosing certain actions
+		 * The weights on output nodes 0-3 should correspond to weight on using attacks 0-3, and 
+		 * the weights on output nodes 4-8 should correspond to weight on switching to pokemon 0-4 respectively
 		 * 
 		 * The same network can be used by multiple tree nodes
 		 * (which will each just override network node values when they
@@ -127,40 +130,15 @@ public class MCTS {
 		private NeuralNet policyNetwork;
 		
 		/**
+		 * This network should be compatible with the input of NeuralNet.input(Gamestate) and
+		 * should have 1 output node with values corresponding to how likely it is that we win
+		 * from the current gamestate
+		 * 
 		 * The same network can be used by multiple tree nodes
 		 * (which will each just override network node values when they
 		 * call forward prop)
 		 */
 		private NeuralNet valuationNetwork;
-		
-		/**
-		 * Returns a double array of length equal to the number
-		 * of output nodes of the policy network where the i'th
-		 * entry is the weight on action i according to the policy network
-		 */
-		public double[] evaluatePolicyNetwork() {
-			
-			policyNetwork.forward_prop(NeuralNet.input(currentState));
-			
-			double[] p = new double[policyNetwork.nn.get(policyNetwork.LAYERS).length];
-			
-			// Initially set the weight on each action to be the max of the output from
-			// the neural network and 0.
-			for(int i = 0; i < p.length; i++) {
-				p[i] = Math.max(policyNetwork.nn.get(policyNetwork.LAYERS)[i].value, 0);
-			}
-			
-			return p;
-		}
-		
-		/**
-		 * Return the output of the valuation network on gs
-		 */
-		public double evaluateValuationNetwork(GameState gs) {
-			// TODO
-			return 0;
-		}
-		
 		
 		/**
 		 * if there is a previously unselected action for this node using playerActions[i] and opponentActions[j]
@@ -193,15 +171,24 @@ public class MCTS {
 		}
 		
 		/**
-		 * Match probabilites from the policy neural network with playerActions Actions
+		 * Use weights on outputs of policy neural network
 		 * to set actionProbabilityDistribution for the player.
 		 * This function handles the scaling so that all probabilities sum to 1
 		 * If none of the actions have probability assigned by the network,
 		 * assign each action probability of 1/# of actions
 		 */
 		public void assignActionProbabilityDistribution() {
+			
+			policyNetwork.forward_prop(NeuralNet.input(currentState));
+			double[] policyNetworkProbabilityDistribution = new double[policyNetwork.nn.get(policyNetwork.LAYERS).length];
+			
+			// Initially set the weight on each action to be the max of the output from
+			// the neural network and 0.
+			for(int i = 0; i < policyNetworkProbabilityDistribution.length; i++) {
+				policyNetworkProbabilityDistribution[i] = Math.max(policyNetwork.nn.get(policyNetwork.LAYERS)[i].value, 0);
+			}
+			
 			actionProbabilityDistribution = new double[playerActions.length];
-			double[] policyNetworkProbabilityDistribution = evaluatePolicyNetwork();
 			
 			/** Maps from a Move for index in playerActions of the action using that move */
 			HashMap<Move, Integer> attackMap = new HashMap<Move, Integer>();
@@ -292,10 +279,14 @@ public class MCTS {
 			nextUnselectedActions = (playerActions.length > 0 && opponentActions.length > 0 ? new int[] {0,0} : null);
 			
 			policyNetwork = policyNet;
-			valuationNetwork = valuationNet;
-			
-			v_theta = evaluateValuationNetwork(currentState);
 			assignActionProbabilityDistribution();
+			
+			valuationNetwork = valuationNet;
+			if(valuationNetwork != null) {
+				valuationNetwork.forward_prop(NeuralNet.input(currentState));
+				v_theta = valuationNetwork.nn.get(valuationNetwork.LAYERS)[0].value;				
+			}
+			
 			
 		}
 		
