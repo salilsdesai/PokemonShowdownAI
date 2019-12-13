@@ -291,6 +291,9 @@ public class MCTS {
 			currentState = gs;
 			nextUnselectedActions = (playerActions.length > 0 && opponentActions.length > 0 ? new int[] {0,0} : null);
 			
+			policyNetwork = policyNet;
+			valuationNetwork = valuationNet;
+			
 			v_theta = evaluateValuationNetwork(currentState);
 			assignActionProbabilityDistribution();
 			
@@ -457,7 +460,7 @@ public class MCTS {
 		
 		GameState p1GS = new GameState(t1, t2.activePokemon);
 		
-		Simulator.Action p1Action = MCTS.chooseMove(p1GS);
+		Simulator.Action p1Action = MCTS.chooseMove(p1GS, new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt"), null);
 		ArrayList<Simulator.Action> p2ActionList = t2.getActions(true);
 		Simulator.Action p2Action = p2ActionList.get(0);
 		

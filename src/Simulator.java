@@ -217,6 +217,8 @@ public class Simulator {
 		
 		int turn = 1;
 		
+		NeuralNet policyNet = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+		
 		while(t1.hasAlive() && t2.hasAlive()) {
 			System.out.println(t1);
 			System.out.println(t2);
@@ -224,7 +226,7 @@ public class Simulator {
 			ArrayList<Action> p1Actions = t1.getActions(t2.activePokemon.isAlive());
 			Action p1Action = getActionChoice(p1Actions);
 			
-			Action p2Action = MCTS.chooseMove(p2GameState);
+			Action p2Action = MCTS.chooseMove(p2GameState, policyNet, null);
 			
 			Simulator.message = null;
 			

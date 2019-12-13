@@ -19,13 +19,15 @@ public class SelfPlay {
 		// counter to maintain turn number
 		int turn = 1;
 		
+		NeuralNet policyNet = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+		
 		while(t1.hasAlive() && t2.hasAlive()) {
 			t1.print();
 			t2.print();
 			
 			// Pick a move based for each player
-			Simulator.Action p1Action = MCTS.chooseMove(gs1);
-			Simulator.Action p2Action = MCTS.chooseMove(gs2);
+			Simulator.Action p1Action = MCTS.chooseMove(gs1, policyNet, null);
+			Simulator.Action p2Action = MCTS.chooseMove(gs2, policyNet, null);
 			
 			Simulator.message = null;
 			Simulator.addMessage("Turn #" + turn);
