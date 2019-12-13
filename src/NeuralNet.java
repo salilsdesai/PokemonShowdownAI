@@ -397,7 +397,7 @@ public class NeuralNet {
 				}
 			}
 
-			if(t % checkpointNumIterations == checkpointNumIterations-1 && checkpointFilePath != null) {
+			if(checkpointFilePath != null && t % checkpointNumIterations == checkpointNumIterations-1) {
 				this.save_to_file(checkpointFilePath + t + ".txt");
 				System.out.println("t = " + t);
 			}
