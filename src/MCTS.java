@@ -21,6 +21,14 @@ public class MCTS {
 	public static final double U_SCALE = 1.0;
 	
 	/**
+	 * Max number of turns during playout after which just
+	 * return the value predicted by the valuation neural network
+	 * as the result of the playout
+	 */
+	public static final int PLAYOUT_MAX_DEPTH = 300;
+	
+	
+	/**
 	 * This class contains data for a particular action of a 
 	 * node of the MCTS tree
 	 * 
@@ -312,9 +320,14 @@ public class MCTS {
 		 * Return the payout of the terimal node obtained by simulating from this node
 		 * to the end of the game (as used in SMMCTS alg pseudocode)
 		 */
-		public double playout() {
+		public double playout(int playoutDepth) {
 			if(currentState.isTerminal())
 				return currentState.evalTerminalNode();
+			
+			if(playoutDepth > PLAYOUT_MAX_DEPTH) {
+				return v_theta;
+			}
+			
 			
 			// If either player has no actions consider it a terminal node
 			if(playerActions.length == 0 || opponentActions.length == 0)
@@ -336,7 +349,7 @@ public class MCTS {
 			GameState nextGS = currentState.simulateTurn(playerAction, opponentAction);
 			TreeNode nextTreeNode = new TreeNode(nextGS, policyNetwork, valuationNetwork);
 			
-			return nextTreeNode.playout();
+			return nextTreeNode.playout(playoutDepth+1);
 		}
 		
 		
@@ -403,7 +416,7 @@ public class MCTS {
 				i = unexploredActions[0];
 				j = unexploredActions[1];
 				TreeNode sPrime = SuccessorNodes[i][j];
-				u1 = sPrime.playout();
+				u1 = sPrime.playout(0);
 				/*
 				 * We are using Decoupled UCT, so X and n values are stored in matrix
 				 * entries rather than in nodes like the pseudocode suggests
