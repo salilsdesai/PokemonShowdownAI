@@ -114,8 +114,7 @@ public class SelfPlay {
 	 * Simulates [size] number of games and from each randomly selects
 	 * one representative gamestate to be used for reinforcement learning.
 	 */
-	private static Map<List<Double>, Integer> collectData(int size) {
-		NeuralNet policyNetwork = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+	private static Map<List<Double>, Integer> collectData(int size, NeuralNet policyNetwork) {
 		
 		// gather data from self-play
 		Map<List<Double>, Integer> saved = new HashMap<>();
@@ -194,9 +193,12 @@ public class SelfPlay {
 	}
 	
 	public static void main(String[] args) {
+		NeuralNet nn = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+		
 		// collect ~1000 total data points
-		for (int i = 0; i < 100; i++) {
-			writeTo("TrainingData/SelfPlayData" + i + ".txt", collectData(10));
-		}	
+		for (int i = 9; i < 100; i++) {
+			writeTo("TrainingData/SelfPlayData" + i + ".txt", collectData(10, nn));
+		}
 	}
 }
+
