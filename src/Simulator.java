@@ -259,16 +259,46 @@ public class Simulator {
 
     /** TODO @IAN: Prompt user for information about the initialization of the game */
     public static GameState initializeGame() {
-        // Scanner reader= new Scanner(System.in); // Reading from System.in
-        // System.out.println("Enter a number: ");
-        // int n= reader.nextInt(); // Scans the next token of the input as an int.
-        // once finished
-        // reader.close();
         return null;
     }
 
-    /** TODO @IAN: Prompt user for what happened during the last turn */
+    /** TODO @IAN: Prompt user for what happened during the last turn Pass in a string with the
+     * following structure:
+     * 
+     * P1 Health Loss [xx%]
+     * 
+     * P1 Status [Status]
+     * 
+     * P1 Alive [True/False]
+     * 
+     * P1 Swapped [New Pokemon if swapped, otherwise null]
+     * 
+     * P2 Health Loss [xx%]
+     * 
+     * P2 Status [Status]
+     * 
+     * P2 Alive [True/False]
+     * 
+     * P2 Swapped [New Pokemon if swapped, otherwise null]
+     * 
+     * P2 Previous Attack [Attack Name] */
+
     public static GameState updateTurn(GameState gs) {
+        ArrayList<Object> updates= new ArrayList<>();
+        Scanner reader= new Scanner(System.in); // Reading from System.in
+        reader.useDelimiter("\n");
+        System.out.println("Type in your turn updates: \n");
+        //
+        updates.add(reader.nextInt());
+        updates.add(reader.next());
+        updates.add(reader.nextBoolean());
+        updates.add(reader.next());
+        updates.add(reader.nextInt());
+        updates.add(reader.next());
+        updates.add(reader.nextBoolean());
+        updates.add(reader.next());
+        //
+        reader.close();
         return null;
     }
 
