@@ -196,7 +196,7 @@ public class SelfPlay {
 		NeuralNet nn = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
 		
 		// collect ~1000 total data points
-		for (int i = 9; i < 100; i++) {
+		for (int i = 14; i < 100; i++) {
 			writeTo("TrainingData/SelfPlayData" + i + ".txt", collectData(10, nn));
 		}
 	}
