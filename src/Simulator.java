@@ -358,7 +358,6 @@ public class Simulator {
                 System.out
                     .println(
                         "Getting action from on PolicyNet fails for some reason--IDK WHY! Quitting execution.");
-                System.exit(0);
                 throw e;
             }
 
@@ -369,13 +368,15 @@ public class Simulator {
         }
     }
 
+    /** CHANGEME!! Rename gameType to SIMULATION when you want to simulate, live if you're playing
+     * online. */
     public static void main(String[] args) {
         // Either run a SIMULATION or play PokemonShowdown LIVE
-        String gameType= "SIMULATION";
+        String GAMETYPE= "LIVE";
         //
-        if (gameType == "SIMULATION") {
+        if (GAMETYPE == "SIMULATION") {
             playFromFile();
-        } else if (gameType == "LIVE") {
+        } else if (GAMETYPE == "LIVE") {
             playLive();
         }
 
