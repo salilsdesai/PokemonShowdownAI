@@ -257,9 +257,44 @@ public class Simulator {
 
     }
 
-    /** TODO @IAN: Prompt user for information about the initialization of the game */
+    public static Pokemon readPokemon(Scanner reader) {
+        String species= reader.next();
+        int level= reader.nextInt();
+        String[] attacks= reader.nextLine().split(" ");
+        return new Pokemon(species, attacks, level);
+    }
+
+    /** TODO @IAN: Prompt user for information about the initialization of the game with the
+     * following structure:
+     *
+     * Pokemon1 [Name Level Move1 Move2 ...]
+     * 
+     * Pokemon2 [Name Level Move1 Move2 ...]
+     * 
+     * Pokemon3 [Name Level Move1 Move2 ...]
+     * 
+     * Pokemon4 [Name Level Move1 Move2 ...]
+     * 
+     * Pokemon5 [Name Level Move1 Move2 ...]
+     * 
+     * Pokemon6 [Name Level Move1 Move2 ...]
+     * 
+     * OpponentPokemonActive [Name Level Move1 Move2 ...] */
     public static GameState initializeGame() {
-        return null;
+        Scanner reader= new Scanner(System.in); // Reading from System.in
+        ArrayList<Pokemon> p1Team= new ArrayList<>();
+        System.out.println("Enter your team:");
+        //
+        p1Team.add(readPokemon(reader));
+        p1Team.add(readPokemon(reader));
+        p1Team.add(readPokemon(reader));
+        p1Team.add(readPokemon(reader));
+        p1Team.add(readPokemon(reader));
+        p1Team.add(readPokemon(reader));
+        //
+        System.out.println("Enter opposing pokemon");
+        Pokemon p2Active= readPokemon(reader);
+        return new GameState(new Team(p1Team), p2Active);
     }
 
     /** TODO @IAN: Prompt user for what happened during the last turn Pass in a string with the
@@ -307,18 +342,30 @@ public class Simulator {
     public static void playLive() {
 
         GameState gs= initializeGame();
-
+        //
+        System.out.println(gs.p1_team.toString());
+        //
         NeuralNet policyNet= new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
 
         while (true) { // Just keep going until the user cancels the game & restarts
 
             // Figure out what action you should do in the given GameState
-            Action p1Action= MCTS.chooseMove(gs, policyNet, null);
+            Action p1Action= null;
+            System.out.println("GameState should be initialized correctly!");
+            try {
+                p1Action= MCTS.chooseMove(gs, policyNet, null);
+            } catch (Exception e) {
+                System.out
+                    .println(
+                        "Getting action from on PolicyNet fails for some reason--IDK WHY! Quitting execution.");
+                System.exit(0);
+                throw e;
+            }
 
             // Tell the user what action to do by printing
             System.out.println(p1Action.toString());
 
-            gs= updateTurn(gs);
+            gs= updateTurn(gs); // TODO: Fully implement updateTurn.
         }
     }
 
