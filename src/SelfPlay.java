@@ -141,7 +141,7 @@ public class SelfPlay {
 	public static void trainValuationNetwork(int numLayers, int epochs, double stepSize, int batchSize, int maxNumTrainingSamples) {
 		List<NeuralNet.Data> data = new ArrayList<>();
 		try {
-			FileReader fr = new FileReader("TrainingData/SelfPlayData.txt");
+			FileReader fr = new FileReader("SelfPlayData/SelfPlayData.txt");
 			BufferedReader br = new BufferedReader(fr);
 			
 			List<String> inputStrings = new ArrayList<String>();
@@ -192,13 +192,48 @@ public class SelfPlay {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void collectDataPoints() {
 		NeuralNet nn = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
-		
 		// collect ~1000 total data points
-		for (int i = 14; i < 100; i++) {
-			writeTo("TrainingData/SelfPlayData" + i + ".txt", collectData(10, nn));
+		for (int i = 0; i < 100; i++) {
+			writeTo("SelfPlayData/SelfPlayData" + i + ".txt", collectData(10, nn));
 		}
+	}
+	
+	/**
+	 * Merge the data of each SelfPlayData/SelfPlayData___ file
+	 * into SelfPlayData/SelfPlayData.txt (by just appending all lines together)
+	 */
+	public static void mergeSelfPlayData() {
+		try {
+			File combinedData = new File("SelfPlayData/SelfPlayData.txt");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(combinedData));
+			PrintWriter pw = new PrintWriter(bw);
+			
+			File folder = new File("SelfPlayData");
+			for(String fileName : folder.list()) {
+				if(fileName.length() >= 12 && fileName.substring(0,12).equals("SelfPlayData") && !fileName.equals("SelfPlayData.txt")) {
+					FileReader fr = new FileReader("SelfPlayData/" + fileName);
+					BufferedReader br = new BufferedReader(fr);
+					String s = br.readLine();
+					while(s != null) {
+						pw.write(s + "\n");
+						s = br.readLine();
+					}
+					br.close();
+				}
+			}
+			
+			pw.close();
+			
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		mergeSelfPlayData();
 	}
 }
 
