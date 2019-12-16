@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SelfPlay {
 	
@@ -132,13 +133,14 @@ public class SelfPlay {
 	}
 	
 	/**
-	 * Train the valuation network, output result to "ValuationNetwork/ValuationNetworkWeights.txt", and
-	 * checkpoint every 1000 steps during the training
+	 * Read the self play data samples from [start index, endIndex),
+	 * (inclusive of the start index, exclusive of end index) from
+	 * SelfPlayData/SelfPlayData.txt
 	 * 
-	 * Number of training samples used will be 
-	 * min([maxNumTrainingSamples], number of training samples available) 
+	 * If endIndex is more than the number of samples available,
+	 * the end index possible will be used
 	 */
-	public static void trainValuationNetwork(int numLayers, int epochs, double stepSize, int batchSize, int maxNumTrainingSamples) {
+	private static List<NeuralNet.Data> loadSelfPlayData(int startIndex, int endIndex) {
 		List<NeuralNet.Data> data = new ArrayList<>();
 		try {
 			FileReader fr = new FileReader("SelfPlayData/SelfPlayData.txt");
@@ -148,15 +150,14 @@ public class SelfPlay {
 			List<String> outputStrings = new ArrayList<String>();
 			
 			String line = br.readLine();
-			while(line != null && inputStrings.size() < maxNumTrainingSamples) {
+			while(line != null && inputStrings.size() < endIndex) {
 				inputStrings.add(line);
 				outputStrings.add(br.readLine());// just assume there's an even number of lines
 				line = br.readLine();
 			}
 			br.close();
 			
-			for(int i = 0; i < inputStrings.size(); i++) {
-				System.out.println(inputStrings.get(i));
+			for(int i = startIndex; i < inputStrings.size(); i++) {
 				String[] inputStringArray = inputStrings.get(i).split(" ");
 				String outputString = outputStrings.get(i);
 				
@@ -172,25 +173,36 @@ public class SelfPlay {
 				NeuralNet.Data d = new NeuralNet.Data(x, y);
 				data.add(d);
 			}
-						
-			NeuralNet nn = new NeuralNet(77, numLayers, 1, epochs, stepSize);
-			nn.back_prop_batch_with_checkpoints(data, batchSize, "ValuationNetwork/ValuationNetworkWeights", 1000);
-			nn.save_to_file("ValuationNetwork/ValuationNetworkWeights.txt");
-			
-			for (int i = 0; i < 20; i++) { // print out the first 20 to check
-				System.out.println("nn1 Ouput: ");
-				nn.forward_prop(data.get(i).x);
-				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
-					System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
-				}
-				System.out.print("Expected: ");
-				System.out.println(data.get(i).y.get(0) + "\n\n");
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+			return data;
 		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Train the valuation network, output result to "ValuationNetwork/ValuationNetworkWeights.txt", and
+	 * checkpoint every 1000 steps during the training
+	 * 
+	 * Number of training samples used will be 
+	 * min([maxNumTrainingSamples], number of training samples available) 
+	 */
+	public static void trainValuationNetwork(int numLayers, int epochs, double stepSize, int batchSize, int maxNumTrainingSamples) {
+		List<NeuralNet.Data> data = loadSelfPlayData(0, 250);					
+		NeuralNet nn = new NeuralNet(77, numLayers, 1, epochs, stepSize);
+		nn.back_prop_batch_with_checkpoints(data, batchSize, "ValuationNetwork/ValuationNetworkWeights", 1000);
+		nn.save_to_file("ValuationNetwork/ValuationNetworkWeights.txt");
 		
+		for (int i = 0; i < 20; i++) { // print out the first 20 to check
+			System.out.println("nn1 Ouput: ");
+			nn.forward_prop(data.get(i).x);
+			for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
+				System.out.println(nn.nn.get(nn.LAYERS)[j].value + " ");
+			}
+			System.out.print("Expected: ");
+			System.out.println(data.get(i).y.get(0) + "\n\n");
+		}
 	}
 	
 	public static void collectDataPoints() {
@@ -233,10 +245,52 @@ public class SelfPlay {
 		}
 	}
 	
+	/**
+	 * Print the results of testing the Policy Neural Network with weights saved
+	 * in [weigthsFilePath] on SelfPlayData samples 250-499
+	 * (because it was trained on 0-249)
+	 */
+	public static void printValuationNetworkTestResults(String weightsFilePath) {
+		NeuralNet nn = new NeuralNet(weightsFilePath);
+		List<NeuralNet.Data> data = loadSelfPlayData(250, 500);
+
+		System.out.println("Five Randomly Chosen Data Points:\n");
+		for(int i = 0; i < 5; i++) {
+			int index = (int)(Math.random()*250);
+			nn.forward_prop(data.get(index).x);
+			System.out.println(index + ": ");
+			System.out.println("\tOutput: " + nn.nn.get(nn.LAYERS)[0].value + " ");
+			System.out.println("\tExpected: " + data.get(index).y.get(0));
+		}
+		
+		// Consider a data point to be "correct" if it is < 0.5 for expected 0
+		// and >= 0.5 for expeted 1
+		int correctCount = 0;
+		double totalError = 0;
+		for(int i = 0; i < 250; i++) {
+			
+			nn.forward_prop(data.get(i).x);
+			double out = nn.nn.get(nn.LAYERS)[0].value;
+			int expected = (data.get(i).y.get(0)).intValue();
+			
+			System.out.print(i + ": " + (((int)(out*1000))/1000.0) + ", " + expected);
+			if((out < 0.5 && expected == 0) || (out >= 0.5 && expected == 1)) {
+				correctCount++;
+				System.out.println(" (ok) " + correctCount);
+			}
+			else {
+				System.out.println();
+			}
+			
+			totalError += Math.abs(expected - out);	
+		}
+		
+		System.out.println("Correct Count: " + correctCount + "/250");
+		System.out.println("Average Error: " + (totalError/250));
+	}
+	
 	public static void main(String[] args) {
-		long x = System.currentTimeMillis();
-		trainValuationNetwork(2, 115000, 0.3, 5, 250);
-		System.out.println("Time taken: " + (System.currentTimeMillis() - x));
+		printValuationNetworkTestResults("ValuationNetwork/ValuationNetworkWeights.txt");
 	}
 }
 
