@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class TeamGenerator {
+	
+	private static final HashSet<String> handicaps = new HashSet<String>(Arrays.asList(new String[] {"magikarp", "weedle", "kakuna", "caterpie", "metapod"}));
 	/**
 	 * Return a list of 6 pokemon to be used on a team for battle.
 	 * Selection will maintain that teams are relatively balanced,
@@ -20,8 +22,6 @@ public class TeamGenerator {
 		 * prevent two of such Pokemon from being teamed together
 		 * as such a team would result in an unfair match (in favor of
 		 * the opponent). */
-		String[] h = {"magikarp", "weedle", "kakuna", "caterpie", "metapod"};
-		HashSet<String> handicaps = new HashSet<>(Arrays.asList(h));
 		boolean handicapped = false;
 		
 		/* Counters to maintain the number of types in a team.
@@ -74,7 +74,7 @@ public class TeamGenerator {
 			 * situation is unlikely. */
 			String p_name = pool.get(counter);
 			if (pool.size() - counter == 6 - team.size()) {
-				team.add(new Pokemon(p_name, moveset(p_name), level(p_name, Pokedex.getDex().get(p_name).tier, handicaps)));
+				team.add(new Pokemon(p_name, moveset(p_name), level(p_name, Pokedex.getDex().get(p_name).tier)));
 				counter++;
 				continue;
 			}
@@ -144,7 +144,7 @@ public class TeamGenerator {
 			}
 			
 			/* Update the team. */
-			team.add(new Pokemon(p_name, moveset(p_name), level(p_name, tier, handicaps)));
+			team.add(new Pokemon(p_name, moveset(p_name), level(p_name, tier)));
 			/* Reflect the number of types in the new team. */
 			for (Type t : types) {
 				Integer tCount = typeCount.get(t);
@@ -336,14 +336,14 @@ public class TeamGenerator {
 	 * Higher tier pokemon will receive lower levels while lower tier ones will receive
 	 * higher ones in order to 'balance' the match.
 	 */
-	private static int level(String p_name, String tier, HashSet<String> handicap) {
+	public static int level(String p_name, String tier) {
 		if (p_name.equals("mewtwo")) {
 			return 62;
 		}
 		else if (p_name.equals("ditto")) {
 			return 88;
 		}
-		else if (handicap.contains(p_name)) {
+		else if (handicaps.contains(p_name)) {
 			return 99;
 		}
 		else if (tier.equals("lc")) {

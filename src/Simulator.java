@@ -193,41 +193,52 @@ public class Simulator {
 	 * choice or action choice using neural network in the future without changing main simulator
 	 * loop */
 	public static Action getActionChoice(ArrayList<Action> a) {
-//		Choose random action
-//		return a.get((int)(Math.random() * a.size()));
-
-//		Prompt player using scanner
-//		
 		if (input == null)
 			input= new Scanner(System.in);
-		System.out.println("choose an action");
 		for (int i= 0; i < a.size(); i++ ) {
 			System.out.println("" + i + ": " + a.get(i));
 		}
 		int choice= input.nextInt();
 		return a.get(choice);
-
 	}
-
-	public static void playFromFile() {
+	
+	/**
+	 * Play a gen 1 random battle on the internal simulator
+	 * 
+	 * if [playAgainstAI] is true, player 2 will be the AI
+	 * if [playAgainstAI] is false, player 2 will be prompted for moves 
+	 * as a live player
+	 */
+	public static void playOnSimulator(boolean playAgainstAI) {
 		// t1 is you, t2 is the AI
 		Team t1= new Team(TeamGenerator.randomTeam());
 		Team t2= new Team(TeamGenerator.randomTeam());
 
-		GameState p2GameState= new GameState(t2, t1.activePokemon);
+		GameState p2GameState = new GameState(t2, t1.activePokemon);
 
-		int turn= 1;
+		int turn = 1;
 
-		NeuralNet policyNet= new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+		NeuralNet policyNet = null;
+		if(playAgainstAI)
+			policyNet = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
 
 		while (t1.hasAlive() && t2.hasAlive()) {
 			System.out.println(t1);
 			System.out.println(t2);
 
-			ArrayList<Action> p1Actions= t1.getActions(t2.activePokemon.isAlive());
+			ArrayList<Action> p1Actions = t1.getActions(t2.activePokemon.isAlive());
+			System.out.println("Player 1, choose an action:");
 			Action p1Action= getActionChoice(p1Actions);
 
-			Action p2Action= MCTS.chooseMove(p2GameState, policyNet, null);
+			Action p2Action;
+			if(playAgainstAI) {
+				p2Action= MCTS.chooseMove(p2GameState, policyNet, null);
+			}
+			else {
+				ArrayList<Action> p2Actions = t2.getActions(t1.activePokemon.isAlive());
+				System.out.println("Player 2, choose an action:");
+				p2Action= getActionChoice(p2Actions);
+			}
 
 			Simulator.message= null;
 
@@ -254,133 +265,9 @@ public class Simulator {
 			endOfTurn(t1, t2);
 			turn++ ;
 		}
-
 	}
 
-	public static Pokemon readPokemon(Scanner reader) {
-		String species= reader.next();
-		int level= reader.nextInt();
-		String[] attacks= reader.nextLine().split(" ");
-		return new Pokemon(species, attacks, level);
-	}
-
-	/** TODO @IAN: Prompt user for information about the initialization of the game with the
-	 * following structure:
-	 *
-	 * Pokemon1 [Name Level Move1 Move2 ...]
-	 * 
-	 * Pokemon2 [Name Level Move1 Move2 ...]
-	 * 
-	 * Pokemon3 [Name Level Move1 Move2 ...]
-	 * 
-	 * Pokemon4 [Name Level Move1 Move2 ...]
-	 * 
-	 * Pokemon5 [Name Level Move1 Move2 ...]
-	 * 
-	 * Pokemon6 [Name Level Move1 Move2 ...]
-	 * 
-	 * OpponentPokemonActive [Name Level Move1 Move2 ...] */
-	public static GameState initializeGame() {
-		Scanner reader= new Scanner(System.in); // Reading from System.in
-		ArrayList<Pokemon> p1Team= new ArrayList<>();
-		System.out.println("Enter your team:");
-		//
-		p1Team.add(readPokemon(reader));
-		p1Team.add(readPokemon(reader));
-		p1Team.add(readPokemon(reader));
-		p1Team.add(readPokemon(reader));
-		p1Team.add(readPokemon(reader));
-		p1Team.add(readPokemon(reader));
-		//
-		System.out.println("Enter opposing pokemon");
-		Pokemon p2Active= readPokemon(reader);
-		return new GameState(new Team(p1Team), p2Active);
-	}
-
-	/** TODO @IAN: Prompt user for what happened during the last turn Pass in a string with the
-	 * following structure:
-	 * 
-	 * P1 Health Loss [xx%]
-	 * 
-	 * P1 Status [Status]
-	 * 
-	 * P1 Alive [True/False]
-	 * 
-	 * P1 Swapped [New Pokemon if swapped, otherwise null]
-	 * 
-	 * P2 Health Loss [xx%]
-	 * 
-	 * P2 Status [Status]
-	 * 
-	 * P2 Alive [True/False]
-	 * 
-	 * P2 Swapped [New Pokemon if swapped, otherwise null]
-	 * 
-	 * P2 Previous Attack [Attack Name] */
-
-	public static GameState updateTurn(GameState gs) {
-		ArrayList<Object> updates= new ArrayList<>();
-		Scanner reader= new Scanner(System.in); // Reading from System.in
-		reader.useDelimiter("\n");
-		System.out.println("Type in your turn updates: \n");
-		//
-		updates.add(reader.nextInt());
-		updates.add(reader.next());
-		updates.add(reader.nextBoolean());
-		updates.add(reader.next());
-		updates.add(reader.nextInt());
-		updates.add(reader.next());
-		updates.add(reader.nextBoolean());
-		updates.add(reader.next());
-		//
-		reader.close();
-		return null;
-	}
-
-	/** 
-	 * Assuming that you are P1, playLive will guide you through a game and tell you what actions
-	 * to do at every step! 
-	 */
-	public static void playLive() {
-
-		GameState gs= initializeGame();
-		//
-		System.out.println(gs.p1_team.toString());
-		//
-		NeuralNet policyNet= new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
-
-		while (true) { // Just keep going until the user cancels the game & restarts
-
-			// Figure out what action you should do in the given GameState
-			Action p1Action= null;
-			System.out.println("GameState should be initialized correctly!");
-			try {
-				p1Action= MCTS.chooseMove(gs, policyNet, null);
-			} catch (Exception e) {
-				System.out
-					.println(
-						"Getting action from on PolicyNet fails for some reason--IDK WHY! Quitting execution.");
-				throw e;
-			}
-
-			// Tell the user what action to do by printing
-			System.out.println(p1Action.toString());
-
-			gs= updateTurn(gs); // TODO: Fully implement updateTurn.
-		}
-	}
-
-	/** CHANGEME!! Rename gameType to SIMULATION when you want to simulate, live if you're playing
-	 * online. */
 	public static void main(String[] args) {
-		// Either run a SIMULATION or play PokemonShowdown LIVE
-		String GAMETYPE= "LIVE";
-		//
-		if (GAMETYPE == "SIMULATION") {
-			playFromFile();
-		} else if (GAMETYPE == "LIVE") {
-			playLive();
-		}
-
+		playOnSimulator(false);
 	}
 }
