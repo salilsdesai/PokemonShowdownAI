@@ -337,8 +337,10 @@ public class Simulator {
 		return null;
 	}
 
-	/** Assuming that you are P1, playLive will guide you through a game and tell you what actions
-	 * to do at every step! */
+	/** 
+	 * Assuming that you are P1, playLive will guide you through a game and tell you what actions
+	 * to do at every step! 
+	 */
 	public static void playLive() {
 
 		GameState gs= initializeGame();
