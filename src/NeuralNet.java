@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.File;
 
 public class NeuralNet {
 
@@ -123,6 +124,7 @@ public class NeuralNet {
 	/** Saves the weights of the neural network to this file. */
 	public void save_to_file(String s) {
 		try {
+			File f = new File(s);
 			FileWriter fw = new FileWriter(s);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter pw = new PrintWriter(bw);
@@ -247,12 +249,12 @@ public class NeuralNet {
 		}
 	}
 
-	/** Activation function for the neural net (ReLU). */
+	/** Activation function for the neural net (sigmoid). */
 	private double activate(double s) {
 		return 1/(1+Math.exp(-s/100));
 	}
 
-	/** Derivative of the activation function defined above (ReLU). */
+	/** Derivative of the activation function defined above (sigmoid). */
 	private double derivative(double s) {
 		double a = activate(s);
 		return 1.0/100*a*(1-a);
@@ -559,9 +561,7 @@ public class NeuralNet {
 
 	// Test the neural network using XOR function.
 	public static void main(String[] args) {
-		for (int i = 0; i < 1000000000; i++) {
-			System.out.println(i);
-		}
+		SelfPlay.main(null);
 	}
 }
 

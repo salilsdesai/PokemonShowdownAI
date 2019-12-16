@@ -151,11 +151,12 @@ public class SelfPlay {
 			while(line != null && inputStrings.size() < maxNumTrainingSamples) {
 				inputStrings.add(line);
 				outputStrings.add(br.readLine());// just assume there's an even number of lines
-				br.readLine();
+				line = br.readLine();
 			}
 			br.close();
 			
 			for(int i = 0; i < inputStrings.size(); i++) {
+				System.out.println(inputStrings.get(i));
 				String[] inputStringArray = inputStrings.get(i).split(" ");
 				String outputString = outputStrings.get(i);
 				
@@ -176,7 +177,7 @@ public class SelfPlay {
 			nn.back_prop_batch_with_checkpoints(data, batchSize, "ValuationNetwork/ValuationNetworkWeights", 1000);
 			nn.save_to_file("ValuationNetwork/ValuationNetworkWeights.txt");
 			
-			for (int i = 0; i < 3; i++) { // print out the first 3 to check
+			for (int i = 0; i < 20; i++) { // print out the first 20 to check
 				System.out.println("nn1 Ouput: ");
 				nn.forward_prop(data.get(i).x);
 				for (int j = 0; j < nn.nn.get(nn.LAYERS).length; j++) {
@@ -233,7 +234,9 @@ public class SelfPlay {
 	}
 	
 	public static void main(String[] args) {
-		mergeSelfPlayData();
+		long x = System.currentTimeMillis();
+		trainValuationNetwork(2, 115000, 0.3, 5, 250);
+		System.out.println("Time taken: " + (System.currentTimeMillis() - x));
 	}
 }
 
