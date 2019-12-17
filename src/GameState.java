@@ -298,9 +298,6 @@ public class GameState {
    			}
     		else {
     			// Debugging statement
-    			if (p2_pokemon.get(p).size() > p.moves.length) {
-    				throw new RuntimeException("Error in gamestate: pokemon knows too many moves.");
-    			}
     			/* Assign all the known moves to the pokemon. Fill the remainder
     			 * of the moveset with [null]. */
     			int counter = 0;
