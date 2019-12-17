@@ -64,7 +64,6 @@ public class Move {
 			return;
 		}
 		if (user.status.freeze) {
-			// TODO: Make freeze end when it should
 			Simulator.addMessage(user.species + " is frozen solid");
 			return;
 		}
@@ -1240,7 +1239,6 @@ public class Move {
 		m.status_chance = 0.0;
 		moves.put(m.name, m);
 		
-		// TODO: check what reflect actually does (base defense or stat mod)
 		m = new Move(); 
 		m.name = "reflect";
 		m.power = 0;

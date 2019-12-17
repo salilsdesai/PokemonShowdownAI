@@ -370,17 +370,32 @@ public class GameState {
     
     /** Returns the estimate of how favorable a terminal state is for player one. */
     public double evalTerminalNode() {
-    	//TODO: can replace with another function later
-    	double pokemonRemaining = 0.;
-    	double hpRemaining = 0.;
+    	double hpRemaining = 0;
+    	double totalHp = 0;
     	
     	for (Pokemon p : p1_team.pokemonList) {
-    		if (p.isAlive()) {
-    			hpRemaining += ((double)p.currHp/p.maxHp);
-    			pokemonRemaining++;
-    		}
+    		hpRemaining += p.currHp;
+    		totalHp += p.maxHp;
     	}
     	
-    	return pokemonRemaining/3 + hpRemaining;
+    	double p = hpRemaining/totalHp;
+    	return proportionHpRemainingValue(p);
+    }
+    
+    /**
+     * Return the value of having p proportion of your
+     * total hp remaining at the end of the game
+     * 
+     * Constraints:
+     * this function f should 
+     * - increase logarithmically
+     * - f(0) = 0
+     * - f(1) = 1
+     * - f(1/6) = 1/2 -> this means ~1 of your pokemon is fully alive
+     * 
+     */
+    private double proportionHpRemainingValue(double p) {
+    	return Math.log(24*p+1)/Math.log(25);
+    	
     }
 }
