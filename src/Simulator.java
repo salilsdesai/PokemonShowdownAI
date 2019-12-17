@@ -219,8 +219,10 @@ public class Simulator {
 		int turn = 1;
 
 		NeuralNet policyNet = null;
+		NeuralNet valueNet = null;
 		if(playAgainstAI)
 			policyNet = new NeuralNet("PolicyNetwork/PolicyNetworkWeights.txt");
+			valueNet = new NeuralNet("ValuationNetwork/ValuationNetworkWeights.txt");
 
 		while (t1.hasAlive() && t2.hasAlive()) {
 			System.out.println(t1);
@@ -232,7 +234,7 @@ public class Simulator {
 
 			Action p2Action;
 			if(playAgainstAI) {
-				p2Action= MCTS.chooseMove(p2GameState, policyNet, null);
+				p2Action = MCTS.chooseMove(p2GameState, policyNet, valueNet);
 			}
 			else {
 				ArrayList<Action> p2Actions = t2.getActions(t1.activePokemon.isAlive());
