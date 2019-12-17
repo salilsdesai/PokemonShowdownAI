@@ -1,14 +1,14 @@
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.PriorityQueue;
 
 public class MCTS {
 	
-	public static final int SIMULATION_TIME_LIMIT_SECONDS = 5;
+	public static final int SIMULATION_TIME_LIMIT_SECONDS = 3;
 	/** 
 	 * The mixing parameter for combining result of valuation neural network
 	 * and result from random rollout (see page 3 of AlphaGo paper) 
+	 * 
+	 * Alpha go paper said that lambda = 0.5 worked best for them
 	 */
 	public static final double LAMBDA = 0.5;
 	
@@ -39,8 +39,15 @@ public class MCTS {
 		 * how much weight to place on exploration 
 		 * See page 3, second column, first paragraph in
 		 * http://mlanctot.info/files/papers/cig14-smmctsggp.pdf
+		 * or
+		 * 
+		 * 
+		 * C should be optimally an upperbound on the variance
+		 * of the rewards. We thus choose C = 1/4 which is an upperbound
+		 * on the variance of a bernoulli random variable (as explained in below paper)
+		 * https://pdfs.semanticscholar.org/fb61/d223fd6c17be5837997a435e2ec22f8212b0.pdf
 		 */
-		public static final double C = 1;
+		public static final double C = 0.25;
 		
 		public Simulator.Action action;
 		public double X;
