@@ -39,7 +39,7 @@ public class LivePlay {
 				p1Team.add(p);	
 			}
 			catch (Exception e) {
-				System.out.println(e.getClass().toString().split(" ")[1] + " (" + e.getMessage() + ")");
+				e.printStackTrace();
 				i--;
 			}
 
@@ -54,7 +54,7 @@ public class LivePlay {
 				oppoPokemon = new Pokemon(oppoSpecies, new String[4], oppoLevel);
 			}
 			catch (Exception e) {
-				System.out.println(e.getClass().toString().split(" ")[1] + " (" + e.getMessage() + ")");
+				e.printStackTrace();
 			}
 
 		}
@@ -87,7 +87,7 @@ public class LivePlay {
 		try{
 			String[] split = update.split(" ");
 			
-			if(split[0].charAt('0') == 'e') {
+			if(split[0].charAt(0) == 'e') {
 				return false;
 			}
 			
@@ -244,7 +244,7 @@ public class LivePlay {
 			}
 		}
 		catch (Exception e) {
-			System.out.println(e.getClass().toString().split(" ")[1] + " (" + e.getMessage() + ")");
+			e.printStackTrace();
 		}
 		
 		return true;

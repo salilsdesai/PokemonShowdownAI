@@ -5,18 +5,16 @@ import java.util.PriorityQueue;
 
 public class MCTS {
 	
-	public static final int SIMULATION_TIME_LIMIT_SECONDS = 1;
+	public static final int SIMULATION_TIME_LIMIT_SECONDS = 5;
 	/** 
 	 * The mixing parameter for combining result of valuation neural network
 	 * and result from random rollout (see page 3 of AlphaGo paper) 
-	 * TODO: Set lambda properly
 	 */
 	public static final double LAMBDA = 0.5;
 	
 	/**
 	 * The amount to scale P/(1+N) by to get u since
 	 * u is proportional to P/(1+N) (see page 3 of AlphaGo paper)
-	 * TODO: Set U_SCALE properly
 	 */
 	public static final double U_SCALE = 1.0;
 	
