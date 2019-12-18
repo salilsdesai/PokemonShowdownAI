@@ -15,18 +15,13 @@ public class Ratings {
 	}
 	
 	public static final MatchResult[] AIMatchResults = {
-		new MatchResult(1070, 1537, 117, true),
+		
 		new MatchResult(1000, 1408, 112, false),
 		new MatchResult(1450, 1847, 27, false),
-		new MatchResult(1087, 1493, 56, true),
 		new MatchResult(1000, 1500, 130, false),
 		new MatchResult(1375, 1653, 25, false),
-		new MatchResult(1000, 1405, 112, true),
 		new MatchResult(1194, 1679, 39, false),
 		new MatchResult(1371, 1665, 45, false),
-		new MatchResult(1000, 1500, 130, true),
-		new MatchResult(1000, 1500, 130, true),
-		new MatchResult(1000, 1500, 130, true),
 		new MatchResult(1091, 1412, 72, false),
 		new MatchResult(1419, 1764, 25, true),
 		new MatchResult(1356, 1716, 35, false),
@@ -70,7 +65,7 @@ public class Ratings {
 		double S_A = (result ? 1 : 0);
 		
 		double E_A = 1/(1+Math.pow(10,((opponentInitialElo - playerInitialElo)/ 400)));
-		return (int)(playerInitialElo + Math.round(K * (S_A-E_A)));
+		return Math.max((int)(playerInitialElo + Math.round(K * (S_A-E_A))), 1000);
 	}
 	
 	/**
@@ -109,6 +104,12 @@ public class Ratings {
 		
 	}
 	
+	/**
+	 * Compute gxe based on glicko rating and deviation
+	 * 
+	 * Formula based on this post:
+	 * https://www.smogon.com/forums/threads/gxe-glixare-a-much-better-way-of-estimating-a-players-overall-rating-than-shoddys-cre.51169/
+	 */
 	public static double gxe(int glickoRating, int glickoDeviation) {
 		int R = glickoRating;
 		int RD = glickoDeviation;
@@ -120,7 +121,7 @@ public class Ratings {
 		for(MatchResult mr : AIMatchResults) {
 			elo = getUpdatedElo(elo, mr.opponentElo, mr.result);
 		}
-		System.out.println("Final Elo: " + elo);
+		System.out.println("Elo: " + elo);
 		
 		
 		int[] glicko = getUpdatedGlicko(1500, 250, AIMatchResults);
