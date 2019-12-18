@@ -10,7 +10,7 @@ public class MCTS {
 	 * 
 	 * Alpha go paper said that lambda = 0.5 worked best for them
 	 */
-	public static final double LAMBDA = 0.5;
+	public static final double LAMBDA = 0.9;
 	
 	/**
 	 * The amount to scale P/(1+N) by to get u since

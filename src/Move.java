@@ -1438,7 +1438,9 @@ public class Move {
 						md.user.status.mimicIndex = i;
 						md.user.status.mimicPP = md.user.pp[i];
 						md.user.moves[i] = md.target.moves[(int)(Math.random() * 4)];
-						md.user.pp[i] = md.user.moves[i].maxPP;
+						if(md.user.moves[i] != null) {
+							md.user.pp[i] = md.user.moves[i].maxPP;
+						}
 					}
 				}
 			}

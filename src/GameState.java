@@ -303,7 +303,8 @@ public class GameState {
     			int counter = 0;
     			p.moves = new Move[4];
     			for (Move m : p2_pokemon.get(p)) {
-    				p.moves[counter++] = m;
+    				if(counter < p.moves.length)
+    					p.moves[counter++] = m;
     			}
     			for (; counter < p.moves.length; counter++) {
     				p.moves[counter] = null;
