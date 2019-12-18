@@ -1,5 +1,5 @@
 
-public class Ranking {
+public class Ratings {
 	
 	public static class MatchResult {
 		public int opponentElo;
